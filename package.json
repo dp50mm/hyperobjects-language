@@ -1,5 +1,5 @@
 {
-  "name": "hyperobjects-language",
+  "name": "@dp50mm/hyperobjects-language",
   "version": "1.0.0",
   "description": "Hyperobjects parametric modelling language library",
   "author": "dp50mm",
@@ -24,7 +24,7 @@
     "deploy": "gh-pages -d example/build"
   },
   "peerDependencies": {
-    "react": "^16.0.0"
+    "react": "^16.13.1"
   },
   "devDependencies": {
     "microbundle-crl": "^0.13.10",
@@ -49,5 +49,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/"
+  }
 }

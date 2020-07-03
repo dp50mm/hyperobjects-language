@@ -1,6 +1,18 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import styles from './styles.module.css'
 
+export const testVariable = "TEST VARIABLE"
+
 export const ExampleComponent = ({ text }) => {
-  return <div className={styles.test}>Example Component: {text}</div>
+    const componentRef = useRef(null)
+    const [clicked, setClicked] = useState(false)
+    console.log(componentRef)
+    return (
+        <div
+            ref={componentRef}
+            className={styles.test}
+            onClick={() => { setClicked(!clicked) }}>
+                Example Component: {text}
+        </div>
+    )
 }
