@@ -497,7 +497,6 @@ class Frame extends Component {
       }
       canvasContainerStyle.opacity = 0
     }
-    console.log(styles)
     return (
       <div  style={focussedStyle} className={styles['hyperobject-frame']+designer_focussed_class}>
         {model.procedureErrors.length > 0 ? (
@@ -583,6 +582,22 @@ class Frame extends Component {
                       this.modelDispatch({
                         type: SET_FOCUSSED
                       });
+                    }
+                  }}
+                  onClick={(e) => {
+                    if(e.target.nodeName === 'svg') {
+                      let mouse_coords = this.getMouseCoords(e);
+                      let size = this.sizing()
+                      let model = frameModelStores[this.state.frameID];
+                      let algorithm_scaling = {
+                        x: size.width / model.size.width,
+                        y: size.height / model.size.height
+                      }
+                      if(mouse_coords) {
+                        let x = _.clamp(mouse_coords.x/algorithm_scaling.x, 0, model.size.width)
+                        let y = _.clamp(mouse_coords.y/algorithm_scaling.y, 0, model.size.height)
+                        this.props.onClickCallback({x, y})
+                      }
                     }
                   }}
                   ref={this.svgRef}
@@ -709,6 +724,7 @@ Frame.defaultProps = {
   updateParameters: false,
   maintainCameraPosition: false,
   sizeCallback: () => {},
+  onClickCallback: () => {},
   editable: false,
   animationControls: false,
   renderControls: false,

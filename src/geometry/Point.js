@@ -171,8 +171,6 @@ function Point(point) {
     }
     return false
   }
-
-
 }
 
 
