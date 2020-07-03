@@ -1,0 +1,4 @@
+.canvas-3d-view canvas {
+  transform: scale(0.5) !important;
+  transform-origin: top left;
+}

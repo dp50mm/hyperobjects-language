@@ -1,0 +1,116 @@
+.hyperobject-frame {
+  transition: background 0.5s, opacity 0.5s;
+  position: relative;
+}
+
+.hyperobject-frame.focussed {
+  z-index: 10000;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  opacity: 1;
+  background: rgba(20,20,50,1);
+}
+
+.hyperobject-frame svg {
+  transition: top 0.5s;
+  overflow: visible;
+}
+
+.hyperobject-frame svg text {
+  -webkit-user-select: none;
+  user-select: none;
+  font-family: 'Europa';
+}
+
+.hyperobject-frame.focussed > svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.display-geometries {
+  pointer-events: none;
+}
+
+.point.editable {
+  cursor: move;
+}
+
+.point.editable:hover {
+  opacity: 0.7;
+}
+
+.focussed-text {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.disable-focussed {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  text-align: center;
+  background: rgba(255,255,255, 0.2);
+  border-radius: 5px;
+  color: white;
+  padding: 5px;
+}
+
+.test-display-point {
+  fill: rgba(200,200,255,0.8);
+  stroke-width: 0px;
+}
+
+
+.control-point {
+  cursor: move;
+}
+
+.square-0 {
+  fill: green;
+}
+
+.hyperobject-frame .controls {
+  position: absolute;
+  top: 5px;
+  left: -5px;
+}
+
+
+.canvas-3d-view {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+canvas:focus {
+  outline: none;
+}
+
+.procedure-errors-box {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+}
+
+.procedure-errors-box .procedure-error {
+  color: red;
+}
+
+.svg-export text {
+  -webkit-user-select: none;
+  user-select: none;
+  font-family: 'Europa';
+}
