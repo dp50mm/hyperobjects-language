@@ -12,6 +12,7 @@ import {
   PAUSE,
   REWIND
 } from './reducer/actionTypes';
+import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import AnimationControls from './controls/AnimationControls'
 import RenderControls from './controls/RenderControls'
 import ExportControls from './controls/ExportControls'
@@ -114,7 +115,6 @@ class Frame extends Component {
   }
   componentDidMount() {
     frameModelStores[this.state.frameID] = this.props.model
-    console.log(this.props.model);
     if(this.props.model === undefined) {
       console.log('model is undefined');
       return
@@ -244,6 +244,7 @@ class Frame extends Component {
      * for some reason the model returns setter functions
      * at some moments
      */
+    actionCallbackMiddleware(frameModelStores[this.state.frameID], action, this.props.actionsCallback)
     try {
       if(this.state.frameMouseMoveCounter % 1 === 0) {
         frameModelStores[this.state.frameID] = reducer(frameModelStores[this.state.frameID], action)
@@ -725,6 +726,7 @@ Frame.defaultProps = {
   maintainCameraPosition: false,
   sizeCallback: () => {},
   onClickCallback: () => {},
+  actionsCallback: () => {},
   editable: false,
   animationControls: false,
   renderControls: false,

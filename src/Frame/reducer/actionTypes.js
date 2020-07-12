@@ -10,3 +10,5 @@ export const ANIMATE = "ANIMATE"
 export const PLAY = 'PLAY'
 export const PAUSE = 'PAUSE'
 export const REWIND = 'REWIND'
+export const CLICKED_GEOMETRY = 'CLICKED_GEOMETRY'
+export const HOVERED_GEOMETRY = 'HOVERED_GEOMETRY'

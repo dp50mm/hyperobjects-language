@@ -1,6 +1,7 @@
 import React from 'react';
 import Point from './Point';
 import pathGenerator from './helpers/pathGenerator';
+import { CLICKED_GEOMETRY } from '../../reducer/actionTypes';
 
 const Path = ({geometry, modelDispatch, scaling}) => {
   let editPoints = null;
@@ -41,9 +42,6 @@ const Path = ({geometry, modelDispatch, scaling}) => {
   return (
     <g>
     <path
-      style={{
-        pointerEvents: 'none'
-      }}
       className={classes}
       d={pathGenerator(geometry.points, geometry.closedPath)}
       fill={geometry._fill}
@@ -54,6 +52,9 @@ const Path = ({geometry, modelDispatch, scaling}) => {
       opacity={geometry._opacity}
       strokeLinecap={geometry._strokeLinecap}
       strokeLinejoin={geometry._strokeLinejoin}
+      onClick={() => { modelDispatch({type: CLICKED_GEOMETRY, geometry_id: geometry.id}) }}
+      onMouseOver={() => {
+      }}
       />
     {editPoints}
     </g>

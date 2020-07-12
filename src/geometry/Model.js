@@ -82,6 +82,10 @@ function Model(name, classes) {
   this.imageExportScaling = 1
   this.gcode = gCodeGenerator
   this.procedureErrors = []
+  this.generators = {
+    path: Path,
+    group: Group
+  }
   this.setSize = function(dimensions) {
     this.size = {
       width: dimensions.width,
@@ -171,6 +175,36 @@ function Model(name, classes) {
       output[key] = this.geometries[key].extract()
     }
     return output
+  }
+  this.extractProcedures = function() {
+    let output = {}
+    for (var key in this.procedures) {
+      output[key] = this.procedures[key].toString()
+    }
+    return output
+  }
+  this.extractModel = function() {
+    return {
+      geometries: this.extractGeometries(),
+      procedures: this.extractProcedures()
+    }
+  }
+  this.importModel = function(modelElements) {
+    this.setGeometries(modelElements.geometries)
+    this.importProcedures(modelElements.procedures)
+  }
+  this.importProcedures = function(inputProcedures) {
+    let input = {}
+    for (var key in inputProcedures) {
+      let fnString = _.trim(inputProcedures[key])
+      fnString = _.trimStart(fnString, 'self =>')
+      fnString = _.trimStart(fnString, '{')
+      fnString = _.trimEnd(fnString, '}')
+      fnString = _.replace(fnString, 'lodash__WEBPACK_IMPORTED_MODULE_3___default.a', '_')
+      fnString = _.replace(fnString, 'hyperobjects_language__WEBPACK_IMPORTED_MODULE_2__["Path"]', 'Path')
+      input[key] = new Function('self', fnString)
+    }
+    this.procedures = input
   }
   this.staticGeometries = function() {
     return this.staticGeometriesList.map((name) => {
