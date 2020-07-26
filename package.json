@@ -55,9 +55,11 @@
     "registry": "https://npm.pkg.github.com/"
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
     "bezier-js": "^2.6.1",
     "chroma-js": "^2.1.0",
     "file-saver": "^2.0.2",
+    "node-sass": "^4.14.1",
     "ogl": "0.0.54",
     "react-ga": "^3.0.0"
   }

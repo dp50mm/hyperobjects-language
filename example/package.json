@@ -10,10 +10,14 @@
     "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
   },
   "dependencies": {
+    "hyperobjects-language": "file:..",
+    "node-sass": "^4.14.1",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "file:../node_modules/react-scripts",
-    "hyperobjects-language": "file:.."
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^1.0.0"
   },
   "devDependencies": {
     "@babel/plugin-syntax-object-rest-spread": "^7.8.3"
