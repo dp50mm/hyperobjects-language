@@ -193,6 +193,7 @@ function Model(name, classes) {
   this.importModel = function(modelElements) {
     this.setGeometries(modelElements.geometries)
     this.editableGeometriesList = _.keys(modelElements.geometries)
+    this.inputs = _.get(modelElements, 'inputs', {})
     this.inputsList = _.keys(modelElements.inputs)
     this.importProcedures(modelElements.procedures)
   }
