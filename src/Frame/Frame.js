@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import styles from './frame.module.css';
 import reducer from './reducer/index';
 import Geometry from './components/Geometry';
+import Inputs from './components/Inputs'
 import {
   MOVE_POINT,
   STOP_DRAGGING,
@@ -543,6 +544,9 @@ class Frame extends Component {
               />
           ) : null}
         </div>
+        {(this.props.showInputsByDefault && model.inputsList.length > 0) && (
+          <Inputs modelDispatch={this.modelDispatch.bind(this)} />
+        )}
         {focussedTitle}
         {model.dimensions === 2 ? (
           <div className='svg-container' style={{padding: this.props.svgPadding, background: model.background}}>
@@ -734,7 +738,8 @@ Frame.defaultProps = {
   svgPadding: 0,
   scaleToContainer: false,
   showProcedureErrors: false,
-  renderType: 'CANVAS'
+  renderType: 'CANVAS',
+  showInputsByDefault: true
 }
 
 function valBetween(v, min, max) {

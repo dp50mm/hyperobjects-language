@@ -7,6 +7,7 @@ import _Path from './geometry/Path'
 import _Segment from './geometry/path/Segment'
 import _Polygon from './geometry/Polygon'
 import _Text from './geometry/Text'
+import _Input from './geometry/Input'
 import _Rectangle from './geometry/shapes/Rectangle'
 import _Circle from './geometry/shapes/Circle'
 
@@ -19,5 +20,6 @@ export const Path = _Path
 export const Segment = _Segment
 export const Polygon = _Polygon
 export const Text = _Text
+export const Input = _Input
 export const Rectangle = _Rectangle
 export const Circle = _Circle

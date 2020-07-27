@@ -10,7 +10,8 @@ import {
   ANIMATE,
   PLAY,
   PAUSE,
-  REWIND
+  REWIND,
+  INPUT_SET_VALUE
 } from './actionTypes';
 import geometryReducer from './geometryReducer';
 
@@ -32,6 +33,19 @@ const reducer = (prevState, action) => {
         draggingAPoint: false,
         geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
       };
+    case INPUT_SET_VALUE:
+      return {
+        ...prevState,
+        inputs: objectMap(prevState.inputs, (input, key) => {
+          if(action.payload.name === key) {
+            return {
+              ...input,
+              value: action.payload.value
+            }
+          }
+          return input
+        })
+      }
     case SET_FOCUSSED:
       return {
         ...prevState, focussed: true
@@ -77,7 +91,7 @@ const reducer = (prevState, action) => {
 
 function objectMap(object, mapFn) {
     return Object.keys(object).reduce(function(result, key) {
-        result[key] = mapFn(object[key])
+        result[key] = mapFn(object[key], key)
         return result
     }, {})
 }

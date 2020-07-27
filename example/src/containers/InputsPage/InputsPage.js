@@ -1,11 +1,12 @@
 import React from 'react'
+import InputsTest from 'components/InputsTest'
 
-const InputsPage = ({
 
-}) => {
+const InputsPage = () => {
     return (
         <div className='inputs-page'>
-            Inputs Page
+            <h2>Inputs Page</h2>
+            <InputsTest />
         </div>
     )
 }

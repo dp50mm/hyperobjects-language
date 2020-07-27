@@ -50,11 +50,8 @@ testModel.importProcedures(extractedProcedures)
 let i = 0
 
 
-const ExportImportTest = ({
-
-}) => {
+const ExportImportTest = () => {
     const [modelHasUpdated, setModelHasUpdated] = useState(false)
-    const [selectedGeometry, setSelectedGeometry] = useState(false)
     useEffect(() => {
         if(modelHasUpdated) {
         const timer = setTimeout(() => {
@@ -81,8 +78,6 @@ const ExportImportTest = ({
                     height={800}
                     modelHasUpdated={modelHasUpdated}
                     updateParameters={(parameters) => {
-                    let asJson = JSON.stringify(parameters)
-                    let parsed = JSON.parse(asJson)
                     newModel.geometries = parameters
                     }}
                     actionsCallback={(element, action) => {

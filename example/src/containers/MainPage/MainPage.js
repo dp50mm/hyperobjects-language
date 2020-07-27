@@ -1,8 +1,6 @@
 import React from 'react'
 
-const MainPage = ({
-
-}) => {
+const MainPage = () => {
     return (
         <div className='main-page'>
             Main page

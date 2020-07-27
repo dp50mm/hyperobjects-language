@@ -186,12 +186,14 @@ function Model(name, classes) {
   this.extractModel = function() {
     return {
       geometries: this.extractGeometries(),
-      procedures: this.extractProcedures()
+      procedures: this.extractProcedures(),
+      inputs: this.extractInputs()
     }
   }
   this.importModel = function(modelElements) {
     this.setGeometries(modelElements.geometries)
     this.editableGeometriesList = _.keys(modelElements.geometries)
+    this.inputsList = _.keys(modelElements.inputs)
     this.importProcedures(modelElements.procedures)
   }
   this.importProcedures = function(inputProcedures) {
@@ -219,6 +221,15 @@ function Model(name, classes) {
   this.addStaticGeometry = function (name, geometry, type) {
     this.geometries[name] = geometry
     this.staticGeometriesList.push(name)
+  }
+  this.inputs = {}
+  this.inputsList = []
+  this.extractInputs = function() {
+    return this.inputs
+  }
+  this.addInput = function(name, input) {
+    this.inputs[name] = input
+    this.inputsList.push(name)
   }
   /**
    * Adding a procedure

@@ -1,8 +1,6 @@
 import React from 'react'
 
-const ProceduresPage = ({
-
-}) => {
+const ProceduresPage = () => {
     return (
         <div className='procedures-page'>
             Procedures Page

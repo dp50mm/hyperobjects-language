@@ -1,9 +1,7 @@
 import React from 'react'
 import ExportImportTest from 'components/ExportImportTest'
 
-const ImportExportPage = ({
-
-}) => {
+const ImportExportPage = () => {
     return (
         <div className='import-export-page'>
             <ExportImportTest />

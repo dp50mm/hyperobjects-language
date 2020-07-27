@@ -12,3 +12,5 @@ export const PAUSE = 'PAUSE'
 export const REWIND = 'REWIND'
 export const CLICKED_GEOMETRY = 'CLICKED_GEOMETRY'
 export const HOVERED_GEOMETRY = 'HOVERED_GEOMETRY'
+
+export const INPUT_SET_VALUE = 'INPUT_SET_VALUE'
