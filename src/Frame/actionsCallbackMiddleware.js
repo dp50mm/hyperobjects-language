@@ -35,9 +35,7 @@ function getElements(model, action) {
             key: key
         }
     })
-    console.log(geometries)
     let geometry = _.find(geometries, g => g.id === action.geometry_id)
-    console.log(geometry)
     let point = _.find(geometry.points, p => p.id === action.point_id)
     return {
         key: geometry.key,

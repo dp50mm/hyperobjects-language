@@ -18,6 +18,7 @@ model.addInput(
     new Input([100, 500])
 )
 
+
 model.addProcedure(
     'testing-inputs',
     (self) => {
@@ -27,8 +28,11 @@ model.addProcedure(
     }
 )
 
+let testModel = new Model('testing')
+testModel.addInput('test', new Input([0, 1]))
+
+
 const InputsTest = () => {
-    console.log('inputs test', model)
     return (
         <div className='inputs-test'>
             <Frame
