@@ -12,5 +12,7 @@ export const POINT_TYPES = {
   ARC: "POINT_TYPE_ARC"
 };
 
+export const INPUT = "INPUT"
+
 export const EDITABLE = "EDITABLE";
 export const COMPUTED = "COMPUTED";

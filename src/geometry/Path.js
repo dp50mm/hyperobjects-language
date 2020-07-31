@@ -39,5 +39,6 @@ function Path(points, name, attributes) {
     return this
   }
 }
+Path.type = PATH
 
 export default Path;

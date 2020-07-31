@@ -14,5 +14,6 @@ function Group(points, name) {
     return points[0]
   }
 }
+Group.type = GROUP
 
 export default Group;

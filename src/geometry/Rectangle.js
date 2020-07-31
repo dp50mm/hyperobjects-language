@@ -124,4 +124,6 @@ function Rectangle(p1, p2, attributes) {
   }
 }
 
+Rectangle.type = RECTANGLE
+
 export default Rectangle

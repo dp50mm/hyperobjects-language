@@ -18,4 +18,6 @@ function Polygon(points, name) {
   })
 }
 
+Polygon.type = POLYGON
+
 export default Polygon;

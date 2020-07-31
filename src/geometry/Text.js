@@ -56,4 +56,6 @@ function Text(text, point, name) {
   this._fontFamily = "Europa"
 }
 
+Text.type = TEXT
+
 export default Text

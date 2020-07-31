@@ -164,6 +164,9 @@ function Point(point) {
   this.copy = () => {
     return new Point(this)
   }
+  this.clone = () => {
+    return new Point(this)
+  }
 
   this.equals = function(p) {
     if(arraysEqual(this.getValues(), p.getValues())) {
@@ -173,6 +176,7 @@ function Point(point) {
   }
 }
 
+Point.type = POINT
 
 function arraysEqual(arr1, arr2) {
     if(arr1.length !== arr2.length)
