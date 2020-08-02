@@ -1,22 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Point from './Point';
 import pathGenerator from './helpers/pathGenerator';
 import { CLICKED_GEOMETRY } from '../../reducer/actionTypes';
+import BoundsRectangle from './path/BoundsRectangle';
 
-const Path = ({
+const Path = React.memo(({
   geometry,
   modelDispatch,
   scaling,
   onPointClickCallback,
   onPathClickCallback
 }) => {
+  const [mouseOver, setMouseOver] = useState(false)
   let editPoints = null;
   let uniqueClass = `geometry-${geometry.type} `
   let classes = uniqueClass
   classes += 'path '
   classes += geometry.cssClasses
   let fillOpacity = geometry.closedPath ? geometry._fillOpacity : 0
-
   if(geometry.editable) {
     editPoints = geometry.points.map((point, i, a) => {
       let previous_point = false;
@@ -50,9 +51,19 @@ const Path = ({
   let style = {pointerEvents: "none"}
   if(onPathClickCallback) {
     style.pointerEvents = "auto"
+    classes += ' click-callback'
+    if(mouseOver) {
+      style.cursor = 'pointer'
+    }
   }
   return (
     <g>
+    {(onPathClickCallback && mouseOver) && (
+      <BoundsRectangle rectangle={geometry.getBounds()} scaling={scaling} />
+    )}
+    {geometry.showBounds && (
+      <BoundsRectangle rectangle={geometry.getBounds()} scaling={scaling} />
+    )}
     <path
       className={classes}
       d={pathGenerator(geometry.points, geometry.closedPath)}
@@ -72,12 +83,20 @@ const Path = ({
       }}
       style={style}
       onMouseOver={() => {
+          if(onPathClickCallback) {
+            setMouseOver(true)
+          }
+      }}
+      onMouseLeave={() => {
+        if(onPathClickCallback) {
+          setMouseOver(false)
+        }
       }}
       />
     {editPoints}
     </g>
   );
-}
+})
 
 Path.defaultProps = {
   onPointClickCallback: false,

@@ -6,6 +6,7 @@ import Matrix from './Matrix'
 import Path from './Path'
 import interpolate from './path/interpolate'
 import Group from './Group'
+import getBounds from './path/getBounds'
 import {
   PATH,
   GROUP
@@ -26,6 +27,7 @@ function Geometry(points, name, attributes) {
   this.id = geometry_id;
   this.unit = 'px';
   this._export = false;
+  this.showBounds = false;
   this.export = function(shouldExport) {
     this._export = shouldExport
     return this
@@ -59,6 +61,9 @@ function Geometry(points, name, attributes) {
         return acc += distance(p, a[i+1])
       }
     }, 0)
+  }
+  this.getBounds = function() {
+    return getBounds(this.points)
   }
   this.extract = function() {
     this.points.forEach(p => p.removeConnections())

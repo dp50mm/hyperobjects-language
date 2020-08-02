@@ -2,7 +2,7 @@ import Path from '../Path'
 import Point from '../Point'
 import Segment from './Segment'
 import offsetBezierPath from '../operators/offsetBezierPath'
-import getBounds from './getBounds'
+
 import _ from 'lodash'
 import {
   POINT
@@ -36,9 +36,7 @@ function PathFunctions() {
     let offset = offsetBezierPath(this, distance)
     return offset
   }
-  this.getBounds = function() {
-    return getBounds(this.points)
-  }
+  
   this._segments = false
   this.segments = function() {
     if(this._segments === false) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Point from './Point';
+import BoundsRectangle from './path/BoundsRectangle'
 
 const Group = ({
   geometry,
@@ -8,6 +9,9 @@ const Group = ({
   onPointClickCallback
 }) => (
   <g>
+    {geometry.showBounds && (
+      <BoundsRectangle rectangle={geometry.getBounds()} scaling={scaling} />
+    )}
    {geometry.points.map((point, i) => {
      let fill = geometry.controls.fill
      if(geometry._fill) {

@@ -12,13 +12,16 @@ import {
 
 let newModel = new Model("callback-test-model")
 
-
-newModel.addEditableGeometry("test-points",
-  new Group([
+let testPoints = new Group([
     {x: 100, y: 500},
     {x: 200, y: 400},
     {x: 300, y: 600},
   ]).r(10)
+
+testPoints.showBounds = true
+
+newModel.addEditableGeometry("test-points",
+  testPoints
 )
 
 newModel.addEditableGeometry("test-path",
