@@ -44,6 +44,10 @@
   opacity: 0.7;
 }
 
+.point.clickable {
+  cursor: pointer;
+}
+
 .focussed-text {
   pointer-events: none;
   user-select: none;

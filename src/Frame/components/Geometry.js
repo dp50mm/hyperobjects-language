@@ -14,7 +14,9 @@ import {
 const Geometry = ({
   geometry,
   modelDispatch,
-  scaling
+  scaling,
+  onPointClickCallback,
+  onGeometryClickCallback
 }) => {
   switch (geometry.type) {
     case GROUP:
@@ -22,7 +24,9 @@ const Geometry = ({
         <Group
           scaling={scaling}
           geometry={geometry}
-          modelDispatch={modelDispatch} />
+          modelDispatch={modelDispatch}
+          onPointClickCallback={onPointClickCallback}
+          />
       );
     case POLYGON:
       return (
@@ -35,7 +39,10 @@ const Geometry = ({
         <Path
           scaling={scaling}
           geometry={geometry}
-          modelDispatch={modelDispatch} />
+          modelDispatch={modelDispatch}
+          onPointClickCallback={onPointClickCallback}
+          onPathClickCallback={onGeometryClickCallback}
+          />
       );
     case TEXT:
       return (

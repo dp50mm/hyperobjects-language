@@ -50,6 +50,9 @@ class Point extends React.PureComponent {
     if(modelDispatch !== undefined) {
       classes += styles.editable;
     }
+    if(this.props.onClickCallback) {
+      classes += ` ${styles.clickable}`
+    }
     let radius = this.props.radius
 
     if(this.props.geometryRadius) {
@@ -242,14 +245,18 @@ class Point extends React.PureComponent {
         <circle
           className={classes}
           onMouseDown={ (e) => {
-            if(modelDispatch !== undefined) {
-              modelDispatch({
-                type: SET_DRAGGED_POINT,
-                point_id: point.id,
-                geometry_id: geometry_id
-              })
+            if(this.props.onClickCallback) {
+              this.props.onClickCallback()
+            } else {
+              if(modelDispatch !== undefined) {
+                modelDispatch({
+                  type: SET_DRAGGED_POINT,
+                  point_id: point.id,
+                  geometry_id: geometry_id
+                })
+              }
+              this.toggleSelected()
             }
-            this.toggleSelected()
           }}
           onTouchStart={ (e) => {
             if(modelDispatch !== undefined) {
@@ -289,7 +296,8 @@ class Point extends React.PureComponent {
 Point.defaultProps = {
   showCoordinates: false,
   radius: 15,
-  scaling: {x: 1, y: 1}
+  scaling: {x: 1, y: 1},
+  onClickCallback: false
 }
 
 

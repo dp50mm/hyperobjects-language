@@ -1,9 +1,14 @@
 import React from 'react';
 import Point from './Point';
 
-const Group = ({geometry, modelDispatch, scaling}) => (
+const Group = ({
+  geometry,
+  modelDispatch,
+  scaling,
+  onPointClickCallback
+}) => (
   <g>
-   {geometry.points.map((point) => {
+   {geometry.points.map((point, i) => {
      let fill = geometry.controls.fill
      if(geometry._fill) {
        fill = geometry._fill
@@ -22,6 +27,7 @@ const Group = ({geometry, modelDispatch, scaling}) => (
         scaling={scaling}
         geometry_id={geometry.id}
         modelDispatch={modelDispatch}
+        onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
         />
      )
    })}

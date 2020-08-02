@@ -633,6 +633,8 @@ class Frame extends Component {
                             scaling={algorithm_scaling}
                             modelDispatch={this.modelDispatch.bind(this)}
                             key={geometry.id}
+                            onGeometryClickCallback={this.props.onGeometryClickCallback}
+                            onPointClickCallback={this.props.onPointClickCallback}
                             geometry={{...geometry, editable: this.props.editable}} />
                         );
                       }
@@ -730,6 +732,8 @@ Frame.defaultProps = {
   maintainCameraPosition: false,
   sizeCallback: () => {},
   onClickCallback: () => {},
+  onPointClickCallback: false,
+  onGeometryClickCallback: false,
   actionsCallback: () => {},
   editable: false,
   animationControls: false,

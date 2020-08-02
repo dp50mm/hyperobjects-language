@@ -3,7 +3,13 @@ import Point from './Point';
 import pathGenerator from './helpers/pathGenerator';
 import { CLICKED_GEOMETRY } from '../../reducer/actionTypes';
 
-const Path = ({geometry, modelDispatch, scaling}) => {
+const Path = ({
+  geometry,
+  modelDispatch,
+  scaling,
+  onPointClickCallback,
+  onPathClickCallback
+}) => {
   let editPoints = null;
   let uniqueClass = `geometry-${geometry.type} `
   let classes = uniqueClass
@@ -35,9 +41,15 @@ const Path = ({geometry, modelDispatch, scaling}) => {
          strokeOpacity={geometry.controls.strokeOpacityValue}
          geometry_id={geometry.id}
          previous_point={previous_point}
-         modelDispatch={modelDispatch} />
+         modelDispatch={modelDispatch}
+         onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
+         />
       )
     });
+  }
+  let style = {pointerEvents: "none"}
+  if(onPathClickCallback) {
+    style.pointerEvents = "auto"
   }
   return (
     <g>
@@ -52,13 +64,24 @@ const Path = ({geometry, modelDispatch, scaling}) => {
       opacity={geometry._opacity}
       strokeLinecap={geometry._strokeLinecap}
       strokeLinejoin={geometry._strokeLinejoin}
-      onClick={() => { modelDispatch({type: CLICKED_GEOMETRY, geometry_id: geometry.id}) }}
+      onClick={() => {
+        if(onPathClickCallback) {
+          onPathClickCallback(geometry)
+        }
+        modelDispatch({type: CLICKED_GEOMETRY, geometry_id: geometry.id})
+      }}
+      style={style}
       onMouseOver={() => {
       }}
       />
     {editPoints}
     </g>
   );
+}
+
+Path.defaultProps = {
+  onPointClickCallback: false,
+  onPathClickCallback: false
 }
 
 export default Path;

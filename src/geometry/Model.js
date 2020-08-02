@@ -216,10 +216,12 @@ function Model(name, classes) {
     });
   }
   this.addEditableGeometry = function (name, geometry, type) {
+    geometry.key = name
     this.geometries[name] = geometry
     this.editableGeometriesList.push(name)
   }
   this.addStaticGeometry = function (name, geometry, type) {
+    geometry.key = name
     this.geometries[name] = geometry
     this.staticGeometriesList.push(name)
   }
