@@ -251,6 +251,7 @@ class Point extends React.PureComponent {
               this.props.onClickCallback()
             } else {
               if(modelDispatch !== undefined) {
+                console.log('dispatch dragged point')
                 modelDispatch({
                   type: SET_DRAGGED_POINT,
                   point_id: point.id,

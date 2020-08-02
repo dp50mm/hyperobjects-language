@@ -245,6 +245,9 @@ class Frame extends Component {
      * for some reason the model returns setter functions
      * at some moments
      */
+    if(this.props.logModelDispatch) {
+      console.log(action)
+    }
     actionCallbackMiddleware(frameModelStores[this.state.frameID], action, this.props.actionsCallback)
     try {
       if(this.state.frameMouseMoveCounter % 1 === 0) {
@@ -259,11 +262,12 @@ class Frame extends Component {
           frameMouseMoveCounter: this.state.frameMouseMoveCounter + 1
         });
       }
-
+      if(this.props.logModelState) {
+        console.log(frameModelStores[this.state.frameID])
+      }
       if(action.type !== MOVE_POINT) {
         analytics.event(`model dispatch: ${action.type}`, "Frame", frameModelStores[this.state.frameID].name)
       }
-
     } catch(e) { }
     if(this.props.updateParameters) {
       try {
@@ -379,6 +383,9 @@ class Frame extends Component {
         y: size.height / model.size.height
       }
       if(mouse_coords) {
+        if(this.props.logMouseMove) {
+          console.log(mouse_coords)
+        }
         this.modelDispatch({
           type: MOVE_POINT,
           payload: {
@@ -743,7 +750,10 @@ Frame.defaultProps = {
   scaleToContainer: false,
   showProcedureErrors: false,
   renderType: 'CANVAS',
-  showInputsByDefault: true
+  showInputsByDefault: true,
+  logModelDispatch: false,
+  logModelState: false,
+  logMouseMove: false
 }
 
 function valBetween(v, min, max) {

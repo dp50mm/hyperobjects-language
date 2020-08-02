@@ -13,6 +13,7 @@ import GeometriesPage from 'containers/GeometriesPage'
 import ProceduresPage from 'containers/ProceduresPage'
 import InputsPage from 'containers/InputsPage'
 import ImportExportPage from 'containers/ImportExportPage'
+import ModelsPage from 'containers/ModelsPage'
 
 import 'hyperobjects-language/dist/index.css'
 import 'semantic-ui-css/semantic.min.css';
@@ -30,6 +31,9 @@ const App = () => {
             <Link to='/'>Home</Link>
           </Menu.Item>
           <Menu.Item>
+            <Link to='/models'>Models</Link>
+          </Menu.Item>
+          <Menu.Item>
           <Link to='/import-export'>Import/Export</Link>
           </Menu.Item>
           <Menu.Item>
@@ -44,6 +48,7 @@ const App = () => {
         </Menu>
         <div className='page-content'>
           <Switch>
+            <Route path='/models'><ModelsPage /></Route>
             <Route path='/import-export'><ImportExportPage /></Route>
             <Route path='/geometries'><GeometriesPage /></Route>
             <Route path='/procedures'><ProceduresPage /></Route>
