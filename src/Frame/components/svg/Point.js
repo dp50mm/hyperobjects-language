@@ -245,6 +245,7 @@ class Point extends React.PureComponent {
         <circle
           className={classes}
           onMouseDown={ (e) => {
+            console.log(e)
             if(this.props.onClickCallback) {
               this.props.onClickCallback()
             } else {
