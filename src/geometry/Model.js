@@ -246,7 +246,6 @@ function Model(name, classes) {
      } else {
        this.proceduresList.push(name)
      }
-
    }
    this.editableGeometries = function() {
      return this.editableGeometriesList.map((name) => {

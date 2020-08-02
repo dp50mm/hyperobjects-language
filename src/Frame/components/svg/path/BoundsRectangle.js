@@ -6,6 +6,7 @@ const BoundsRectangle = ({
 }) => {
     return (
         <rect
+            style={{pointerEvents: 'none'}}
             fill='transparent'
             stroke='grey'
             strokeWidth={1}
