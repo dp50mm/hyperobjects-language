@@ -8,7 +8,7 @@ import {
 import {
     Button
 } from 'semantic-ui-react'
-
+import ReactJson from 'react-json-view'
 
 let newModel = new Model("callback-test-model")
 
@@ -44,14 +44,21 @@ newModel.addProcedure(
 
 const OnClickCallbacksTest = () => {
     const [clickState, setClickState] = useState("select")
+    const [clickLog, setClickLog] = useState([])
     let onClickCallback = false
     let onGeometryClickCallback = false
     let onPointClickCallback = false
-    if(clickState === 'select') {
-        onClickCallback = (p, i) => console.log(p, i)
-        onGeometryClickCallback = (g) => console.log(g)
-        onPointClickCallback = (g, p, i) => console.log(g, p, i)
+    function addLog(log) {
+        let newClickLog = clickLog.slice()
+        newClickLog.push(log)
+        setClickLog(newClickLog)
     }
+    if(clickState === 'select') {
+        onClickCallback = (p) => addLog({point: p})
+        onGeometryClickCallback = (g) => addLog({geometry: g.extract()})
+        onPointClickCallback = (g, p, i) => addLog({geometry: g.extract(), point: p.extract(), pointIndex: i})
+    }
+    console.log(clickLog)
     return (
         <div className='on-click-callbacks-test'>
             <div style={{padding: 50}}>
@@ -60,6 +67,7 @@ const OnClickCallbacksTest = () => {
                     <Button toggle active={clickState === 'select'} onClick={() => setClickState("select")}>Select</Button>
                 </Button.Group>
             </div>
+            <div style={{display: 'flex'}}>
             <Frame
                 model={newModel}
                 editable={true}
@@ -69,6 +77,8 @@ const OnClickCallbacksTest = () => {
                 onGeometryClickCallback={onGeometryClickCallback}
                 onPointClickCallback={onPointClickCallback}
                 />
+            <ReactJson src={clickLog} collapsed={true} />
+            </div>
         </div>
     )
 }
