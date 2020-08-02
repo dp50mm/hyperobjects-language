@@ -250,6 +250,7 @@ function Model(name, classes) {
    }
    this.editableGeometries = function() {
      return this.editableGeometriesList.map((name) => {
+      this.geometries[name].key = name
        return this.geometries[name]
      });
    }
