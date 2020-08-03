@@ -245,13 +245,10 @@ class Point extends React.PureComponent {
         <circle
           className={classes}
           onMouseDown={ (e) => {
-            console.log(e)
-            console.log('onClickCallback: ', this.props.onClickCallback)
             if(this.props.onClickCallback) {
               this.props.onClickCallback()
             } else {
               if(modelDispatch !== undefined) {
-                console.log('dispatch dragged point')
                 modelDispatch({
                   type: SET_DRAGGED_POINT,
                   point_id: point.id,
