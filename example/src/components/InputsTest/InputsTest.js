@@ -40,6 +40,7 @@ const InputsTest = () => {
                 editable={true}
                 width={800}
                 height={800}
+                updateParameters={(geometries, inputs) => console.log(geometries, inputs)}
                 />
         </div>
     )

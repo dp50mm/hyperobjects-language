@@ -126,7 +126,8 @@ class Frame extends Component {
     }
     if(this.props.updateParameters) {
       let parameterGeometries = frameModelStores[this.state.frameID].extractGeometries()
-      this.props.updateParameters(parameterGeometries);
+      let parameterInputs = frameModelStores[this.state.frameID].extractInputs()
+      this.props.updateParameters(parameterGeometries, parameterInputs);
     }
 
     this.setState({
@@ -272,9 +273,9 @@ class Frame extends Component {
     if(this.props.updateParameters) {
       try {
         if(action.type === STOP_DRAGGING) {
-          let parameterGeometries = reducer(frameModelStores[this.state.frameID], action).extractGeometries()
-          this.props.updateParameters(parameterGeometries);
-
+          let parameterGeometries = frameModelStores[this.state.frameID].extractGeometries()
+          let parameterInputs = frameModelStores[this.state.frameID].extractInputs()
+          this.props.updateParameters(parameterGeometries, parameterInputs);
         }
       } catch(e) {
 
