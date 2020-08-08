@@ -14,15 +14,15 @@ import {
   REWIND
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
-import AnimationControls from './controls/AnimationControls'
-import RenderControls from './controls/RenderControls'
-import ExportControls from './controls/ExportControls'
+import Controls from './controls/Controls'
 import saveAs from './saveAs'
 import ModelContext from './ModelContext'
 import CanvasView from './CanvasView'
 import Canvas3DView from './Canvas3DView'
+import FrameRenderBar from './FrameRenderBar'
 import analytics from '../utils/analytics'
 import _ from 'lodash'
+import calculateSizing from './utils/calculateSizing'
 
 
 var ua = window.navigator.userAgent;
@@ -41,7 +41,6 @@ class Frame extends Component {
     this.svgRef = React.createRef();
     this.designerRef = React.createRef();
     this.state = {
-      model: false,
       modelHasUpdated: false,
       render: false,
       startFrame: 0,
@@ -50,6 +49,8 @@ class Frame extends Component {
       frameMouseMoveCounter: 0,
       containerRendered: false,
       windowResizeIncrement: 0,
+      zoom: 1,
+      pan: 0,
       frameID: `frame-id-${svgIDCounter}`,
       svgID: `svg-id-${svgIDCounter}`,
       canvasID: `canvas-2d-id-${svgIDCounter}`,
@@ -63,56 +64,8 @@ class Frame extends Component {
     this.setEndFrame = this.setEndFrame.bind(this)
   }
   sizing() {
-    let svgPadding = this.props.svgPadding
-    let width = this.props.width;
-    let height = this.props.height;
-    let scaleToContainer = this.props.scaleToContainer
-    /**
-     * Currently disabled functionality
-     * Intended functionality is if the frame is larger than the screen size
-     * Scale down the frame element to fit the screen size with padding around it
-     * defined by the screenPadding variable
-     */
-    let aspect_ratio = width / height;
+    return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
 
-    if(scaleToContainer && this.state.containerRendered && this.designerRef.current !== null) {
-      let container = {
-        width: this.designerRef.current.getBoundingClientRect().width,
-        height: this.designerRef.current.getBoundingClientRect().height
-      }
-      if(container.width < width) {
-        width = container.width;
-        height = width * aspect_ratio;
-      }
-    }
-    if(this.state.render && frameModelStores[this.state.frameID].exportResolution) {
-      return frameModelStores[this.state.frameID].exportResolution
-    }
-
-    // let screenPadding = 0;
-    // if(false) { // downsizing to screen size currently disabled
-    //   if(window.screen.height - screenPadding < height) {
-    //     height = window.screen.height - screenPadding;
-    //     width = height * aspect_ratio;
-    //   }
-    //   if(window.innerHeight - screenPadding < height) {
-    //     height = window.innerHeight - screenPadding;
-    //     width = height * aspect_ratio;
-    //   }
-    //   if(window.screen.width - screenPadding < width) {
-    //     width = window.screen.width - screenPadding;
-    //     height = width * aspect_ratio;
-    //   }
-    //   if(window.innerWidth - screenPadding < width) {
-    //     width = window.innerWidth - screenPadding;
-    //     height = width * aspect_ratio;
-    //   }
-    // }
-    aspect_ratio = height / width
-    return {
-      width: width - svgPadding * 2,
-      height: height - svgPadding * 2 * aspect_ratio
-    }
   }
   componentDidMount() {
     frameModelStores[this.state.frameID] = this.props.model
@@ -129,7 +82,6 @@ class Frame extends Component {
       let parameterInputs = frameModelStores[this.state.frameID].extractInputs()
       this.props.updateParameters(parameterGeometries, parameterInputs);
     }
-
     this.setState({
       containerRendered: false
     })
@@ -145,9 +97,17 @@ class Frame extends Component {
     });
     window.addEventListener("resize", () => {
       this.setState({
+        zoom: this.props.height / this.props.model.size.height,
         windowResizeIncrement: this.state.windowResizeIncrement + 1
       })
     })
+    window.addEventListener('wheel', (e) => {
+        if(e.ctrlKey) {
+          e.preventDefault()
+        }
+      }, {
+        passive: false
+      })
     if(this.props.model.animated && this.props.model.playing) {
       setTimeout(function () {
         this.animateModel();
@@ -158,9 +118,10 @@ class Frame extends Component {
         this.playModel();
       }.bind(this), 10);
     }
+    const zoom = this.props.height / this.props.model.size.height
     setTimeout(function () {
       this.setState({
-
+        zoom: zoom,
         containerRendered: true
       })
       let size = this.sizing()
@@ -224,22 +185,6 @@ class Frame extends Component {
 
     }
   }
-  // componentDidUpdate(prevProps, prevState, snapshot) {
-  //   if(frameModelStores[prevState.frameID].animation_frame >= prevState.startFrame
-  //       && frameModelStores[prevState.frameID].animation_frame <= prevState.endFrame
-  //       && prevState.render
-  //     ) {
-  //       if(this.state.frameHasSaved) {
-  //         this.setState({
-  //           frameHasSaved: false
-  //         })
-  //         // setTimeout(function () {
-  //         //   this.animateModel()
-  //         // }.bind(this), 10);
-  //       }
-  //
-  //     }
-  // }
   modelDispatch(action) {
     /**
      * DEBUG
@@ -331,38 +276,6 @@ class Frame extends Component {
       endFrame: frameNr
     })
   }
-  touchMove(ev) {
-    if(this.props.editable) {
-      ev.preventDefault();
-      let svgOffset = {
-        x: 0,
-        y: 0
-      };
-      if(this.svgRef.current !== null) {
-        let svgCoords = this.svgRef.current.getBoundingClientRect();
-        let scrollOffset = {
-          x: window.scrollX,
-          y: window.scrollY
-        };
-        svgOffset.x = svgCoords.left + scrollOffset.x;
-        svgOffset.y = svgCoords.top + scrollOffset.y;
-      }
-      let iOS_Y_multiplier = 1;
-      if(iOSSafari) {
-        iOS_Y_multiplier = 1;
-      }
-      let x = (ev.touches[0].pageX - svgOffset.x) / this.state.algorithm_scaling.x;
-      let y = (ev.touches[0].pageY - svgOffset.y) * iOS_Y_multiplier / this.state.algorithm_scaling.y;
-      this.modelDispatch({
-        type: MOVE_POINT,
-        payload: {
-          x: valBetween(x, 0, frameModelStores[this.state.frameID].size.width),
-          y: valBetween(y, 0, frameModelStores[this.state.frameID].size.height)
-        }
-      });
-    }
-
-  }
   getMouseCoords = (e) => {
     if(this.svgRef.current !== null) {
       const svgCoords = this.svgRef.current.getBoundingClientRect();
@@ -390,8 +303,8 @@ class Frame extends Component {
         this.modelDispatch({
           type: MOVE_POINT,
           payload: {
-            x: valBetween(mouse_coords.x / algorithm_scaling.x, 0, model.size.width),
-            y: valBetween(mouse_coords.y / algorithm_scaling.y, 0, model.size.height),
+            x: _.clamp(mouse_coords.x / algorithm_scaling.x, 0, model.size.width),
+            y: _.clamp(mouse_coords.y / algorithm_scaling.y, 0, model.size.height),
             model: model
           }
         });
@@ -412,19 +325,17 @@ class Frame extends Component {
 
     let size = this.sizing()
     let algorithm_scaling = {
-      x: size.width / model.size.width,
-      y: size.height / model.size.height
+      x: this.state.zoom,
+      y: this.state.zoom
     }
     let editableGeometries = [];
     let staticGeometries = [];
-    let displayGeometriesOutput = [];
     try {
       editableGeometries = model.editableGeometries();
       if(model.editableGeometriesVisible === false) {
         editableGeometries = [];
       }
       staticGeometries = model.staticGeometries();
-      //displayGeometriesOutput = model.displayGeometries();
     } catch(err) {
       console.log(err);
     }
@@ -434,60 +345,19 @@ class Frame extends Component {
      */
     let displayGeometries = _.flatten(frameModelRenderedGeometriesStores[this.state.frameID])
     let designer_focussed_class = "";
-    let disableFocussedButton = (
-      <div></div>
-    );
     let focussedTitle = (
       <div></div>
     );
     let focussedStyle = {};
-    if(model.focussed && checkTouchDevice() && false) {
-      designer_focussed_class = " focussed";
-      let height = window.innerHeight;
-      let width = window.innerWidth;
-      // window.screen.height works in mobile dev mode in Chrome
-      if(window.screen.height < height) {
-        height = window.screen.height;
-      }
-      if(window.screen.width < width) {
-        width = window.screen.width;
-      }
-      let backgroundColor = 'transparent';
-      if(this.props.backgroundColor !== undefined) {
-        backgroundColor = this.props.backgroundColor;
-      }
-      focussedStyle = {
-        height: height,
-        width: width,
-        backgroundColor: backgroundColor
-      };
-      disableFocussedButton = (
-        <div onTouchStart={() => {
-          this.modelDispatch({type: DISABLE_FOCUSSED});
-          if(document.getElementById("root")) {
-            document.getElementById("root").style = " ";
-          }
-          if(document.getElementById("page")) {
-            document.getElementById("page").style = " ";
-          }
-          document.getElementsByTagName("body")[0].style.touchAction = 'auto';
-        }} className='disable-focussed'>
-          <div className='close-button'>Save design</div>
-        </div>
-      );
-      focussedTitle = (
-        <div className='focussed-text'>
-          <h3 className='focussed-title'>Design your product!</h3>
-          <p>Touch and drag elements to modify</p>
-        </div>
-      )
-    }
     let group_scale_transform = `scale(${algorithm_scaling.x}, ${algorithm_scaling.y})`;
     let svgStyle = {
       opacity: 1,
       zIndex: 2,
       position: 'relative'
     }
+
+    let group_translate_transform = `translate(${0}, ${0})`
+
     let canvasContainerStyle = {
       opacity: 1,
       position: 'absolute',
@@ -523,35 +393,10 @@ class Frame extends Component {
         ) : null}
 
         <ModelContext.Provider value={model}>
-        <div className='controls'>
-          {this.props.animationControls && model.animated ? (
-            <AnimationControls
-              playing={model.playing}
-              playCallback={this.playModel}
-              pauseCallback={this.pauseModel}
-              rewindCallback={this.rewindModel}
-              />
-          ) : null}
-          {this.props.renderControls && model.animated ? (
-            <RenderControls
-              startFrame={this.state.startFrame}
-              endFrame={this.state.endFrame}
-              renderCallback={this.renderModel}
-              startFrameCallback={this.setStartFrame}
-              endFrameCallback={this.setEndFrame}
-              />
-          ) : null}
-          {this.props.exportControls ? (
-            <ExportControls
-              model={model}
-              editableGeometries={editableGeometries}
-              geometries={displayGeometries}
-              svg_id={`${this.state.svgID}-export`}
-              canvasID={this.props.canvasID}
-              name={model.name}
-              />
-          ) : null}
-        </div>
+          <Controls model={model} frame={this}
+            editableGeometries={editableGeometries}
+            displayGeometries={displayGeometries}
+            />
         {(this.props.showInputsByDefault && model.inputsList.length > 0) && (
           <Inputs modelDispatch={this.modelDispatch.bind(this)} />
         )}
@@ -566,37 +411,6 @@ class Frame extends Component {
                   x="0px"
                   y="0px"
                   style={svgStyle}
-                  onTouchStart={() => {
-                    if(checkTouchDevice() && !model.focussed) {
-                      // Inner Height works on safari iOS
-                      let height = window.innerHeight;
-                      let width = window.innerWidth;
-                      // window.screen.height works in mobile dev mode in Chrome
-                      if(window.screen.height < height) {
-                        height = window.screen.height;
-                      }
-                      if(window.screen.width < width) {
-                        width = window.screen.width;
-                      }
-                      //root_div.style = `max-width: ${width}; max-height: ${height};`;
-                      if (document.getElementById("root")) {
-                        document.getElementById("root").style.maxWidth = `${width}px`;
-                        document.getElementById("root").style.maxHeight = `${height}px`;
-                        document.getElementById("root").style.overflow = `hidden`;
-                      }
-                      if(document.getElementById('page')) {
-                        document.getElementById("page").style.maxWidth = `${width}px`;
-                        document.getElementById("page").style.maxHeight = `${height}px`;
-                        document.getElementById("page").style.overflow = `hidden`;
-                      }
-                      console.log('setting body touch action to none');
-                      document.getElementsByTagName("body")[0].style = 'touch-action:none;';
-
-                      this.modelDispatch({
-                        type: SET_FOCUSSED
-                      });
-                    }
-                  }}
                   onClick={(e) => {
                     if(e.target.nodeName === 'svg') {
                       let mouse_coords = this.getMouseCoords(e);
@@ -614,40 +428,49 @@ class Frame extends Component {
                     }
                   }}
                   ref={this.svgRef}
-                  onTouchMove={this.touchMove.bind(this)}
                   onTouchEnd={() => this.modelDispatch({
                     type: STOP_DRAGGING
                   })}
                   onMouseUp={() => this.modelDispatch({
                     type: STOP_DRAGGING
                   })}
-                  width={size.width}
+                  onWheel={(e) => {
+                    if (e.ctrlKey) {
+                      const deltaScaling = 1/300
+                      this.setState({
+                        zoom: _.clamp(this.state.zoom + e.deltaY * deltaScaling, 0.1, 10)
+                      })
+                    }
+                  }}
+                  width={this.props.width}
                   height={size.height}>
                   <g transform={group_scale_transform}>
-                    {this.props.renderType === 'SVG' ? (
-                      <g className='display-geometries'>
-                       {displayGeometries.map((geometry, i) => {
-                         return (
-                           <Geometry key={i} geometry={{...geometry, editable: false}} />
-                         );
-                       })}
+                    <g transform={group_translate_transform}>
+                      {this.props.renderType === 'SVG' ? (
+                        <g className='display-geometries'>
+                        {displayGeometries.map((geometry, i) => {
+                          return (
+                            <Geometry key={i} geometry={{...geometry, editable: false}} />
+                          );
+                        })}
+                        </g>
+                      ) : null}
+                      <g className='editable-geometries'>
+                      {editableGeometries.map((geometry) => {
+                        if(geometry !== undefined && geometry.visibility) {
+                          return (
+                            <Geometry
+                              scaling={algorithm_scaling}
+                              modelDispatch={this.modelDispatch.bind(this)}
+                              key={geometry.id}
+                              onGeometryClickCallback={this.props.onGeometryClickCallback}
+                              onPointClickCallback={this.props.onPointClickCallback}
+                              geometry={{...geometry, editable: this.props.editable}} />
+                          );
+                        }
+                        return null
+                      })}
                       </g>
-                    ) : null}
-                    <g className='editable-geometries'>
-                    {editableGeometries.map((geometry) => {
-                      if(geometry !== undefined && geometry.visibility) {
-                        return (
-                          <Geometry
-                            scaling={algorithm_scaling}
-                            modelDispatch={this.modelDispatch.bind(this)}
-                            key={geometry.id}
-                            onGeometryClickCallback={this.props.onGeometryClickCallback}
-                            onPointClickCallback={this.props.onPointClickCallback}
-                            geometry={{...geometry, editable: this.props.editable}} />
-                        );
-                      }
-                      return null
-                    })}
                     </g>
                   </g>
                 </svg>
@@ -683,45 +506,13 @@ class Frame extends Component {
               />
           </div>
         ) : null}
-        {disableFocussedButton}
         </ModelContext.Provider>
         {this.state.render ? (
-          <div style={{
-            position: 'absolute',
-            height: size.height,
-            zIndex: 1000,
-            padding: 20,
-            top: 0,
-            left: 20,
-            right: 20
-            }}>
-            <p style={{
-              position: 'absolute',
-              top: size.height - 10,
-              left: 0,
-              fontSize: 10
-              }}
-              >
-              {this.state.startFrame}
-            </p>
-            <p style={{
-              position: 'absolute',
-              top: size.height - 10,
-              right: 0,
-              fontSize: 10
-              }}>
-              {this.state.endFrame}
-            </p>
-            <p
-            style={{
-              position:'absolute',
-              top: size.height - 30,
-              left: `calc(${frameModelStores[this.state.frameID].animation_frame / this.state.endFrame * 100}% - 20px)`
-            }}
-            >
-            {frameModelStores[this.state.frameID].animation_frame}
-            </p>
-          </div>
+            <FrameRenderBar
+              size={size}
+              state={this.state}
+              model={frameModelStores[this.state.frameID]}
+              /> 
         ) : null}
       </div>
     );
@@ -735,6 +526,9 @@ Frame.defaultProps = {
   canvasID: `canvas-id-${svgIDCounter}`,
   width: 200,
   height: 200,
+  fitInContainer: true,
+  maintainAspectRatio: true,
+  updateZoomOnResize: true,
   fromParameters: false,
   updateParameters: false,
   maintainCameraPosition: false,
@@ -755,14 +549,6 @@ Frame.defaultProps = {
   logModelDispatch: false,
   logModelState: false,
   logMouseMove: false
-}
-
-function valBetween(v, min, max) {
-  return (Math.min(max, Math.max(min, v)));
-}
-
-function checkTouchDevice() {
-   return 'ontouchstart' in document.documentElement;
 }
 
 export default Frame;
