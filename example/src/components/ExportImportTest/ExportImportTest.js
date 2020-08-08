@@ -40,8 +40,9 @@ newModel.addProcedure('test-procedure',
 )
 
 let extractedProcedures = newModel.extractProcedures()
+console.log(extractedProcedures)
 newModel.importProcedures(extractedProcedures)
-
+console.log(newModel)
 let testModel = new Model('test-2')
 
 testModel.geometries = newModel.geometries
@@ -66,7 +67,7 @@ const ExportImportTest = () => {
                 <div style={{width: 200}}>
                 {_.keys(newModel.geometries).map(geometryKey => {
                     return (
-                    <p>{geometryKey}</p>
+                    <p key={geometryKey}>{geometryKey}</p>
                     )
                 })}
                 </div>

@@ -201,9 +201,15 @@ function Model(name, classes) {
     let input = {}
     for (var key in inputProcedures) {
       let fnString = _.trim(inputProcedures[key])
-      fnString = _.trimStart(fnString, 'self =>')
+      if(fnString.startsWith("function (self)")) {
+        fnString = _.trimStart(fnString, 'function (self)')
+      } else {
+        fnString = _.trimStart(fnString, 'self =>')
+      }
+      fnString = _.trim(fnString)
       fnString = _.trimStart(fnString, '{')
       fnString = _.trimEnd(fnString, '}')
+      
       fnString = _.replace(fnString, 'lodash__WEBPACK_IMPORTED_MODULE_3___default.a', '_')
       fnString = _.replace(fnString, 'hyperobjects_language__WEBPACK_IMPORTED_MODULE_2__["Path"]', 'Path')
       input[key] = new Function('self', fnString)
