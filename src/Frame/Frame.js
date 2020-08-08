@@ -23,7 +23,7 @@ import FrameRenderBar from './FrameRenderBar'
 import analytics from '../utils/analytics'
 import _ from 'lodash'
 import calculateSizing from './utils/calculateSizing'
-
+import getKeysPressed from './utils/keysPressed'
 
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
@@ -31,6 +31,9 @@ var webkit = !!ua.match(/WebKit/i);
 var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 
 let svgIDCounter = 0;
+
+let keysPressed = []
+getKeysPressed((newKeys) => keysPressed = newKeys )
 
 let frameModelStores = []
 let frameModelRenderedGeometriesStores = []
@@ -47,10 +50,14 @@ class Frame extends Component {
       endFrame: 5,
       frameHasSaved: false,
       frameMouseMoveCounter: 0,
+      keysPressedCounter: 0,
+      keysPressed: [],
+      mouseDown: false,
       containerRendered: false,
       windowResizeIncrement: 0,
       zoom: 1,
-      pan: 0,
+      panStart: {x: 0, y: 0},
+      pan: {x: 0, y: 0},
       frameID: `frame-id-${svgIDCounter}`,
       svgID: `svg-id-${svgIDCounter}`,
       canvasID: `canvas-2d-id-${svgIDCounter}`,
@@ -88,7 +95,26 @@ class Frame extends Component {
     document.addEventListener("mousemove", (e) => {
       this.mouseMove(e);
     });
+    document.addEventListener('keydown', () => {
+      setTimeout(function() {
+        this.setState({
+          keysPressedCounter: this.state.keysPressedCounter + 1,
+          keysPressed: keysPressed
+        })
+      }.bind(this), 1)
+    })
+    document.addEventListener('keyup', () => {
+      setTimeout(function() {
+        this.setState({
+          keysPressedCounter: this.state.keysPressedCounter + 1,
+          keysPressed: keysPressed
+        })
+      }.bind(this), 1)
+    })
     document.addEventListener("mouseup", () => {
+      this.setState({
+        mouseDown: false
+      })
       if(frameModelStores[this.state.frameID].draggingAPoint) {
         this.modelDispatch({
           type: STOP_DRAGGING
@@ -122,7 +148,11 @@ class Frame extends Component {
     setTimeout(function () {
       this.setState({
         zoom: zoom,
-        containerRendered: true
+        containerRendered: true,
+        pan: {
+          x: this.props.width - this.props.model.size.width * zoom,
+          y: 0
+        }
       })
       let size = this.sizing()
       this.props.sizeCallback(size)
@@ -293,21 +323,35 @@ class Frame extends Component {
       let size = this.sizing()
       let model = frameModelStores[this.state.frameID];
       let algorithm_scaling = {
-        x: size.width / model.size.width,
-        y: size.height / model.size.height
+        x: this.state.zoom,
+        y: this.state.zoom
       }
       if(mouse_coords) {
         if(this.props.logMouseMove) {
           console.log(mouse_coords)
         }
-        this.modelDispatch({
-          type: MOVE_POINT,
-          payload: {
-            x: _.clamp(mouse_coords.x / algorithm_scaling.x, 0, model.size.width),
-            y: _.clamp(mouse_coords.y / algorithm_scaling.y, 0, model.size.height),
-            model: model
+        const panning = keysPressed.includes(' ')
+        if(panning) {
+          if(this.state.mouseDown) {
+            this.setState({
+              pan: {
+                x: this.state.panStart.x + (mouse_coords.x - this.state.mouseDownPoint.x) / this.state.zoom,
+                y: this.state.panStart.y + (mouse_coords.y - this.state.mouseDownPoint.y) / this.state.zoom
+              }
+            })
           }
-        });
+        } else {
+          const pan = this.state.pan
+          this.modelDispatch({
+            type: MOVE_POINT,
+            payload: {
+              x: _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x) / algorithm_scaling.x , 0, model.size.width),
+              y: _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y) / algorithm_scaling.y , 0, model.size.height),
+              model: model
+            }
+          });
+        }
+        
       }
 
     }
@@ -315,11 +359,11 @@ class Frame extends Component {
   }
 
   render() {
-    if(!frameModelStores[this.state.frameID]) {
-      return (
-        <div></div>
-      )
-    }
+    if(!frameModelStores[this.state.frameID]) return (<div></div>)
+    // console.log(keysPressed)
+
+    let panning = keysPressed.includes(' ')
+
     // if parameters is true the model should
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
 
@@ -356,7 +400,9 @@ class Frame extends Component {
       position: 'relative'
     }
 
-    let group_translate_transform = `translate(${0}, ${0})`
+    if(this.state.keysPressed.includes('Control')) svgStyle.cursor = 'zoom-in'
+    if(panning) svgStyle.cursor = 'grab'
+    let group_translate_transform = `translate(${this.state.pan.x}, ${this.state.pan.y})`
 
     let canvasContainerStyle = {
       opacity: 1,
@@ -411,34 +457,47 @@ class Frame extends Component {
                   x="0px"
                   y="0px"
                   style={svgStyle}
-                  onClick={(e) => {
+                  onMouseDown={(e) => {
                     if(e.target.nodeName === 'svg') {
                       let mouse_coords = this.getMouseCoords(e);
-                      let size = this.sizing()
                       let model = frameModelStores[this.state.frameID];
-                      let algorithm_scaling = {
-                        x: size.width / model.size.width,
-                        y: size.height / model.size.height
-                      }
                       if(mouse_coords) {
                         let x = _.clamp(mouse_coords.x/algorithm_scaling.x, 0, model.size.width)
                         let y = _.clamp(mouse_coords.y/algorithm_scaling.y, 0, model.size.height)
                         this.props.onClickCallback({x, y})
+                        this.setState({
+                          mouseDown: true,
+                          panStart: this.state.pan,
+                          mouseDownPoint: mouse_coords
+                        })
                       }
+                      
                     }
                   }}
                   ref={this.svgRef}
                   onTouchEnd={() => this.modelDispatch({
                     type: STOP_DRAGGING
                   })}
-                  onMouseUp={() => this.modelDispatch({
-                    type: STOP_DRAGGING
-                  })}
+                  onMouseUp={() => {
+                    this.setState({
+                      mouseDown: false
+                    })
+                    this.modelDispatch({
+                      type: STOP_DRAGGING
+                    })}
+                  } 
                   onWheel={(e) => {
-                    if (e.ctrlKey) {
+                    if (e.ctrlKey && !panning) {
                       const deltaScaling = 1/300
+                      const panScaling = 1/50
+                      const mouseCoords = this.getMouseCoords(e)
+                      const newZoomValue = _.clamp(this.state.zoom + e.deltaY * deltaScaling, 0.1, 10)
                       this.setState({
-                        zoom: _.clamp(this.state.zoom + e.deltaY * deltaScaling, 0.1, 10)
+                        zoom: newZoomValue,
+                        pan: {
+                          x: this.state.pan.x - mouseCoords.x * newZoomValue * panScaling,
+                          y: this.state.pan.y - mouseCoords.y * newZoomValue * panScaling
+                        }
                       })
                     }
                   }}
@@ -446,6 +505,7 @@ class Frame extends Component {
                   height={size.height}>
                   <g transform={group_scale_transform}>
                     <g transform={group_translate_transform}>
+                      <rect width={model.size.width} height={model.size.height} className={styles['model-bounds']} />
                       {this.props.renderType === 'SVG' ? (
                         <g className='display-geometries'>
                         {displayGeometries.map((geometry, i) => {

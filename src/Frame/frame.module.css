@@ -118,3 +118,12 @@ canvas:focus {
   user-select: none;
   font-family: 'Europa';
 }
+
+
+.model-bounds {
+  fill: transparent;
+  pointer-events: none;
+  stroke: rgba(0,0,0,0.5);
+  stroke-width: 1px;
+
+}
