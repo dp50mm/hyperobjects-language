@@ -152,6 +152,10 @@ function Geometry(points, name, attributes) {
         nextDistance = distance(this.points[index], this.points[index+1])
       }
       return interpolate(this.points[index], this.points[index + 1], interpolationDistance/nextDistance)
+    } else if(this.points.length === 1) {
+      return this.points[0]
+    } else {
+      return new Point({x: 0, y: 0})
     }
   }
   this.interpolate = function(_degree) {
@@ -191,8 +195,10 @@ function Geometry(points, name, attributes) {
         p2 = this._pointsFlattened[index + 1]
       }
       return interpolate(p1, p2, _degree)
+    } else if(this.points.length === 1) {
+      return this.points[0]
     } else {
-      return false
+      return new Point({x: 0, y: 0})
     }
   }
   if(points !== undefined) {
