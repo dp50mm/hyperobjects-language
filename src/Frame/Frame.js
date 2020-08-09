@@ -121,8 +121,8 @@ class Frame extends Component {
       }.bind(this), 1)
     })
     document.addEventListener("mouseup", (e) => {
-      console.log('document mouse up')
-      if(e.button === 0 && e.target.nodeName === 'svg') {
+      console.log('document mouse up', e.button)
+      if(e.button === 0) {
         this.setState({
           mouseDown: false
         })
@@ -412,7 +412,7 @@ class Frame extends Component {
   }
   svgOnMouseUp(e) {
     console.log('svg on mouse up', e.button)
-    if(e.button === 0 && e.target.nodeName === 'svg') {
+    if(e.button === 0) {
       this.setState({
         mouseDown: false
       })
