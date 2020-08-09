@@ -404,13 +404,15 @@ class Frame extends Component {
       type: STOP_DRAGGING
     })
   }
-  svgOnMouseUp() {
-    this.setState({
-      mouseDown: false
-    })
-    this.modelDispatch({
-      type: STOP_DRAGGING
-    })
+  svgOnMouseUp(e) {
+    if(e.button === 0) {
+      this.setState({
+        mouseDown: false
+      })
+      this.modelDispatch({
+        type: STOP_DRAGGING
+      })
+    }
   }
   
   svgOnWheel(e) {
