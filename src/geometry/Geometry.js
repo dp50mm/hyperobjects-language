@@ -68,6 +68,7 @@ function Geometry(points, name, attributes) {
   this.extract = function() {
     let copy = this.clone()
     copy.points.forEach(p => p.removeConnections())
+    copy._pointsFlattened.forEach(p => p.removeConnections())
     return copy
   }
   this.connectPoints = function() {
