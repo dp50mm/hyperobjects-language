@@ -1,4 +1,4 @@
-function drawGroup(gl, g, canvasScaling) {
+function drawGroup(gl, g, canvasScaling, pan) {
   g.points.forEach((p, i) => {
     let radius = 15;
 

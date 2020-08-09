@@ -1,15 +1,18 @@
-function drawPath(gl, g, canvasScaling) {
+function drawPath(gl, g, canvasScaling, pan) {
   // console.log(g.points);
   gl.beginPath()
   g.points.forEach((p, i, a) => {
     if(i === 0) {
-      gl.moveTo(p.x * canvasScaling.x, p.y * canvasScaling.y)
+      gl.moveTo(
+        (p.x + pan.x) * canvasScaling.x,
+        (p.y + pan.y) * canvasScaling.y
+      )
 
     } else {
-      drawCurveStep(gl, p, canvasScaling)
+      drawCurveStep(gl, p, canvasScaling, pan)
     }
     if(i === a.length - 1 && g.closedPath) {
-      drawCurveStep(gl, a[0], canvasScaling)
+      drawCurveStep(gl, a[0], canvasScaling, pan)
     }
   })
 
@@ -34,24 +37,28 @@ function drawPath(gl, g, canvasScaling) {
   gl.closePath()
 }
 
-function drawCurveStep(gl, p, scaling) {
+function drawCurveStep(gl, p, scaling, pan) {
   if(p.q) {
     gl.quadraticCurveTo(
-      p.q.x * scaling.x,
-      p.q.y * scaling.y,
-      p.x * scaling.x,
-      p.y * scaling.y)
+      (p.q.x + pan.x) * scaling.x,
+      (p.q.y + pan.y) * scaling.y,
+      (p.x + pan.x) * scaling.x,
+      (p.y + pan.y) * scaling.y
+      )
   } else if (p.c) {
     gl.bezierCurveTo(
-      p.c[0].x * scaling.x,
-      p.c[0].y * scaling.y,
-      p.c[1].x * scaling.x,
-      p.c[1].y * scaling.y,
-      p.x * scaling.x,
-      p.y * scaling.y
+      (p.c[0].x + pan.x) * scaling.x,
+      (p.c[0].y + pan.y) * scaling.y,
+      (p.c[1].x + pan.x) * scaling.x,
+      (p.c[1].y + pan.y) * scaling.y,
+      (p.x + pan.x) * scaling.x,
+      (p.y + pan.y) * scaling.y
     )
   } else {
-    gl.lineTo(p.x * scaling.x, p.y * scaling.y)
+    gl.lineTo(
+      (p.x + pan.x) * scaling.x,
+      (p.y + pan.y) * scaling.y
+    )
   }
 }
 

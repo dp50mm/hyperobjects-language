@@ -57,10 +57,10 @@ function CanvasView(props) {
       //gl.fillStyle = 'transparent'
       // gl.globalAlpha = 1
       gl.clearRect(0, 0, width * 100, height * 100)
-      drawCanvasGeometry(gl, backgroundGeometry[props.canvasID], canvasScaling[props.canvasID])
+      drawCanvasGeometry(gl, backgroundGeometry[props.canvasID], canvasScaling[props.canvasID], props.pan)
       //gl.clearRect(-1000, -1000, 100 * 100, 100 * 100)
       canvasViewGeometries[props.canvasID].forEach(g => {
-        drawCanvasGeometry(gl, g, canvasScaling[props.canvasID])
+        drawCanvasGeometry(gl, g, canvasScaling[props.canvasID], props.pan)
       })
     }
 

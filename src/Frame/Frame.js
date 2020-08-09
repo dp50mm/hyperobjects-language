@@ -24,6 +24,7 @@ import analytics from '../utils/analytics'
 import _ from 'lodash'
 import calculateSizing from './utils/calculateSizing'
 import getKeysPressed from './utils/keysPressed'
+import { scale } from 'chroma-js';
 
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
@@ -69,6 +70,10 @@ class Frame extends Component {
     this.renderModel = this.renderModel.bind(this)
     this.setStartFrame = this.setStartFrame.bind(this)
     this.setEndFrame = this.setEndFrame.bind(this)
+    this.svgOnMouseDown = this.svgOnMouseDown.bind(this)
+    this.svgOnTouchEnd = this.svgOnTouchEnd.bind(this)
+    this.svgOnMouseUp = this.svgOnMouseUp.bind(this)
+    this.svgOnWheel = this.svgOnWheel.bind(this)
   }
   sizing() {
     return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
@@ -150,7 +155,7 @@ class Frame extends Component {
         zoom: zoom,
         containerRendered: true,
         pan: {
-          x: this.props.width - this.props.model.size.width * zoom,
+          x: 0,
           y: 0
         }
       })
@@ -351,11 +356,62 @@ class Frame extends Component {
             }
           });
         }
-        
       }
-
     }
-
+  }
+  getAlgorithmScaling() {
+    return {
+      x: this.state.zoom,
+      y: this.state.zoom
+    }
+  }
+  svgOnMouseDown(e) {
+    if(e.target.nodeName === 'svg') {
+      let mouse_coords = this.getMouseCoords(e);
+      let model = frameModelStores[this.state.frameID];
+      let algorithm_scaling = this.getAlgorithmScaling()
+      if(mouse_coords) {
+        let x = _.clamp(mouse_coords.x/algorithm_scaling.x, 0, model.size.width)
+        let y = _.clamp(mouse_coords.y/algorithm_scaling.y, 0, model.size.height)
+        this.props.onClickCallback({x, y})
+        this.setState({
+          mouseDown: true,
+          panStart: this.state.pan,
+          mouseDownPoint: mouse_coords
+        })
+      }
+    }
+  }
+  svgOnTouchEnd() {
+    this.modelDispatch({
+      type: STOP_DRAGGING
+    })
+  }
+  svgOnMouseUp() {
+    this.setState({
+      mouseDown: false
+    })
+    this.modelDispatch({
+      type: STOP_DRAGGING
+    })
+  }
+  
+  svgOnWheel(e) {
+    const panning = keysPressed.includes(' ')
+    if (e.ctrlKey && !panning) {
+      const deltaScaling = 1/300
+      const panScaling = 1/50
+      const mouseCoords = this.getMouseCoords(e)
+      const newZoomValue = _.clamp(this.state.zoom + e.deltaY * deltaScaling, 0.1, 10)
+      const scaleChange = newZoomValue - this.state.zoom
+      this.setState({
+        zoom: newZoomValue,
+        pan: {
+          x: this.state.pan.x - (mouseCoords.x * scaleChange),
+          y: this.state.pan.y - mouseCoords.y * scaleChange
+        }
+      })
+    }
   }
 
   render() {
@@ -457,50 +513,11 @@ class Frame extends Component {
                   x="0px"
                   y="0px"
                   style={svgStyle}
-                  onMouseDown={(e) => {
-                    if(e.target.nodeName === 'svg') {
-                      let mouse_coords = this.getMouseCoords(e);
-                      let model = frameModelStores[this.state.frameID];
-                      if(mouse_coords) {
-                        let x = _.clamp(mouse_coords.x/algorithm_scaling.x, 0, model.size.width)
-                        let y = _.clamp(mouse_coords.y/algorithm_scaling.y, 0, model.size.height)
-                        this.props.onClickCallback({x, y})
-                        this.setState({
-                          mouseDown: true,
-                          panStart: this.state.pan,
-                          mouseDownPoint: mouse_coords
-                        })
-                      }
-                      
-                    }
-                  }}
                   ref={this.svgRef}
-                  onTouchEnd={() => this.modelDispatch({
-                    type: STOP_DRAGGING
-                  })}
-                  onMouseUp={() => {
-                    this.setState({
-                      mouseDown: false
-                    })
-                    this.modelDispatch({
-                      type: STOP_DRAGGING
-                    })}
-                  } 
-                  onWheel={(e) => {
-                    if (e.ctrlKey && !panning) {
-                      const deltaScaling = 1/300
-                      const panScaling = 1/50
-                      const mouseCoords = this.getMouseCoords(e)
-                      const newZoomValue = _.clamp(this.state.zoom + e.deltaY * deltaScaling, 0.1, 10)
-                      this.setState({
-                        zoom: newZoomValue,
-                        pan: {
-                          x: this.state.pan.x - mouseCoords.x * newZoomValue * panScaling,
-                          y: this.state.pan.y - mouseCoords.y * newZoomValue * panScaling
-                        }
-                      })
-                    }
-                  }}
+                  onMouseDown={this.svgOnMouseDown}
+                  onTouchEnd={this.svgOnTouchEnd}
+                  onMouseUp={this.svgOnMouseUp} 
+                  onWheel={this.svgOnWheel}
                   width={this.props.width}
                   height={size.height}>
                   <g transform={group_scale_transform}>
@@ -542,9 +559,11 @@ class Frame extends Component {
                       playing={model.playing}
                       canvasID={this.state.canvasID}
                       background={model.background}
-                      width={size.width}
+                      width={this.props.width}
                       height={size.height}
                       scaling={algorithm_scaling}
+                      pan={this.state.pan}
+                      zoom={this.state.zoom}
                       geometries={staticGeometries.concat(displayGeometries)}
                       />
                   </div>

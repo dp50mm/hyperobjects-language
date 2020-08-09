@@ -21,6 +21,13 @@ model.addEditableGeometry(
     ).r(5)
 )
 
+model.addProcedure(
+    'test-procedure',
+    (self) => {
+        return self.geometries['test-path'].clone().translate({x: 50, y: 50}).stroke("red").strokeWidth(4)
+    }
+)
+
 const ZoomPanFrameTest = ({
 
 }) => {
