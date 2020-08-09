@@ -1,0 +1,12 @@
+.zoom-controls {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+    .buttons {
+        margin-bottom: 20px;
+    }
+}

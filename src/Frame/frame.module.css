@@ -120,10 +120,3 @@ canvas:focus {
 }
 
 
-.model-bounds {
-  fill: transparent;
-  pointer-events: none;
-  stroke: rgba(0,0,0,0.5);
-  stroke-width: 1px;
-
-}

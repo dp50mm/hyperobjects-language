@@ -15,6 +15,7 @@ import {
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import Controls from './controls/Controls'
+import ZoomControls from './controls/ZoomControls'
 import saveAs from './saveAs'
 import ModelContext from './ModelContext'
 import CanvasView from './CanvasView'
@@ -24,6 +25,7 @@ import analytics from '../utils/analytics'
 import _ from 'lodash'
 import calculateSizing from './utils/calculateSizing'
 import getKeysPressed from './utils/keysPressed'
+import Guides from './Guides'
 import { scale } from 'chroma-js';
 
 var ua = window.navigator.userAgent;
@@ -74,6 +76,8 @@ class Frame extends Component {
     this.svgOnTouchEnd = this.svgOnTouchEnd.bind(this)
     this.svgOnMouseUp = this.svgOnMouseUp.bind(this)
     this.svgOnWheel = this.svgOnWheel.bind(this)
+    this.fitToFrame = this.fitToFrame.bind(this)
+    this.moveToZero = this.moveToZero.bind(this)
   }
   sizing() {
     return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
@@ -149,16 +153,12 @@ class Frame extends Component {
         this.playModel();
       }.bind(this), 10);
     }
-    const zoom = this.props.height / this.props.model.size.height
+    
     setTimeout(function () {
       this.setState({
-        zoom: zoom,
-        containerRendered: true,
-        pan: {
-          x: 0,
-          y: 0
-        }
+        containerRendered: true
       })
+      this.fitToFrame()
       let size = this.sizing()
       this.props.sizeCallback(size)
     }.bind(this), 10);
@@ -177,6 +177,24 @@ class Frame extends Component {
       modelHasUpdated: false
     }
   }
+  fitToFrame() {
+    const zoom = this.props.height / this.props.model.size.height
+    const frameAspectRatio = this.props.width / this.props.height
+    const modelSize = this.props.model.size
+    const modelAspectRatio = modelSize.width / modelSize.height
+    let pan_x = 0
+    if(frameAspectRatio !== modelAspectRatio) {
+      pan_x = this.props.width / zoom * 0.5 - modelSize.width * 0.5
+    }
+    this.setState({
+      zoom: zoom,
+      pan: {
+        x: pan_x,
+        y: 0
+      }
+    })
+  }
+  moveToZero() { this.setState({ pan: {x: 0, y: 0} }) }
   animateModel() {
     let fps = 1000/60
     if(frameModelStores[this.state.frameID].playing) {
@@ -400,7 +418,6 @@ class Frame extends Component {
     const panning = keysPressed.includes(' ')
     if (e.ctrlKey && !panning) {
       const deltaScaling = 1/300
-      const panScaling = 1/50
       const mouseCoords = this.getMouseCoords(e)
       const newZoomValue = _.clamp(this.state.zoom + e.deltaY * deltaScaling, 0.1, 10)
       const scaleChange = newZoomValue - this.state.zoom
@@ -499,6 +516,12 @@ class Frame extends Component {
             editableGeometries={editableGeometries}
             displayGeometries={displayGeometries}
             />
+          {this.props.showZoomControls && (
+            <ZoomControls
+              fitToFrame={this.fitToFrame}
+              moveToZero={this.moveToZero}
+              />
+          )}
         {(this.props.showInputsByDefault && model.inputsList.length > 0) && (
           <Inputs modelDispatch={this.modelDispatch.bind(this)} />
         )}
@@ -522,7 +545,16 @@ class Frame extends Component {
                   height={size.height}>
                   <g transform={group_scale_transform}>
                     <g transform={group_translate_transform}>
-                      <rect width={model.size.width} height={model.size.height} className={styles['model-bounds']} />
+                      <Guides
+                        width={model.size.width}
+                        height={model.size.height}
+                        pan={this.state.pan}
+                        zoom={this.state.zoom}
+                        showBounds={this.props.showBounds}
+                        showGridLines={this.props.showGridLines}
+                        gridLinesUnit={this.props.gridLinesUnit}
+                        />
+                      
                       {this.props.renderType === 'SVG' ? (
                         <g className='display-geometries'>
                         {displayGeometries.map((geometry, i) => {
@@ -627,7 +659,11 @@ Frame.defaultProps = {
   showInputsByDefault: true,
   logModelDispatch: false,
   logModelState: false,
-  logMouseMove: false
+  logMouseMove: false,
+  showBounds: false,
+  showGridLines: false,
+  gridLinesUnit: 'mm',
+  showZoomControls: false
 }
 
 export default Frame;
