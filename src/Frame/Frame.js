@@ -126,11 +126,11 @@ class Frame extends Component {
         this.setState({
           mouseDown: false
         })
-        if(frameModelStores[this.state.frameID].draggingAPoint) {
-          this.modelDispatch({
-            type: STOP_DRAGGING
-          });
-        }
+        // if(frameModelStores[this.state.frameID].draggingAPoint) {
+        //   this.modelDispatch({
+        //     type: STOP_DRAGGING
+        //   });
+        // }
       }
       
     });
