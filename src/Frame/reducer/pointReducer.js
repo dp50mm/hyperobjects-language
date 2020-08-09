@@ -52,10 +52,10 @@ const pointReducer = (prevState, action) => {
         return {...prevState, dragging: false};
       }
     case MOVE_POINT:
-      if(prevState.dragging) {
-        let x = action.payload.x
-        let y = action.payload.y
-        let z = action.payload.z
+      if(prevState.dragging || (_.get(action.payload, 'overrideDragging', false) && action.payload.point_id === prevState.id)) {
+        let x = _.get(action.payload, 'x', prevState.x)
+        let y = _.get(action.payload, 'y', prevState.y)
+        let z = _.get(action.payload, 'z', prevState.z)
         if(prevState.constraint !== false) {
           if(_.isFunction(prevState.constraint)) {
             const constraint = prevState.constraint(action.payload.model)

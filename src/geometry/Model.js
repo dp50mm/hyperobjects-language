@@ -67,6 +67,7 @@ function Model(name, classes) {
   this.endFrame = 100
   this.workspaceFramePadding = 50
   this.draggingAPoint = false
+  this.editingPoint = false
   this.focussed = false
   this.geometries = {}
   this.procedures = {}

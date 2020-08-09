@@ -3,6 +3,10 @@ import {
   SET_DRAGGED_POINT,
   SET_DRAGGED_QUADRATIC_CONTROL_POINT,
   SET_DRAGGED_CUBIC_CONTROL_POINT,
+
+  SET_EDIT_POINT,
+  SET_EDIT_CUBIC_CONTROL_POINT,
+  SET_EDIT_QUADRATIC_CONTROL_POINT,
   // SET_DRAGGED_ARC_CONTROL_POINT
 } from '../../reducer/actionTypes';
 import styles from '../../../Frame/frame.module.css';
@@ -244,18 +248,20 @@ class Point extends React.PureComponent {
         ) : null}
         <circle
           className={classes}
-          onMouseDown={ (e) => {
-            if(this.props.onClickCallback) {
-              this.props.onClickCallback()
-            } else {
-              if(modelDispatch !== undefined) {
-                modelDispatch({
-                  type: SET_DRAGGED_POINT,
-                  point_id: point.id,
-                  geometry_id: geometry_id
-                })
+          onMouseDown={(e) => {
+            if(e.button === 0) {
+              if(this.props.onClickCallback) {
+                this.props.onClickCallback()
+              } else {
+                if(modelDispatch !== undefined) {
+                  modelDispatch({
+                    type: SET_DRAGGED_POINT,
+                    point_id: point.id,
+                    geometry_id: geometry_id
+                  })
+                }
+                this.toggleSelected()
               }
-              this.toggleSelected()
             }
           }}
           onTouchStart={ (e) => {
@@ -267,6 +273,17 @@ class Point extends React.PureComponent {
               })
             }
           } }
+          onContextMenu={(e) => {
+            if(modelDispatch !== undefined) {
+              modelDispatch({
+                type: SET_EDIT_POINT,
+                point_id: point.id,
+                geometry_id: geometry_id,
+                geometry_key: point.geometry.key
+              })
+            }
+            e.preventDefault()
+          }}
           cx={`${point.x}${unit}`}
           cy={`${point.y}${unit}`}
           r={`${radius / scaling.x}${unit}`}

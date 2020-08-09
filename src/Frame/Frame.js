@@ -21,6 +21,7 @@ import ModelContext from './ModelContext'
 import CanvasView from './CanvasView'
 import Canvas3DView from './Canvas3DView'
 import FrameRenderBar from './FrameRenderBar'
+import EditPointPopUp from './EditPointPopUp'
 import analytics from '../utils/analytics'
 import _ from 'lodash'
 import calculateSizing from './utils/calculateSizing'
@@ -434,12 +435,15 @@ class Frame extends Component {
   render() {
     if(!frameModelStores[this.state.frameID]) return (<div></div>)
     // console.log(keysPressed)
-
+    
     let panning = keysPressed.includes(' ')
 
     // if parameters is true the model should
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
-
+    let editPoint = false
+    if(model.editingPoint) {
+      editPoint = _.find(model.geometries[model.editingPoint.geometry_key].points, p => p.id === model.editingPoint.point_id)
+    }
     let size = this.sizing()
     let algorithm_scaling = {
       x: this.state.zoom,
@@ -528,7 +532,28 @@ class Frame extends Component {
         {focussedTitle}
         {model.dimensions === 2 ? (
           <div className='svg-container' style={{padding: this.props.svgPadding, background: model.background}}>
+            {editPoint && (
+              <EditPointPopUp
+                editPoint={editPoint}
+                pan={this.state.pan}
+                algorithm_scaling={algorithm_scaling}
+                modelDispatch={this.modelDispatch.bind(this)}
+                />
+            )}
             <div ref={this.designerRef} style={{overflow: 'hidden'}}>
+                <Guides
+                  svgWidth={this.props.width}
+                  svgHeight={size.height}
+                  group_scale_transform={group_scale_transform}
+                  group_translate_transform={group_translate_transform}
+                  width={model.size.width}
+                  height={model.size.height}
+                  pan={this.state.pan}
+                  zoom={this.state.zoom}
+                  showBounds={this.props.showBounds}
+                  showGridLines={this.props.showGridLines}
+                  gridLinesUnit={this.props.gridLinesUnit}
+                  />
                 <svg
                   id={this.state.svgID}
                   version="1.1"
@@ -545,16 +570,6 @@ class Frame extends Component {
                   height={size.height}>
                   <g transform={group_scale_transform}>
                     <g transform={group_translate_transform}>
-                      <Guides
-                        width={model.size.width}
-                        height={model.size.height}
-                        pan={this.state.pan}
-                        zoom={this.state.zoom}
-                        showBounds={this.props.showBounds}
-                        showGridLines={this.props.showGridLines}
-                        gridLinesUnit={this.props.gridLinesUnit}
-                        />
-                      
                       {this.props.renderType === 'SVG' ? (
                         <g className='display-geometries'>
                         {displayGeometries.map((geometry, i) => {

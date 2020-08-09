@@ -8,3 +8,9 @@
     stroke-width: 1px;
     stroke: rgba(0,0,0,0.2);
 }
+
+.guides-svg {
+    position: absolute;
+    pointer-events: none;
+    z-index: -10;
+}
