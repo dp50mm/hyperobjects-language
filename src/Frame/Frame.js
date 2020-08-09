@@ -120,15 +120,18 @@ class Frame extends Component {
         })
       }.bind(this), 1)
     })
-    document.addEventListener("mouseup", () => {
-      this.setState({
-        mouseDown: false
-      })
-      if(frameModelStores[this.state.frameID].draggingAPoint) {
-        this.modelDispatch({
-          type: STOP_DRAGGING
-        });
+    document.addEventListener("mouseup", (e) => {
+      if(e.button === 0) {
+        this.setState({
+          mouseDown: false
+        })
+        if(frameModelStores[this.state.frameID].draggingAPoint) {
+          this.modelDispatch({
+            type: STOP_DRAGGING
+          });
+        }
       }
+      
     });
     window.addEventListener("resize", () => {
       this.setState({
@@ -400,9 +403,9 @@ class Frame extends Component {
     }
   }
   svgOnTouchEnd() {
-    this.modelDispatch({
-      type: STOP_DRAGGING
-    })
+    // this.modelDispatch({
+    //   type: STOP_DRAGGING
+    // })
   }
   svgOnMouseUp(e) {
     if(e.button === 0) {
