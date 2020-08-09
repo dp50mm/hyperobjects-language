@@ -442,6 +442,8 @@ class Frame extends Component {
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
     let editPoint = false
     if(model.editingPoint) {
+      console.log(model.editingPoint)
+      console.log(model)
       editPoint = _.find(model.geometries[model.editingPoint.geometry_key].points, p => p.id === model.editingPoint.point_id)
     }
     let size = this.sizing()
