@@ -168,6 +168,7 @@ function Model(name, classes) {
           break
           // this.geometries[key] = default_geometries[key];
       }
+      this.geometries[key].key = key
     }
   }
   this.extractGeometries = function() {
@@ -256,7 +257,7 @@ function Model(name, classes) {
    }
    this.editableGeometries = function() {
      return this.editableGeometriesList.map((name) => {
-      this.geometries[name].key = name
+        this.geometries[name].key = name
        return this.geometries[name]
      });
    }
