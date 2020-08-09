@@ -39,15 +39,6 @@ newModel.addProcedure('test-procedure',
   }
 )
 
-let extractedProcedures = newModel.extractProcedures()
-console.log(extractedProcedures)
-newModel.importProcedures(extractedProcedures)
-console.log(newModel)
-let testModel = new Model('test-2')
-
-testModel.geometries = newModel.geometries
-testModel.importProcedures(extractedProcedures)
-
 let i = 0
 
 
@@ -79,14 +70,15 @@ const ExportImportTest = () => {
                     height={800}
                     modelHasUpdated={modelHasUpdated}
                     updateParameters={(parameters) => {
-                    newModel.geometries = parameters
+                      console.log(parameters)
+                      newModel.importModel(parameters)
                     }}
                     actionsCallback={(element, action) => {
                     console.log('clicked on: ', element, ' action: ', action)
-                    newModel.editableGeometriesList.forEach(key => {
-                        newModel.geometries[key].r(10)
-                    })
-                    newModel.geometries[element.key].r(20)
+                    // newModel.editableGeometriesList.forEach(key => {
+                    //     newModel.geometries[key].r(10)
+                    // })
+                    // newModel.geometries[element.key].r(20)
                     // setModelHasUpdated(true)
                     }}
                     onClickCallback={(point) => {

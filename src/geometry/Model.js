@@ -149,6 +149,7 @@ function Model(name, classes) {
             default_geometries[key].points,
             default_geometries[key].name,
             default_geometries[key]);
+          this.geometries[key].connectPoints()
           break
         case PATH:
           this.geometries[key] = new Path(
@@ -156,6 +157,7 @@ function Model(name, classes) {
             default_geometries[key].name,
             default_geometries[key]
           );
+          this.geometries[key].connectPoints()
           break
         case TEXT:
           this.geometries[key] = new Text(

@@ -66,8 +66,25 @@ function Geometry(points, name, attributes) {
     return getBounds(this.points)
   }
   this.extract = function() {
-    this.points.forEach(p => p.removeConnections())
-    return this
+    let copy = this.clone()
+    copy.points.forEach(p => p.removeConnections())
+    return copy
+  }
+  this.connectPoints = function() {
+    this.points.forEach((p, i, a) => {
+      p.geometry = this
+      p.geometryIndex = i
+      if(a.length > 1) {
+        if(i === 0) {
+          p.nextPoint = a[i+1]
+        } else if(i < a.length - 1) {
+          p.previousPoint = a[i-1]
+          p.nextPoint = a[i+1]
+        } else {
+          p.previousPoint = a[i-1]
+        }
+      }
+    })
   }
 
   this._pointsFlattened = false
@@ -205,6 +222,7 @@ function Geometry(points, name, attributes) {
     this.points = points.map((point) => {
       return new Point(point);
     })
+    this.connectPoints()
   } else {
     this.points = []
   }

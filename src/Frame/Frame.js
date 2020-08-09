@@ -95,9 +95,8 @@ class Frame extends Component {
       frameModelStores[this.state.frameID].setGeometries(this.props.parameters)
     }
     if(this.props.updateParameters) {
-      let parameterGeometries = frameModelStores[this.state.frameID].extractGeometries()
-      let parameterInputs = frameModelStores[this.state.frameID].extractInputs()
-      this.props.updateParameters(parameterGeometries, parameterInputs);
+      let extractedModel = frameModelStores[this.state.frameID].extractModel()
+      this.props.updateParameters(extractedModel);
     }
     this.setState({
       containerRendered: false
@@ -272,9 +271,8 @@ class Frame extends Component {
     if(this.props.updateParameters) {
       try {
         if(action.type === STOP_DRAGGING) {
-          let parameterGeometries = frameModelStores[this.state.frameID].extractGeometries()
-          let parameterInputs = frameModelStores[this.state.frameID].extractInputs()
-          this.props.updateParameters(parameterGeometries, parameterInputs);
+          let extractedModel = frameModelStores[this.state.frameID].extractModel()
+          this.props.updateParameters(extractedModel);
         }
       } catch(e) {
 
@@ -442,8 +440,6 @@ class Frame extends Component {
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
     let editPoint = false
     if(model.editingPoint) {
-      console.log(model.editingPoint)
-      console.log(model)
       editPoint = _.find(model.geometries[model.editingPoint.geometry_key].points, p => p.id === model.editingPoint.point_id)
     }
     let size = this.sizing()

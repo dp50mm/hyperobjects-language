@@ -274,6 +274,7 @@ class Point extends React.PureComponent {
             }
           } }
           onContextMenu={(e) => {
+            console.log(point)
             if(modelDispatch !== undefined) {
               modelDispatch({
                 type: SET_EDIT_POINT,

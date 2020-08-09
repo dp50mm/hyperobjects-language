@@ -26,6 +26,7 @@ function Path(points, name, attributes) {
       }
     }
   })
+  
   this.type = PATH
   this.closedPath = _.get(attributes, 'closedPath', false)
   this.controlsFillOpacityValue = 0.1

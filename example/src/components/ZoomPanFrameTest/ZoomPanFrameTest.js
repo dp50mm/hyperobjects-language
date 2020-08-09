@@ -26,6 +26,18 @@ model.addEditableGeometry(
     ).r(5)
 )
 
+model.addEditableGeometry(
+    'test-path-two',
+    new Path(
+        _.range(5).map(val => {
+            return {
+                x: 500,
+                y: 10 + val * 100
+            }
+        })
+    )
+)
+
 model.addProcedure(
     'test-procedure',
     (self) => {
