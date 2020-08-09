@@ -125,6 +125,7 @@ function Point(point) {
     this.geometryIndex = false
     this.nextPoint = false
     this.previousPoint = false
+    return this
   }
   this.matrixTransform = () => {
     // returns transformed points

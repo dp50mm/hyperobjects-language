@@ -274,15 +274,11 @@ class Point extends React.PureComponent {
             }
           } }
           onContextMenu={(e) => {
-            console.log(point)
-            if(modelDispatch !== undefined) {
-              modelDispatch({
-                type: SET_EDIT_POINT,
-                point_id: point.id,
-                geometry_id: geometry_id,
-                geometry_key: point.geometry.key
-              })
-            }
+            this.props.setEditingPoint({
+              point_id: point.id,
+              geometry_id: geometry_id,
+              geometry_key: point.geometry.key
+            })
             e.preventDefault()
           }}
           cx={`${point.x}${unit}`}

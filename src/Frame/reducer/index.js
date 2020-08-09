@@ -40,24 +40,6 @@ const reducer = (prevState, action) => {
         draggingAPoint: false,
         geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
       };
-    
-    case SET_EDIT_POINT:
-    case SET_EDIT_CUBIC_CONTROL_POINT:
-    case SET_EDIT_QUADRATIC_CONTROL_POINT:
-      return {
-        ...prevState,
-        editingPoint: {
-          geometry_id: action.geometry_id,
-          geometry_key: action.geometry_key,
-          point_id: action.point_id
-        },
-        geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
-      }
-    case STOP_EDIT:
-      return {
-        ...prevState,
-        editingPoint: false
-      }
     case INPUT_SET_VALUE:
       return {
         ...prevState,

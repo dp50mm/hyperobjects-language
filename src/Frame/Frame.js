@@ -58,6 +58,7 @@ class Frame extends Component {
       keysPressed: [],
       mouseDown: false,
       containerRendered: false,
+      editingPoint: false,
       windowResizeIncrement: 0,
       zoom: 1,
       panStart: {x: 0, y: 0},
@@ -79,6 +80,7 @@ class Frame extends Component {
     this.svgOnWheel = this.svgOnWheel.bind(this)
     this.fitToFrame = this.fitToFrame.bind(this)
     this.moveToZero = this.moveToZero.bind(this)
+    this.setEditingPoint = this.setEditingPoint.bind(this)
   }
   sizing() {
     return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
@@ -126,11 +128,11 @@ class Frame extends Component {
         this.setState({
           mouseDown: false
         })
-        // if(frameModelStores[this.state.frameID].draggingAPoint) {
-        //   this.modelDispatch({
-        //     type: STOP_DRAGGING
-        //   });
-        // }
+        if(frameModelStores[this.state.frameID].draggingAPoint) {
+          this.modelDispatch({
+            type: STOP_DRAGGING
+          });
+        }
       }
       
     });
@@ -275,7 +277,6 @@ class Frame extends Component {
     if(this.props.updateParameters) {
       try {
         if(action.type === STOP_DRAGGING) {
-          console.log(action)
           let extractedModel = frameModelStores[this.state.frameID].extractModel()
           this.props.updateParameters(extractedModel);
         }
@@ -388,7 +389,6 @@ class Frame extends Component {
     }
   }
   svgOnMouseDown(e) {
-    console.log(e, e.button, e.target.nodeName)
     if(e.target.nodeName === 'svg' && e.button === 0) {
       let mouse_coords = this.getMouseCoords(e);
       let model = frameModelStores[this.state.frameID];
@@ -411,7 +411,6 @@ class Frame extends Component {
     // })
   }
   svgOnMouseUp(e) {
-    console.log('svg on mouse up', e.button)
     if(e.button === 0) {
       this.setState({
         mouseDown: false
@@ -420,6 +419,12 @@ class Frame extends Component {
         type: STOP_DRAGGING
       })
     }
+  }
+
+  setEditingPoint(point) {
+    this.setState({
+      editingPoint: point
+    })
   }
   
   svgOnWheel(e) {
@@ -448,8 +453,8 @@ class Frame extends Component {
     // if parameters is true the model should
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
     let editPoint = false
-    if(model.editingPoint) {
-      editPoint = _.find(model.geometries[model.editingPoint.geometry_key].points, p => p.id === model.editingPoint.point_id)
+    if(this.state.editingPoint) {
+      editPoint = _.find(model.geometries[this.state.editingPoint.geometry_key].points, p => p.id === this.state.editingPoint.point_id)
     }
     let size = this.sizing()
     let algorithm_scaling = {
@@ -542,6 +547,7 @@ class Frame extends Component {
             {editPoint && (
               <EditPointPopUp
                 editPoint={editPoint}
+                setEditingPoint={this.setEditingPoint}
                 pan={this.state.pan}
                 algorithm_scaling={algorithm_scaling}
                 modelDispatch={this.modelDispatch.bind(this)}
@@ -593,6 +599,7 @@ class Frame extends Component {
                             <Geometry
                               scaling={algorithm_scaling}
                               modelDispatch={this.modelDispatch.bind(this)}
+                              setEditingPoint={this.setEditingPoint}
                               key={geometry.id}
                               onGeometryClickCallback={this.props.onGeometryClickCallback}
                               onPointClickCallback={this.props.onPointClickCallback}

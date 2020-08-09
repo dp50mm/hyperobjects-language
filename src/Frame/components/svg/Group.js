@@ -6,7 +6,8 @@ const Group = ({
   geometry,
   modelDispatch,
   scaling,
-  onPointClickCallback
+  onPointClickCallback,
+  setEditingPoint
 }) => (
   <g>
     {geometry.showBounds && (
@@ -32,6 +33,7 @@ const Group = ({
         geometry_id={geometry.id}
         modelDispatch={modelDispatch}
         onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
+        setEditingPoint={setEditingPoint}
         />
      )
    })}

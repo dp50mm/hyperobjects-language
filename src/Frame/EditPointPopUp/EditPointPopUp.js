@@ -5,13 +5,12 @@ import {
     Input
 } from 'semantic-ui-react'
 import {
-    STOP_EDIT,
-    MOVE_POINT,
-    SET_EDIT_POINT
+    MOVE_POINT
 } from '../reducer/actionTypes'
 
 const EditPointPopUp = React.memo(({
     editPoint,
+    setEditingPoint,
     modelDispatch,
     algorithm_scaling,
     pan
@@ -28,13 +27,10 @@ const EditPointPopUp = React.memo(({
     })
     function handleUIKeys(e) {
         if(e.key === 'Escape') {
-            modelDispatch({
-                type: STOP_EDIT
-            })
+            setEditingPoint(false)
         } else if(e.key === 'ArrowLeft') {
             if(editPoint.previousPoint) {
-                modelDispatch({
-                    type: SET_EDIT_POINT,
+                setEditingPoint({
                     point_id: editPoint.previousPoint.id,
                     geometry_id: editPoint.geometry.id,
                     geometry_key: editPoint.geometry.key
@@ -43,8 +39,7 @@ const EditPointPopUp = React.memo(({
             
         } else if(e.key === 'ArrowRight') {
             if(editPoint.nextPoint) {
-                modelDispatch({
-                    type: SET_EDIT_POINT,
+                setEditingPoint({
                     point_id: editPoint.nextPoint.id,
                     geometry_id: editPoint.geometry.id,
                     geometry_key: editPoint.geometry.key
@@ -71,9 +66,7 @@ const EditPointPopUp = React.memo(({
                     size='tiny'
                     floated='right'
                     onClick={() => {
-                        modelDispatch({
-                            type: STOP_EDIT
-                        })
+                        setEditingPoint(false)
                     }}
                     />
                 <Input
