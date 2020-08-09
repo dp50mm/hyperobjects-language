@@ -274,6 +274,7 @@ class Frame extends Component {
     if(this.props.updateParameters) {
       try {
         if(action.type === STOP_DRAGGING) {
+          console.log(action)
           let extractedModel = frameModelStores[this.state.frameID].extractModel()
           this.props.updateParameters(extractedModel);
         }
