@@ -39,6 +39,13 @@ newModel.addProcedure('test-procedure',
   }
 )
 
+
+let extraction = newModel.extractModel()
+
+let extractionJSON = JSON.stringify(extraction)
+let copyModel = new Model('copied-model')
+copyModel.importModel(extraction)
+console.log(copyModel)
 let i = 0
 
 
@@ -64,14 +71,14 @@ const ExportImportTest = () => {
                 </div>
                 <div style={{margin: 10, padding: 0, border: '1px solid rgb(230,230,230)'}}>
                 <Frame
-                    model={newModel}
+                    model={copyModel}
                     editable={true}
                     width={800}
                     height={800}
                     modelHasUpdated={modelHasUpdated}
                     updateParameters={(parameters) => {
                       console.log(parameters)
-                      newModel.importModel(parameters)
+                      // copyModel.importModel(parameters)
                     }}
                     actionsCallback={(element, action) => {
                     console.log('clicked on: ', element, ' action: ', action)
