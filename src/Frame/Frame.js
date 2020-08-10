@@ -389,7 +389,7 @@ class Frame extends Component {
   }
   svgOnMouseDown(e) {
     const panning = keysPressed.includes(' ')
-    if(e.target.nodeName === 'svg' && e.button === 0 && !panning) {
+    if(e.target.nodeName === 'svg' && e.button === 0) {
       let mouse_coords = this.getMouseCoords(e);
       let model = frameModelStores[this.state.frameID];
       let algorithm_scaling = this.getAlgorithmScaling()
@@ -397,11 +397,12 @@ class Frame extends Component {
         const pan = this.state.pan
         let x = _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width)
         let y = _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
-        
-        this.props.onClickCallback({
-          x: x,
-          y: y
-        })
+        if(!panning) {
+          this.props.onClickCallback({
+            x: x,
+            y: y
+          })
+        }
         this.setState({
           mouseDown: true,
           panStart: this.state.pan,
