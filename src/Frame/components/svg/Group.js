@@ -7,7 +7,8 @@ const Group = ({
   modelDispatch,
   scaling,
   onPointClickCallback,
-  setEditingPoint
+  setEditingPoint,
+  showCoordinates
 }) => (
   <g>
     {geometry.showBounds && (
@@ -34,6 +35,7 @@ const Group = ({
         modelDispatch={modelDispatch}
         onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
         setEditingPoint={setEditingPoint}
+        showCoordinates={showCoordinates}
         />
      )
    })}

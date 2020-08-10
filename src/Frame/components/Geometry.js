@@ -17,7 +17,8 @@ const Geometry = ({
   scaling,
   onPointClickCallback,
   onGeometryClickCallback,
-  setEditingPoint
+  setEditingPoint,
+  showPointCoordinates
 }) => {
   switch (geometry.type) {
     case GROUP:
@@ -28,6 +29,7 @@ const Geometry = ({
           modelDispatch={modelDispatch}
           onPointClickCallback={onPointClickCallback}
           setEditingPoint={setEditingPoint}
+          showCoordinates={showPointCoordinates}
           />
       );
     case POLYGON:
@@ -45,6 +47,7 @@ const Geometry = ({
           onPointClickCallback={onPointClickCallback}
           onPathClickCallback={onGeometryClickCallback}
           setEditingPoint={setEditingPoint}
+          showCoordinates={showPointCoordinates}
           />
       );
     case TEXT:

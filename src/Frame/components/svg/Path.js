@@ -10,7 +10,8 @@ const Path = React.memo(({
   scaling,
   onPointClickCallback,
   onPathClickCallback,
-  setEditingPoint
+  setEditingPoint,
+  showCoordinates
 }) => {
   const [mouseOver, setMouseOver] = useState(false)
   let editPoints = null;
@@ -46,6 +47,7 @@ const Path = React.memo(({
          modelDispatch={modelDispatch}
          onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
          setEditingPoint={setEditingPoint}
+         showCoordinates={showCoordinates}
          />
       )
     });

@@ -123,7 +123,6 @@ class Frame extends Component {
       }.bind(this), 1)
     })
     document.addEventListener("mouseup", (e) => {
-      console.log('document mouse up', e.button)
       if(e.button === 0) {
         this.setState({
           mouseDown: false
@@ -394,9 +393,14 @@ class Frame extends Component {
       let model = frameModelStores[this.state.frameID];
       let algorithm_scaling = this.getAlgorithmScaling()
       if(mouse_coords) {
-        let x = _.clamp(mouse_coords.x/algorithm_scaling.x, 0, model.size.width)
-        let y = _.clamp(mouse_coords.y/algorithm_scaling.y, 0, model.size.height)
-        this.props.onClickCallback({x, y})
+        const pan = this.state.pan
+        let x = _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width)
+        let y = _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
+        
+        this.props.onClickCallback({
+          x: x,
+          y: y
+        })
         this.setState({
           mouseDown: true,
           panStart: this.state.pan,
@@ -603,7 +607,9 @@ class Frame extends Component {
                               key={geometry.id}
                               onGeometryClickCallback={this.props.onGeometryClickCallback}
                               onPointClickCallback={this.props.onPointClickCallback}
-                              geometry={{...geometry, editable: this.props.editable}} />
+                              geometry={{...geometry, editable: this.props.editable}}
+                              showPointCoordinates={this.props.showPointCoordinates}
+                              />
                           );
                         }
                         return null
@@ -692,7 +698,8 @@ Frame.defaultProps = {
   showBounds: false,
   showGridLines: false,
   gridLinesUnit: 'mm',
-  showZoomControls: false
+  showZoomControls: false,
+  showPointCoordinates: false
 }
 
 export default Frame;

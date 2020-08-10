@@ -68,6 +68,8 @@ const ZoomPanFrameTest = ({
                         showBounds={true}
                         showGridLines={true}
                         showZoomControls={true}
+                        onClickCallback={(e) => console.log(e)}
+                        showPointCoordinates={true}
                         />
                 )}
                 </div>
