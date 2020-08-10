@@ -388,7 +388,8 @@ class Frame extends Component {
     }
   }
   svgOnMouseDown(e) {
-    if(e.target.nodeName === 'svg' && e.button === 0) {
+    const panning = keysPressed.includes(' ')
+    if(e.target.nodeName === 'svg' && e.button === 0 && !panning) {
       let mouse_coords = this.getMouseCoords(e);
       let model = frameModelStores[this.state.frameID];
       let algorithm_scaling = this.getAlgorithmScaling()
