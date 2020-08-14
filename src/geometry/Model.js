@@ -191,7 +191,8 @@ function Model(name, classes) {
     return {
       geometries: this.extractGeometries(),
       procedures: this.extractProcedures(),
-      inputs: this.extractInputs()
+      inputs: this.extractInputs(),
+      size: this.size
     }
   }
   this.importModel = function(modelElements) {
@@ -200,6 +201,7 @@ function Model(name, classes) {
     this.inputs = _.get(modelElements, 'inputs', {})
     this.inputsList = _.keys(modelElements.inputs)
     this.importProcedures(modelElements.procedures)
+    this.size = _.get(modelElements, 'size', {width: 1000, height: 1000, depth: 0})
   }
   this.importProcedures = function(inputProcedures) {
     let input = {}
