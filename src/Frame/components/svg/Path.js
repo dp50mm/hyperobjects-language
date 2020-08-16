@@ -3,7 +3,7 @@ import Point from './Point';
 import pathGenerator from './helpers/pathGenerator';
 import { CLICKED_GEOMETRY } from '../../reducer/actionTypes';
 import BoundsRectangle from './path/BoundsRectangle';
-
+import SegmentsLengthsLabels from './path/SegmentsLengthsLabels'
 const Path = React.memo(({
   geometry,
   modelDispatch,
@@ -67,6 +67,9 @@ const Path = React.memo(({
     )}
     {geometry.showBounds && (
       <BoundsRectangle rectangle={geometry.getBounds()} scaling={scaling} />
+    )}
+    {geometry.showSegmentLengthLabels && (
+      <SegmentsLengthsLabels path={geometry} scaling={scaling} />
     )}
     <path
       className={classes}

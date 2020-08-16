@@ -46,13 +46,15 @@ class Point extends React.PureComponent {
       fillColor = point.fill
     }
     let classes = `geometry-${point.type} `
+    let controlPointClasses =`${point.type} `
     classes += styles.point;
-
+    controlPointClasses += styles.point + " "
     if (point.cssClasses !== undefined) {
       classes += point.cssClasses + ' ';
     }
     if(modelDispatch !== undefined) {
       classes += styles.editable;
+      controlPointClasses += styles.editable
     }
     if(this.props.onClickCallback) {
       classes += ` ${styles.clickable}`
@@ -96,7 +98,7 @@ class Point extends React.PureComponent {
           stroke={strokeColor}
           strokeWidth={strokeWidth}
           strokeOpacity={strokeOpacity}
-          className='control-point quadratic'
+          className={controlPointClasses + " qubic"}
           onMouseDown={ (e) => {
             if(modelDispatch !== undefined) {
               modelDispatch({
@@ -169,7 +171,7 @@ class Point extends React.PureComponent {
             strokeOpacity={strokeOpacity}
             r={`${radius/scaling.x}${unit}`}
             key={i}
-            className='control-point cubic'
+            className={controlPointClasses + " cubic"}
             onMouseDown={ (e) => {
               if(modelDispatch !== undefined) {
                 modelDispatch({

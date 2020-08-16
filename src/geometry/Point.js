@@ -52,7 +52,6 @@ function Point(point) {
   this.fill = _.get(point, 'fill', false);
   this.attributes = _.get(point, 'attributes', {})
   this.label = _.get(point, 'label', false)
-
   let angle = _.get(point, 'angle', false);
   let length = _.get(point, 'length', false);
   if(angle && length) {
