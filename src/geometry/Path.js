@@ -31,7 +31,10 @@ function Path(points, name, attributes) {
   this.closedPath = _.get(attributes, 'closedPath', false)
   this.controlsFillOpacityValue = 0.1
   this.showSegmentLengthLabels = _.get(attributes, 'showSegmentLengthLabels', false)
-  
+  this.setShowSegmentLengthLabels = function(showing) {
+    this.showSegmentLengthLabels = showing
+    return this
+  }
   this.reduce = function() {
     // console.log('simplify the path by removing segments with length 0');
     return this
