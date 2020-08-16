@@ -1,8 +1,7 @@
 import React from 'react'
 
 const BoundsRectangle = ({
-    rectangle,
-    scaling
+    rectangle
 }) => {
     return (
         <rect

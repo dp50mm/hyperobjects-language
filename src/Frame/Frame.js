@@ -593,7 +593,13 @@ class Frame extends Component {
                         <g className='display-geometries'>
                         {displayGeometries.map((geometry, i) => {
                           return (
-                            <Geometry key={i} geometry={{...geometry, editable: false}} />
+                            <Geometry
+                              key={i}
+                              geometry={{...geometry, editable: false}}
+                              scaling={algorithm_scaling}
+                              onGeometryClickCallback={this.props.onGeometryClickCallback}
+                              onPointClickCallback={this.props.onPointClickCallback}
+                              />
                           );
                         })}
                         </g>
