@@ -299,6 +299,7 @@ class Point extends React.PureComponent {
                   point.y + (radius + 11)  / scaling.x * 1.5 : point.y + radius  / scaling.x * 1.5 }
               alignmentBaseline="hanging"
               textAnchor="middle"
+              className='point-label'
               fontSize={12 / scaling.x}
               >
               {point.label}
