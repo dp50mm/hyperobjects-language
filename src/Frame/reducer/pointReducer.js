@@ -4,7 +4,11 @@ import {
   SET_DRAGGED_CUBIC_CONTROL_POINT,
   SET_DRAGGED_QUADRATIC_CONTROL_POINT,
   MOVE_POINT,
-  STOP_DRAGGING
+  STOP_DRAGGING,
+  
+  SELECT_BOX,
+  RESET_SELECTION,
+  MOVE_SELECTION
 } from './actionTypes';
 import _ from 'lodash';
 import {
@@ -164,6 +168,30 @@ const pointReducer = (prevState, action) => {
         q: return_q,
         c: return_c
       }
+    
+
+
+    case SELECT_BOX:
+      return {
+        ...prevState,
+        selected: action.payload.containsPoint(prevState)
+      }
+    case RESET_SELECTION:
+      return {
+        ...prevState,
+        selected: false
+      }
+    case MOVE_SELECTION:
+      if(prevState.selected) {
+        return {
+          ...prevState,
+          x: prevState.x + action.payload.dx,
+          y: prevState.y + action.payload.dy
+        }
+      } else {
+        return prevState
+      }
+      
     default:
       return prevState;
   }

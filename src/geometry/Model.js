@@ -68,6 +68,7 @@ function Model(name, classes) {
   this.workspaceFramePadding = 50
   this.draggingAPoint = false
   this.editingPoint = false
+  this.selectingPoints = false
   this.focussed = false
   this.geometries = {}
   this.procedures = {}
@@ -298,6 +299,11 @@ function Model(name, classes) {
      this.animationsList.forEach((animation) => {
        this.animations[animation](this)
      })
+   }
+
+   this.getEditablePointsInRectangle = function(rect) {
+     let allPoints = _.flatten(this.editableGeometries().map(g => g.points))
+     return allPoints.filter(p => rect.containsPoint(p))
    }
 }
 

@@ -54,7 +54,10 @@ const OnClickCallbacksTest = () => {
         setClickLog(newClickLog)
     }
     if(clickState === 'select') {
-        onClickCallback = (p) => addLog({point: p})
+        onClickCallback = (p) => {
+            console.log(p)
+            addLog({point: p})
+        }
         onGeometryClickCallback = (g) => addLog({geometry: g.extract()})
         onPointClickCallback = (g, p, i) => addLog({geometry: g.extract(), point: p.extract(), pointIndex: i})
     }

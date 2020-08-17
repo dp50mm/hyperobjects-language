@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import styles from './frame.module.css';
 import reducer from './reducer/index';
 import Geometry from './components/Geometry';
+import { Rectangle } from '../geometry'
 import Inputs from './components/Inputs'
 import {
   MOVE_POINT,
   STOP_DRAGGING,
-  DISABLE_FOCUSSED,
-  SET_FOCUSSED,
+  SELECT_BOX,
+  RESET_SELECTION,
   ANIMATE,
   PLAY,
   PAUSE,
-  REWIND
+  REWIND,
+  MOVE_SELECTION
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import Controls from './controls/Controls'
@@ -27,7 +29,7 @@ import _ from 'lodash'
 import calculateSizing from './utils/calculateSizing'
 import getKeysPressed from './utils/keysPressed'
 import Guides from './Guides'
-import { scale } from 'chroma-js';
+import SelectBox from './components/SelectBox'
 
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
@@ -41,6 +43,9 @@ getKeysPressed((newKeys) => keysPressed = newKeys )
 
 let frameModelStores = []
 let frameModelRenderedGeometriesStores = []
+
+export const FrameContext = React.createContext('frame')
+
 class Frame extends Component {
   constructor(props) {
     super(props);
@@ -57,6 +62,8 @@ class Frame extends Component {
       keysPressedCounter: 0,
       keysPressed: [],
       mouseDown: false,
+      mouse_select: false,
+      draggingSelection: false,
       containerRendered: false,
       editingPoint: false,
       windowResizeIncrement: 0,
@@ -81,6 +88,7 @@ class Frame extends Component {
     this.fitToFrame = this.fitToFrame.bind(this)
     this.moveToZero = this.moveToZero.bind(this)
     this.setEditingPoint = this.setEditingPoint.bind(this)
+    this.startDraggingSelection = this.startDraggingSelection.bind(this)
   }
   sizing() {
     return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
@@ -367,6 +375,38 @@ class Frame extends Component {
               }
             })
           }
+        } else if(this.state.mouseDown) {
+          let previousMouseCoords = this.state.mouse_select
+
+          if(this.state.draggingSelection) {
+            const pan = this.state.pan
+            let algorithm_scaling = {
+              x: this.state.zoom,
+              y: this.state.zoom
+            }
+            const previousPoint = {
+              x: (previousMouseCoords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x,
+              y: (previousMouseCoords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y
+            }
+            const currentPoint = {
+              x: (mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x,
+              y: (mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y
+            }
+            const dx = currentPoint.x - previousPoint.x
+            const dy = currentPoint.y - previousPoint.y
+            if(!isNaN(dx) && !isNaN(dy)) {
+              this.modelDispatch({
+                type: MOVE_SELECTION,
+                payload: {
+                  dx: dx,
+                  dy: dy
+                }
+              })
+            }
+          }
+          this.setState({
+            mouse_select: mouse_coords
+          })
         } else {
           const pan = this.state.pan
           this.modelDispatch({
@@ -391,23 +431,22 @@ class Frame extends Component {
     const panning = keysPressed.includes(' ')
     if(e.target.nodeName === 'svg' && e.button === 0) {
       let mouse_coords = this.getMouseCoords(e);
-      let model = frameModelStores[this.state.frameID];
-      let algorithm_scaling = this.getAlgorithmScaling()
       if(mouse_coords) {
-        const pan = this.state.pan
-        let x = _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width)
-        let y = _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
-        if(!panning) {
-          this.props.onClickCallback({
-            x: x,
-            y: y
+        if(panning) {
+          this.setState({
+            mouseDown: true,
+            panStart: this.state.pan,
+            mouseDownPoint: mouse_coords
+          })
+          
+          
+        } else {
+          this.setState({
+            mouseDown: true,
+            mouseDownPoint: mouse_coords
           })
         }
-        this.setState({
-          mouseDown: true,
-          panStart: this.state.pan,
-          mouseDownPoint: mouse_coords
-        })
+        
       }
     }
   }
@@ -417,14 +456,75 @@ class Frame extends Component {
     // })
   }
   svgOnMouseUp(e) {
+    let mouse_coords = this.getMouseCoords(e);
+    let startMouseCoords = this.state.mouseDownPoint
     if(e.button === 0) {
+      
+      const pan = this.state.pan
+      let algorithm_scaling = {
+        x: this.state.zoom,
+        y: this.state.zoom
+      }
+      let model = frameModelStores[this.state.frameID];
+      
+      let p2 = {
+        x: _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width),
+        y: _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
+      }
+      if(this.props.onClickCallback) { this.props.onClickCallback(p2) }
+      
+      if(startMouseCoords) {
+        if(Math.round(mouse_coords.x) === Math.round(startMouseCoords.x) && Math.round(mouse_coords.y) === Math.round(startMouseCoords.y)) {
+          this.setState({
+            draggingSelection: false
+          })
+          this.modelDispatch({
+            type: RESET_SELECTION
+          })
+        } else if(this.state.draggingSelection === false && !model.draggingAPoint) {
+          let p1 = {
+            x: _.clamp((startMouseCoords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width),
+            y: _.clamp((startMouseCoords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
+          }
+          let selectRect = new Rectangle(p1,p2)
+          let selectedPoints = model.getEditablePointsInRectangle(selectRect)
+          if(selectedPoints.length > 0) {
+            this.modelDispatch({
+              type: SELECT_BOX,
+              payload: selectRect
+            })
+          } else {
+            this.modelDispatch({
+              type: RESET_SELECTION
+            })
+          }
+          
+        }
+      } else {
+        this.setState({
+          draggingSelection: false
+        })
+        this.modelDispatch({
+          type: RESET_SELECTION
+        })
+      }
       this.setState({
-        mouseDown: false
+        mouseDown: false,
+        mouse_select: false
       })
       this.modelDispatch({
         type: STOP_DRAGGING
       })
     }
+  }
+
+  startDraggingSelection(e) {
+    let mouse_coords = this.getMouseCoords(e)
+    this.setState({
+      mouseDown: true,
+      mouseDownPoint: mouse_coords,
+      draggingSelection: true
+    })
   }
 
   setEditingPoint(point) {
@@ -532,7 +632,7 @@ class Frame extends Component {
           })}
           </div>
         ) : null}
-
+        <FrameContext.Provider value={{startDraggingSelection: this.startDraggingSelection}}>
         <ModelContext.Provider value={model}>
           <Controls model={model} frame={this}
             editableGeometries={editableGeometries}
@@ -587,6 +687,13 @@ class Frame extends Component {
                   onWheel={this.svgOnWheel}
                   width={this.props.width}
                   height={size.height}>
+                    {(this.state.mouse_select && !this.state.draggingSelection) && (
+                      <SelectBox
+                        mouseDownPoint={this.state.mouseDownPoint}
+                        mouseSelect={this.state.mouse_select}
+                        />
+                    )}
+                    
                   <g transform={group_scale_transform}>
                     <g transform={group_translate_transform}>
                       {this.props.renderType === 'SVG' ? (
@@ -661,6 +768,7 @@ class Frame extends Component {
           </div>
         ) : null}
         </ModelContext.Provider>
+        </FrameContext.Provider>
         {this.state.render ? (
             <FrameRenderBar
               size={size}

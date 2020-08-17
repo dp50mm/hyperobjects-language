@@ -4,6 +4,7 @@ import pathGenerator from './helpers/pathGenerator';
 import { CLICKED_GEOMETRY } from '../../reducer/actionTypes';
 import BoundsRectangle from './path/BoundsRectangle';
 import SegmentsLengthsLabels from './path/SegmentsLengthsLabels'
+
 const Path = React.memo(({
   geometry,
   modelDispatch,

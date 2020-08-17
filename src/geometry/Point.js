@@ -1,8 +1,6 @@
 import { POINT, POINT_TYPES } from './types';
 import Matrix from './Matrix'
 import _ from 'lodash'
-
-
 import PointTransforms from './point/PointTransforms'
 import PointCalculations from './point/PointCalculations'
 
@@ -95,6 +93,7 @@ function Point(point) {
   this.type = POINT;
   this.curveType = curve_type
   this.dragging = false;
+  this.selected = false;
   this.id = point_id;
   this.type = POINT;
   this.editable = false;

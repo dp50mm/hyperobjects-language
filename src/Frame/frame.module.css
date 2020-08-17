@@ -48,6 +48,11 @@
   cursor: pointer;
 }
 
+.point.selected {
+  fill: rgba(20,20,50, 1) !important;
+  fill-opacity: 1;
+}
+
 .focussed-text {
   pointer-events: none;
   user-select: none;
@@ -117,4 +122,14 @@ canvas:focus {
   -webkit-user-select: none;
   user-select: none;
   font-family: 'Europa';
+}
+
+
+.select-box {
+  pointer-events: none;
+  user-select: none;
+  fill: transparent;
+  stroke: grey;
+  stroke-width: 1px;
+  stroke-dasharray: 5 5;
 }

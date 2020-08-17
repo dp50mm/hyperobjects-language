@@ -7,7 +7,7 @@ import _Point from './Point'
 import _Text from './Text'
 import _Input from './Input'
 import _Circle from './shapes/Circle'
-import _Rectangle from './shapes/Rectangle'
+import _Rectangle from './Rectangle'
 import _HexPattern from './shapes/HexPattern'
 
 export var Model = _Model

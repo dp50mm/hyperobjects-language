@@ -4,7 +4,13 @@ import {
   SET_DRAGGED_CUBIC_CONTROL_POINT,
   SET_DRAGGED_QUADRATIC_CONTROL_POINT,
   MOVE_POINT,
-  STOP_DRAGGING
+  STOP_DRAGGING,
+
+  SELECT_BOX,
+  RESET_SELECTION,
+  ADD_TO_SELECTION,
+  REMOVE_FROM_SELECTION,
+  MOVE_SELECTION
 } from './actionTypes';
 import pointReducer from './pointReducer';
 import _ from 'lodash'
@@ -31,6 +37,18 @@ const geometryReducer = (prevState, action) => {
         points: prevState.points.map((point, i, a) => {
           return pointReducer(point, action)
         })
+      }
+
+    case SELECT_BOX:
+    case RESET_SELECTION:
+    case ADD_TO_SELECTION:
+    case REMOVE_FROM_SELECTION:
+    case MOVE_SELECTION:
+      return {
+        ...prevState,
+        points: prevState.points.map((point, i, a) => {
+          return pointReducer(point, action)
+        }) 
       }
     default:
       return prevState;

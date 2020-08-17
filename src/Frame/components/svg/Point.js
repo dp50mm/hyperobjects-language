@@ -1,47 +1,40 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   SET_DRAGGED_POINT,
   SET_DRAGGED_QUADRATIC_CONTROL_POINT,
   SET_DRAGGED_CUBIC_CONTROL_POINT,
 
-  SET_EDIT_POINT,
-  SET_EDIT_CUBIC_CONTROL_POINT,
-  SET_EDIT_QUADRATIC_CONTROL_POINT,
-  // SET_DRAGGED_ARC_CONTROL_POINT
 } from '../../reducer/actionTypes';
 import styles from '../../../Frame/frame.module.css';
 import pathGenerator from './helpers/pathGenerator';
 import PointCoordinates from './point/PointCoordinates'
 import PointConstraints from './point/PointConstraints';
 import PointConstraint from './point/PointConstraint'
+import ModelContext from '../../ModelContext'
+import { FrameContext } from '../../Frame'
 
-class Point extends React.PureComponent {
-  constructor(props) {
-    super(props)
-    this.state = {
-      mouseOver: false,
-      selected: false
-    }
-  }
-  toggleSelected() {
-    this.setState({
-      selected: !this.state.selected
-    })
-  }
-  render() {
-    let point = this.props.point
-    let unit = this.props.unit
-    let geometry_id = this.props.geometry_id
-    let previous_point = this.props.previous_point
-    let modelDispatch = this.props.modelDispatch
-    let fillColor = this.props.fillColor
-    let fillOpacity = this.props.fillOpacity
-    let strokeOpacity = this.props.strokeOpacity
+const Point = React.memo(({
+    point,
+    unit,
+    geometry_id,
+    previous_point,
+    modelDispatch,
+    fillColor,
+    fillOpacity,
+    strokeOpacity,
+    strokeColor,
+    strokeWidth,
+    scaling,
+    onClickCallback,
+    radius,
+    geometryRadius,
+    showCoordinates,
+    setEditingPoint
+}) => {
+    const model = useContext(ModelContext)
+    const frame = useContext(FrameContext)
     let curveControlLineOpacity = 0.5
     let strokeDasharray = "5 5"
-    let strokeColor = this.props.strokeColor
-    let strokeWidth = this.props.strokeWidth
-    let scaling = this.props.scaling
     if(point.fill) {
       fillColor = point.fill
     }
@@ -56,26 +49,29 @@ class Point extends React.PureComponent {
       classes += styles.editable;
       controlPointClasses += styles.editable
     }
-    if(this.props.onClickCallback) {
+    if(onClickCallback) {
       classes += ` ${styles.clickable}`
     }
-    let radius = this.props.radius
+    let _radius = radius
 
-    if(this.props.geometryRadius) {
-      radius = this.props.geometryRadius
+    if(geometryRadius) {
+      _radius = geometryRadius
+    }
+    if(point.selected) {
+      classes += ` ${styles.selected}`
     }
 
     let control_points = null;
     let control_point_lines = null;
     let coordinates = [];
 
-    if((point.dragging || this.state.selected) && this.props.showCoordinates) {
+    if(point.dragging && showCoordinates) {
       coordinates.push(
         <PointCoordinates
           key="point"
           unit={unit}
           point={point}
-          radius={radius} />
+          radius={_radius} />
       )
     }
     if(point.q) {
@@ -85,14 +81,14 @@ class Point extends React.PureComponent {
             key="q-point"
             unit={unit}
             point={point.q}
-            radius={radius} />
+            radius={_radius} />
         )
       }
       control_points = (
         <circle
           cx={`${point.q.x}${unit}`}
           cy={`${point.q.y}${unit}`}
-          r={`${radius/scaling.x}${unit}`}
+          r={`${_radius/scaling.x}${unit}`}
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}
@@ -157,7 +153,7 @@ class Point extends React.PureComponent {
               key={`c-point-${i}`}
               unit={unit}
               point={c_point}
-              radius={radius/scaling.x} />
+              radius={_radius/scaling.x} />
           )
         }
         return (
@@ -169,11 +165,11 @@ class Point extends React.PureComponent {
             stroke={strokeColor}
             strokeWidth={strokeWidth}
             strokeOpacity={strokeOpacity}
-            r={`${radius/scaling.x}${unit}`}
+            r={`${_radius/scaling.x}${unit}`}
             key={i}
             className={controlPointClasses + " cubic"}
             onMouseDown={ (e) => {
-              if(modelDispatch !== undefined) {
+              if(modelDispatch !== undefined && model.selectingPoints === false) {
                 modelDispatch({
                   type: SET_DRAGGED_CUBIC_CONTROL_POINT,
                   point_id: point.id,
@@ -183,7 +179,7 @@ class Point extends React.PureComponent {
               }
             }}
             onTouchStart={ (e) => {
-              if(modelDispatch !== undefined) {
+              if(modelDispatch !== undefined && model.selectingPoints === false) {
                 modelDispatch({
                   type: SET_DRAGGED_CUBIC_CONTROL_POINT,
                   point_id: point.id,
@@ -252,22 +248,26 @@ class Point extends React.PureComponent {
           className={classes}
           onMouseDown={(e) => {
             if(e.button === 0) {
-              if(this.props.onClickCallback) {
-                this.props.onClickCallback()
+              if(onClickCallback) {
+                onClickCallback()
               } else {
                 if(modelDispatch !== undefined) {
-                  modelDispatch({
-                    type: SET_DRAGGED_POINT,
-                    point_id: point.id,
-                    geometry_id: geometry_id
-                  })
+                  console.log(model.selectingPoints)
+                  if(model.selectingPoints === false) {
+                    modelDispatch({
+                      type: SET_DRAGGED_POINT,
+                      point_id: point.id,
+                      geometry_id: geometry_id
+                    })
+                  } else {
+                    frame.startDraggingSelection(e)
+                  }
                 }
-                this.toggleSelected()
               }
             }
           }}
           onTouchStart={ (e) => {
-            if(modelDispatch !== undefined) {
+            if(modelDispatch !== undefined && model.selectingPoints === false) {
               modelDispatch({
                 type: SET_DRAGGED_POINT,
                 point_id: point.id,
@@ -276,7 +276,7 @@ class Point extends React.PureComponent {
             }
           } }
           onContextMenu={(e) => {
-            this.props.setEditingPoint({
+            setEditingPoint({
               point_id: point.id,
               geometry_id: geometry_id,
               geometry_key: point.geometry.key
@@ -285,7 +285,7 @@ class Point extends React.PureComponent {
           }}
           cx={`${point.x}${unit}`}
           cy={`${point.y}${unit}`}
-          r={`${radius / scaling.x}${unit}`}
+          r={`${_radius / scaling.x}${unit}`}
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}
@@ -295,8 +295,8 @@ class Point extends React.PureComponent {
           {point.label ? (
             <text
               x={point.x}
-              y={(point.dragging || this.state.selected) && this.props.showCoordinates ?
-                  point.y + (radius + 11)  / scaling.x * 1.5 : point.y + radius  / scaling.x * 1.5 }
+              y={point.dragging && showCoordinates ?
+                  point.y + (_radius + 11)  / scaling.x * 1.5 : point.y + _radius  / scaling.x * 1.5 }
               alignmentBaseline="hanging"
               textAnchor="middle"
               className='point-label'
@@ -306,9 +306,8 @@ class Point extends React.PureComponent {
             </text>
           ) : null}
         </g>
-    );
-  }
-}
+    )
+})
 
 Point.defaultProps = {
   showCoordinates: false,
