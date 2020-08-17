@@ -6,6 +6,7 @@ import {
   STOP_DRAGGING,
   MOVE_POINT,
 
+  START_SELECTION,
   SELECT_BOX,
   ADD_TO_SELECTION,
   REMOVE_FROM_SELECTION,
@@ -44,6 +45,12 @@ const reducer = (prevState, action) => {
       };
     
     // Select functionality to move multiple points
+    case START_SELECTION:
+      return {
+        ...prevState,
+        draggingAPoint: false,
+        selectingPoints: false
+      }
     case SELECT_BOX:
       return {
         ...prevState,

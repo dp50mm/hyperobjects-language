@@ -1,10 +1,13 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import useComponentSize from '@rehooks/component-size'
 import {
     Frame,
     Model,
     Path
 } from 'hyperobjects-language'
+import {
+    Button
+} from 'semantic-ui-react'
 import _ from 'lodash'
 
 let model = new Model("zoom-pan-test")
@@ -49,12 +52,14 @@ const ZoomPanFrameTest = ({
 
 }) => {
     const ref = useRef(null)
+    const [logging, setLogging] = useState(false)
     const size = useComponentSize(ref)
     const width = _.max([size.width, 100])
     const height = window.innerHeight - 300
     return (
         <div className='zoom-pan-frame-test'>
             <h2>Zoom pan frame test</h2>
+            <div><Button toggle active={logging} onClick={() => setLogging(!logging)} >Model log</Button></div>
             <div ref={ref}>
                 <div style={{width: width, height: height, border: '1px solid rgb(220,220,220)'}}>
                 {width > 100 && (
@@ -68,6 +73,8 @@ const ZoomPanFrameTest = ({
                         showBounds={true}
                         showGridLines={true}
                         showZoomControls={true}
+                        logModelDispatch={logging}
+                        logModelState={logging}
                         onClickCallback={(e) => console.log(e)}
                         showPointCoordinates={true}
                         />

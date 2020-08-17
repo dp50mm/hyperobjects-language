@@ -7,6 +7,7 @@ import Inputs from './components/Inputs'
 import {
   MOVE_POINT,
   STOP_DRAGGING,
+  START_SELECTION,
   SELECT_BOX,
   RESET_SELECTION,
   ANIMATE,
@@ -438,12 +439,13 @@ class Frame extends Component {
             panStart: this.state.pan,
             mouseDownPoint: mouse_coords
           })
-          
-          
         } else {
           this.setState({
             mouseDown: true,
             mouseDownPoint: mouse_coords
+          })
+          this.modelDispatch({
+            type: START_SELECTION
           })
         }
         
@@ -471,7 +473,6 @@ class Frame extends Component {
         x: _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width),
         y: _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
       }
-      console.log('start mouse coords: ', startMouseCoords, ' draggingselection: ', this.state.draggingSelection, ' model.draggingAPoint: ', model.draggingAPoint)
       if(startMouseCoords) {
         if(Math.round(mouse_coords.x) === Math.round(startMouseCoords.x) && Math.round(mouse_coords.y) === Math.round(startMouseCoords.y)) {
           this.setState({
@@ -481,7 +482,6 @@ class Frame extends Component {
             type: RESET_SELECTION
           })
           if(this.props.onClickCallback) {
-            console.log(p2)
             this.props.onClickCallback(p2)
           }
         } else if(this.state.draggingSelection === false && !model.draggingAPoint) {
@@ -514,9 +514,12 @@ class Frame extends Component {
         mouseDown: false,
         mouse_select: false
       })
-      this.modelDispatch({
-        type: STOP_DRAGGING
-      })
+      if(model.draggingAPoint) {
+        this.modelDispatch({
+          type: STOP_DRAGGING
+        })
+      }
+      
     }
   }
 
