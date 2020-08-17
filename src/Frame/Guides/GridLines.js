@@ -45,7 +45,7 @@ const GridLines = React.memo(({
                         fontSize={12 / zoom}
                         fill={labelColor}
                         >
-                        {xScale(val)}{gridLinesUnit}
+                        {Math.round(xScale(val))}{gridLinesUnit}
                     </text>
                     </g>
                 )
@@ -67,7 +67,7 @@ const GridLines = React.memo(({
                         fontSize={12 / zoom}
                         fill={labelColor}
                         >
-                        {yScale(val)}{gridLinesUnit}
+                        {Math.round(yScale(val))}{gridLinesUnit}
                     </text>
                 </g>
             )
