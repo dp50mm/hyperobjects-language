@@ -171,7 +171,7 @@ function Geometry(points, name, attributes) {
       }
       return interpolate(this.points[index], this.points[index + 1], interpolationDistance/nextDistance)
     } else if(this.points.length === 1) {
-      return this.points[0]
+      return this.points[0].copy()
     } else {
       return new Point({x: 0, y: 0})
     }

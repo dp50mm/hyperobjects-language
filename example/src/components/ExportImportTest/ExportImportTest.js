@@ -21,6 +21,17 @@ newModel.addEditableGeometry('test-path',
   })).r(5).controlsFill("black").controlsFillOpacity(0.3).controlsStrokeOpacity(0).controlsStroke('transparent')
 )
 
+newModel.addEditableGeometry('one-point-path-23o 02f', 
+  new Path([{x: 500, y: 500}])
+)
+
+// stress testing a lot of geometries
+_.range(100).map(val => {
+  newModel.addEditableGeometry(`testing-multiple-paths-${val}`, 
+    new Path([{x: 500, y: 500 + val * 5}])
+  )
+})
+
 newModel.addProcedure('test-procedure',
   (self) => {
     let returns = []
@@ -43,6 +54,7 @@ newModel.addProcedure('test-procedure',
 let extraction = newModel.extractModel()
 
 let extractionJSON = JSON.stringify(extraction)
+console.log(extractionJSON)
 let copyModel = new Model('copied-model')
 copyModel.importModel(extraction)
 console.log(copyModel)

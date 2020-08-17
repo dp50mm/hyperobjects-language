@@ -119,10 +119,20 @@ function Point(point) {
    * to be converted to JSON to prevent circularity.
    */
   this.removeConnections = function() {
-    this.geometry = false
-    this.geometryIndex = false
-    this.nextPoint = false
-    this.previousPoint = false
+    function setConnectionsToFalse(p) {
+      p.geometry = false
+      p.geometryIndex = false
+      p.nextPoint = false
+      p.previousPoint = false
+    }
+    setConnectionsToFalse(this)
+    if(this.c) {
+      setConnectionsToFalse(this.c[0])
+      setConnectionsToFalse(this.c[1])
+    }
+    if(this.q) {
+      setConnectionsToFalse(this.q)
+    }
     return this
   }
   this.matrixTransform = () => {
