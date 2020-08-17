@@ -471,7 +471,7 @@ class Frame extends Component {
         x: _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width),
         y: _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
       }
-      if(this.props.onClickCallback) { this.props.onClickCallback(p2) }
+      
       
       if(startMouseCoords) {
         if(Math.round(mouse_coords.x) === Math.round(startMouseCoords.x) && Math.round(mouse_coords.y) === Math.round(startMouseCoords.y)) {
@@ -481,6 +481,7 @@ class Frame extends Component {
           this.modelDispatch({
             type: RESET_SELECTION
           })
+          if(this.props.onClickCallback) { this.props.onClickCallback(p2) }
         } else if(this.state.draggingSelection === false && !model.draggingAPoint) {
           let p1 = {
             x: _.clamp((startMouseCoords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width),
