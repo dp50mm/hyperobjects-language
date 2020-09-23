@@ -54,7 +54,6 @@ newModel.addProcedure('test-procedure',
 let extraction = newModel.extractModel()
 
 let extractionJSON = JSON.stringify(extraction)
-console.log(extractionJSON)
 let copyModel = new Model('copied-model')
 copyModel.importModel(extraction)
 console.log(copyModel)

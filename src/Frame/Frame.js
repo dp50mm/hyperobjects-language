@@ -31,6 +31,17 @@ import calculateSizing from './utils/calculateSizing'
 import getKeysPressed from './utils/keysPressed'
 import Guides from './Guides'
 import SelectBox from './components/SelectBox'
+import {
+  composeMatrices,
+  inverseMatrix,
+  applyMatrixToPoint,
+  applyInverseMatrixToPoint,
+  translateMatrix,
+  identityMatrix,
+  scaleMatrix,
+} from './utils/matrix';
+
+
 
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
@@ -68,12 +79,18 @@ class Frame extends Component {
       containerRendered: false,
       editingPoint: false,
       windowResizeIncrement: 0,
-      zoom: 1,
       panStart: {x: 0, y: 0},
-      pan: {x: 0, y: 0},
       frameID: `frame-id-${svgIDCounter}`,
       svgID: `svg-id-${svgIDCounter}`,
       canvasID: `canvas-2d-id-${svgIDCounter}`,
+      transformMatrix: {
+        scaleX: 1,
+        scaleY: 1,
+        translateX: 0,
+        translateY: 0,
+        skewX: 0,
+        skewY: 0,
+      },
     };
     analytics.initialize()
     this.playModel = this.playModel.bind(this)
@@ -201,14 +218,24 @@ class Frame extends Component {
       pan_x = this.props.width / zoom * 0.5 - modelSize.width * 0.5
     }
     this.setState({
-      zoom: zoom,
-      pan: {
-        x: pan_x,
-        y: 0
+      transformMatrix: {
+        ...this.state.transformMatrix,
+        scaleX: zoom,
+        scaleY: zoom,
+        translateX: pan_x * zoom,
+        translateY: 0
       }
     })
   }
-  moveToZero() { this.setState({ pan: {x: 0, y: 0} }) }
+  moveToZero() {
+    this.setState({
+      transformMatrix:{
+        ...this.state.transformMatrix,
+        translateX: 0,
+        translateY: 0
+      }
+    })
+  }
   animateModel() {
     let fps = 1000/60
     if(frameModelStores[this.state.frameID].playing) {
@@ -358,10 +385,7 @@ class Frame extends Component {
       let mouse_coords = this.getMouseCoords(e);
       let size = this.sizing()
       let model = frameModelStores[this.state.frameID];
-      let algorithm_scaling = {
-        x: this.state.zoom,
-        y: this.state.zoom
-      }
+      const transformMatrix = this.state.transformMatrix
       if(mouse_coords) {
         if(this.props.logMouseMove) {
           console.log(mouse_coords)
@@ -370,9 +394,10 @@ class Frame extends Component {
         if(panning) {
           if(this.state.mouseDown) {
             this.setState({
-              pan: {
-                x: this.state.panStart.x + (mouse_coords.x - this.state.mouseDownPoint.x) / this.state.zoom,
-                y: this.state.panStart.y + (mouse_coords.y - this.state.mouseDownPoint.y) / this.state.zoom
+              transformMatrix: {
+                ...this.state.transformMatrix,
+                translateX: this.state.panStart.x + mouse_coords.x - this.state.mouseDownPoint.x,
+                translateY: this.state.panStart.y + mouse_coords.y - this.state.mouseDownPoint.y
               }
             })
           }
@@ -380,18 +405,13 @@ class Frame extends Component {
           let previousMouseCoords = this.state.mouse_select
 
           if(this.state.draggingSelection) {
-            const pan = this.state.pan
-            let algorithm_scaling = {
-              x: this.state.zoom,
-              y: this.state.zoom
-            }
             const previousPoint = {
-              x: (previousMouseCoords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x,
-              y: (previousMouseCoords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y
+              x: (previousMouseCoords.x - transformMatrix.translateX) / transformMatrix.scaleX,
+              y: (previousMouseCoords.y - transformMatrix.translateY) / transformMatrix.scaleY
             }
             const currentPoint = {
-              x: (mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x,
-              y: (mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y
+              x: (mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX,
+              y: (mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY
             }
             const dx = currentPoint.x - previousPoint.x
             const dy = currentPoint.y - previousPoint.y
@@ -409,12 +429,11 @@ class Frame extends Component {
             mouse_select: mouse_coords
           })
         } else {
-          const pan = this.state.pan
           this.modelDispatch({
             type: MOVE_POINT,
             payload: {
-              x: _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x) / algorithm_scaling.x , 0, model.size.width),
-              y: _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y) / algorithm_scaling.y , 0, model.size.height),
+              x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
+              y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height),
               model: model
             }
           });
@@ -436,7 +455,10 @@ class Frame extends Component {
         if(panning) {
           this.setState({
             mouseDown: true,
-            panStart: this.state.pan,
+            panStart: {
+              x: this.state.transformMatrix.translateX,
+              y: this.state.transformMatrix.translateY
+            },
             mouseDownPoint: mouse_coords
           })
         } else {
@@ -461,17 +483,12 @@ class Frame extends Component {
     let mouse_coords = this.getMouseCoords(e);
     let startMouseCoords = this.state.mouseDownPoint
     if(e.button === 0) {
-      
-      const pan = this.state.pan
-      let algorithm_scaling = {
-        x: this.state.zoom,
-        y: this.state.zoom
-      }
+      let transformMatrix = this.state.transformMatrix
       let model = frameModelStores[this.state.frameID];
       
       let p2 = {
-        x: _.clamp((mouse_coords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width),
-        y: _.clamp((mouse_coords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
+        x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
+        y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
       }
       if(startMouseCoords) {
         if(Math.round(mouse_coords.x) === Math.round(startMouseCoords.x) && Math.round(mouse_coords.y) === Math.round(startMouseCoords.y)) {
@@ -486,8 +503,8 @@ class Frame extends Component {
           }
         } else if(this.state.draggingSelection === false && !model.draggingAPoint) {
           let p1 = {
-            x: _.clamp((startMouseCoords.x - pan.x * algorithm_scaling.x)/algorithm_scaling.x, 0, model.size.width),
-            y: _.clamp((startMouseCoords.y - pan.y * algorithm_scaling.y)/algorithm_scaling.y, 0, model.size.height)
+            x: _.clamp((startMouseCoords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
+            y: _.clamp((startMouseCoords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
           }
           let selectRect = new Rectangle(p1,p2)
           let selectedPoints = model.getEditablePointsInRectangle(selectRect)
@@ -543,15 +560,39 @@ class Frame extends Component {
     if (e.ctrlKey && !panning) {
       const deltaScaling = 1/300
       const mouseCoords = this.getMouseCoords(e)
-      const newZoomValue = _.clamp(this.state.zoom + e.deltaY * deltaScaling, 0.1, 10)
-      const scaleChange = newZoomValue - this.state.zoom
+      const { transformMatrix } = this.state;
+      let localPoint = {
+        x: (mouseCoords.x * transformMatrix.scaleX) + transformMatrix.translateX,
+        y: mouseCoords.y
+      }
+
+      localPoint.x = 100
+      localPoint.y = 0
+
+      let scaleX = _.clamp(1 + e.deltaY * deltaScaling, 0.1, 5)
+      let scaleY = scaleX
+      const translate = applyInverseMatrixToPoint(transformMatrix, mouseCoords)
+      const nextMatrix = composeMatrices([
+        transformMatrix,
+        translateMatrix({
+          translateX: translate.x,
+          translateY: translate.y
+        }),
+        scaleMatrix({
+          scaleX: scaleX,
+          scaleY: scaleY
+        }),
+        translateMatrix({
+          translateX: -translate.x,
+          translateY: -translate.y
+        })
+      ]);
+
       this.setState({
-        zoom: newZoomValue,
-        pan: {
-          x: this.state.pan.x - (mouseCoords.x * scaleChange),
-          y: this.state.pan.y - mouseCoords.y * scaleChange
-        }
+        transformMatrix: nextMatrix
       })
+
+
     }
   }
 
@@ -569,8 +610,8 @@ class Frame extends Component {
     }
     let size = this.sizing()
     let algorithm_scaling = {
-      x: this.state.zoom,
-      y: this.state.zoom
+      x: this.state.transformMatrix.scaleX,
+      y: this.state.transformMatrix.scaleY
     }
     let editableGeometries = [];
     let staticGeometries = [];
@@ -602,7 +643,7 @@ class Frame extends Component {
 
     if(this.state.keysPressed.includes('Control')) svgStyle.cursor = 'zoom-in'
     if(panning) svgStyle.cursor = 'grab'
-    let group_translate_transform = `translate(${this.state.pan.x}, ${this.state.pan.y})`
+    let group_translate_transform = `translate(${this.state.transformMatrix.translateX}, ${this.state.transformMatrix.translateY})`
 
     let canvasContainerStyle = {
       opacity: 1,
@@ -659,9 +700,9 @@ class Frame extends Component {
               <EditPointPopUp
                 editPoint={editPoint}
                 setEditingPoint={this.setEditingPoint}
-                pan={this.state.pan}
-                algorithm_scaling={algorithm_scaling}
+                transformMatrix={this.state.transformMatrix}
                 modelDispatch={this.modelDispatch.bind(this)}
+                
                 />
             )}
             <div ref={this.designerRef} style={{overflow: 'hidden'}}>
@@ -672,8 +713,7 @@ class Frame extends Component {
                   group_translate_transform={group_translate_transform}
                   width={model.size.width}
                   height={model.size.height}
-                  pan={this.state.pan}
-                  zoom={this.state.zoom}
+                  transformMatrix={this.state.transformMatrix}
                   showBounds={this.props.showBounds}
                   showGridLines={this.props.showGridLines}
                   gridLinesUnit={this.props.gridLinesUnit}
@@ -698,9 +738,8 @@ class Frame extends Component {
                         mouseSelect={this.state.mouse_select}
                         />
                     )}
-                    
+                <g transform={group_translate_transform}>
                   <g transform={group_scale_transform}>
-                    <g transform={group_translate_transform}>
                       {this.props.renderType === 'SVG' ? (
                         <g className='display-geometries'>
                         {displayGeometries.map((geometry, i) => {
@@ -748,9 +787,7 @@ class Frame extends Component {
                       background={model.background}
                       width={this.props.width}
                       height={size.height}
-                      scaling={algorithm_scaling}
-                      pan={this.state.pan}
-                      zoom={this.state.zoom}
+                      transformMatrix={this.state.transformMatrix}
                       geometries={staticGeometries.concat(displayGeometries)}
                       />
                   </div>

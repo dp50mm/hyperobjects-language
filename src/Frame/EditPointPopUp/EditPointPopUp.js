@@ -12,8 +12,7 @@ const EditPointPopUp = React.memo(({
     editPoint,
     setEditingPoint,
     modelDispatch,
-    algorithm_scaling,
-    pan
+    transformMatrix
 }) => {
     const [newX, setNewX] = useState(editPoint.x)
     const [newY, setNewY] = useState(editPoint.y)
@@ -51,14 +50,14 @@ const EditPointPopUp = React.memo(({
     return (
         <div className={styles['edit-point-pan-position']}
             style={{
-                left: pan.x * algorithm_scaling.x,
-                top: pan.y  * algorithm_scaling.y
+                left: transformMatrix.translateX,
+                top: transformMatrix.translateY
             }}
             >
             <div className={styles['edit-point-pop-up']}
                 style={{
-                    left: editPoint.x * algorithm_scaling.x,
-                    top: editPoint.y * algorithm_scaling.y
+                    left: editPoint.x * transformMatrix.scaleX,
+                    top: editPoint.y * transformMatrix.scaleY
                 }}
                 >
                 <Button

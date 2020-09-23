@@ -6,8 +6,7 @@ import * as d3 from 'd3'
 const GridLines = React.memo(({
     width,
     height,
-    pan,
-    zoom,
+    transformMatrix,
     gridLinesUnit
 }) => {
     const gridLineCounts = {
@@ -17,12 +16,12 @@ const GridLines = React.memo(({
     let xScale = d3.scaleLinear().domain([0, gridLineCounts.x]).range([0, width])
     let yScale = d3.scaleLinear().domain([0, gridLineCounts.y]).range([0, height])
     let yTextShift = 0
-    if(pan.y < 0) {
-        yTextShift = pan.y
+    if(transformMatrix.translateY < 0) {
+        yTextShift = transformMatrix.translateY / transformMatrix.scaleX
     } 
     let xTextShift = 0
-    if(pan.x < 0) {
-        xTextShift = pan.x
+    if(transformMatrix.translateX < 0) {
+        xTextShift = transformMatrix.translateX / transformMatrix.scaleY
     }
     const labelColor = "rgb(150,150,150)"
     return (
@@ -37,12 +36,13 @@ const GridLines = React.memo(({
                         y1={0}
                         y2={height}
                         className={styles['grid-line']}
+                        strokeWidth={0.5 / transformMatrix.scaleX}
                         />
                     <text
-                        x={5}
-                        y={5 - yTextShift}
+                        x={5 / transformMatrix.scaleX}
+                        y={5 / transformMatrix.scaleX - yTextShift}
                         alignmentBaseline="hanging"
-                        fontSize={12 / zoom}
+                        fontSize={12 / transformMatrix.scaleX}
                         fill={labelColor}
                         >
                         {Math.round(xScale(val))}{gridLinesUnit}
@@ -58,13 +58,14 @@ const GridLines = React.memo(({
                         x2={width}
                         y1={0}
                         y2={0}
+                        strokeWidth={0.5 / transformMatrix.scaleX}
                         className={styles['grid-line']}
                         />
                     <text
-                        x={5 - xTextShift}
-                        y={5}
+                        x={5 / transformMatrix.scaleX - xTextShift}
+                        y={5 / transformMatrix.scaleX}
                         alignmentBaseline="hanging"
-                        fontSize={12 / zoom}
+                        fontSize={12 / transformMatrix.scaleX}
                         fill={labelColor}
                         >
                         {Math.round(yScale(val))}{gridLinesUnit}

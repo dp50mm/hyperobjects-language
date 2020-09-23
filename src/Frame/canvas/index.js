@@ -9,15 +9,15 @@ import {
   RECTANGLE
 } from '../../geometry/types';
 
-function drawCanvasGeometry(gl, g, canvasScaling, pan) {
+function drawCanvasGeometry(gl, g, transformMatrix) {
   if(g.type === GROUP) {
-    drawGroup(gl, g, canvasScaling, pan)
+    drawGroup(gl, g, transformMatrix)
   } else if (g.type === PATH) {
-    drawPath(gl, g, canvasScaling, pan)
+    drawPath(gl, g, transformMatrix)
   } else if (g.type === TEXT) {
-    drawText(gl, g, canvasScaling, pan)
+    drawText(gl, g, transformMatrix)
   } else if (g.type === RECTANGLE) {
-    drawRectangle(gl, g, canvasScaling, pan)
+    drawRectangle(gl, g, transformMatrix)
   }
 }
 

@@ -1,6 +1,10 @@
 let keysPressed = []
 function getKeysPressed(callback) {
-    window.addEventListener('keydown', ({key}) => {
+    window.addEventListener('keydown', (e) => {
+        const { key } = e
+        if(key === ' ') {
+            e.preventDefault()
+        }
         if(!keysPressed.includes(key)) {
             keysPressed.push(key)
         }

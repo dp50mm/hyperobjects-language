@@ -1,5 +1,5 @@
-function drawText(gl, g, canvasScaling) {
-  gl.font = `${g._fontWeight} ${g._fontSize * canvasScaling.x}px Europa`
+function drawText(gl, g, transformMatrix) {
+  gl.font = `${g._fontWeight} ${g._fontSize * transformMatrix.scaleX}px Europa`
   gl.fillStyle = g._fill
   gl.globalAlpha = g._fillOpacity * g._opacity
   gl.textAlign = g._textAnchor
@@ -13,13 +13,13 @@ function drawText(gl, g, canvasScaling) {
       gl.fillText(
         t,
         g.x * canvasScaling.x ,
-        g.y * canvasScaling.y + + g._lineHeight * i * canvasScaling.y)
+        g.y * transformMatrix.scaleY + g._lineHeight * i  * transformMatrix.scaleY)
     })
   } else {
     gl.fillText(
       g.text,
-      g.x * canvasScaling.x,
-      g.y * canvasScaling.y)
+      g.x * transformMatrix.scaleX,
+      g.y * transformMatrix.scaleY)
   }
 
 }

@@ -71,7 +71,9 @@ const Point = React.memo(({
           key="point"
           unit={unit}
           point={point}
-          radius={_radius} />
+          radius={_radius}
+          scaling={scaling}
+          />
       )
     }
     if(point.q) {
@@ -81,7 +83,9 @@ const Point = React.memo(({
             key="q-point"
             unit={unit}
             point={point.q}
-            radius={_radius} />
+            radius={_radius}
+            scaling={scaling}
+            />
         )
       }
       control_points = (
@@ -92,7 +96,7 @@ const Point = React.memo(({
           fill={fillColor}
           fillOpacity={fillOpacity}
           stroke={strokeColor}
-          strokeWidth={strokeWidth}
+          strokeWidth={strokeWidth / scaling.x}
           strokeOpacity={strokeOpacity}
           className={controlPointClasses + " qubic"}
           onMouseDown={ (e) => {
@@ -120,7 +124,7 @@ const Point = React.memo(({
         line_two = (
           <path className='control-point-line'
             stroke={strokeColor}
-            strokeWidth={strokeWidth}
+            strokeWidth={strokeWidth / scaling.x}
             strokeOpacity={curveControlLineOpacity}
             strokeDasharray={strokeDasharray}
             d={pathGenerator([
@@ -134,7 +138,7 @@ const Point = React.memo(({
         <g>
           <path className='control-point-line'
             stroke={strokeColor}
-            strokeWidth={strokeWidth}
+            strokeWidth={strokeWidth / scaling.x}
             strokeOpacity={curveControlLineOpacity}
             strokeDasharray={strokeDasharray}
             d={pathGenerator([
@@ -153,7 +157,9 @@ const Point = React.memo(({
               key={`c-point-${i}`}
               unit={unit}
               point={c_point}
-              radius={_radius/scaling.x} />
+              radius={_radius/scaling.x}
+              scaling={scaling}
+              />
           )
         }
         return (
@@ -163,7 +169,7 @@ const Point = React.memo(({
             fill={fillColor}
             fillOpacity={fillOpacity}
             stroke={strokeColor}
-            strokeWidth={strokeWidth}
+            strokeWidth={strokeWidth / scaling.x}
             strokeOpacity={strokeOpacity}
             r={`${_radius/scaling.x}${unit}`}
             key={i}
@@ -197,7 +203,7 @@ const Point = React.memo(({
               <path className='control-point-line'
                 key={i}
                 stroke={strokeColor}
-                strokeWidth={strokeWidth}
+                strokeWidth={strokeWidth / scaling.x}
                 strokeOpacity={curveControlLineOpacity}
                 strokeDasharray={strokeDasharray}
                 d={pathGenerator([
@@ -211,7 +217,7 @@ const Point = React.memo(({
               <path className='control-point-line'
                 key={i}
                 stroke={strokeColor}
-                strokeWidth={strokeWidth}
+                strokeWidth={strokeWidth / scaling.x}
                 strokeOpacity={curveControlLineOpacity}
                 strokeDasharray={strokeDasharray}
                 d={pathGenerator([
@@ -252,7 +258,6 @@ const Point = React.memo(({
                 onClickCallback()
               } else {
                 if(modelDispatch !== undefined) {
-                  console.log(model.selectingPoints)
                   if(model.selectingPoints === false) {
                     modelDispatch({
                       type: SET_DRAGGED_POINT,

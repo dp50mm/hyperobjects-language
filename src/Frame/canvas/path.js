@@ -1,18 +1,20 @@
-function drawPath(gl, g, canvasScaling, pan) {
+import { canvasScaling } from '../CanvasView'
+
+function drawPath(gl, g, transformMatrix) {
   // console.log(g.points);
   gl.beginPath()
   g.points.forEach((p, i, a) => {
     if(i === 0) {
       gl.moveTo(
-        (p.x + pan.x) * canvasScaling.x,
-        (p.y + pan.y) * canvasScaling.y
+        (p.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+        (p.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
       )
 
     } else {
-      drawCurveStep(gl, p, canvasScaling, pan)
+      drawCurveStep(gl, p, transformMatrix)
     }
     if(i === a.length - 1 && g.closedPath) {
-      drawCurveStep(gl, a[0], canvasScaling, pan)
+      drawCurveStep(gl, a[0], transformMatrix)
     }
   })
 
@@ -37,27 +39,27 @@ function drawPath(gl, g, canvasScaling, pan) {
   gl.closePath()
 }
 
-function drawCurveStep(gl, p, scaling, pan) {
+function drawCurveStep(gl, p, transformMatrix) {
   if(p.q) {
     gl.quadraticCurveTo(
-      (p.q.x + pan.x) * scaling.x,
-      (p.q.y + pan.y) * scaling.y,
-      (p.x + pan.x) * scaling.x,
-      (p.y + pan.y) * scaling.y
+      (p.q.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+      (p.q.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y,
+      (p.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+      (p.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
       )
   } else if (p.c) {
     gl.bezierCurveTo(
-      (p.c[0].x + pan.x) * scaling.x,
-      (p.c[0].y + pan.y) * scaling.y,
-      (p.c[1].x + pan.x) * scaling.x,
-      (p.c[1].y + pan.y) * scaling.y,
-      (p.x + pan.x) * scaling.x,
-      (p.y + pan.y) * scaling.y
+      (p.c[0].x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+      (p.c[0].y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y,
+      (p.c[1].x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+      (p.c[1].y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y,
+      (p.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+      (p.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
     )
   } else {
     gl.lineTo(
-      (p.x + pan.x) * scaling.x,
-      (p.y + pan.y) * scaling.y
+      (p.x * canvasScaling.x * transformMatrix.scaleX + transformMatrix.translateX * canvasScaling.x),
+      (p.y * canvasScaling.y * transformMatrix.scaleY + transformMatrix.translateY * canvasScaling.y)
     )
   }
 }

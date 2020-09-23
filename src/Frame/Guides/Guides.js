@@ -9,8 +9,7 @@ const Guides = React.memo(({
     group_translate_transform,
     width,
     height,
-    pan,
-    zoom,
+    transformMatrix,
     showBounds,
     showGridLines,
     gridLinesUnit
@@ -21,22 +20,22 @@ const Guides = React.memo(({
             width={svgWidth}
             height={svgHeight}
             >
-            <g transform={group_scale_transform}>
-                <g transform={group_translate_transform}>
+            <g transform={group_translate_transform}>
+                <g transform={group_scale_transform}>
                     <g className='guides'>
                         {showBounds && (
                             <rect
                                 width={width}
                                 height={height}
                                 className={styles['model-bounds']}
+                                strokeWidth={1 / transformMatrix.scaleX}
                                 />
                         )}
                         {showGridLines && (
                             <GridLines
                                 width={width}
                                 height={height}
-                                pan={pan}
-                                zoom={zoom}
+                                transformMatrix={transformMatrix}
                                 gridLinesUnit={gridLinesUnit}
                                 />
                         )}
