@@ -14,7 +14,7 @@ import {
   PLAY,
   PAUSE,
   REWIND,
-  MOVE_SELECTION
+  MOVE_SELECTION, SET_DRAGGED_POINT
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import Controls from './controls/Controls'
@@ -288,9 +288,10 @@ class Frame extends Component {
     if(this.props.logModelDispatch) {
       console.log(action)
     }
+    let shouldcallUpdateParameters = action.type === STOP_DRAGGING && frameModelStores[this.state.frameID].draggingAPoint
     actionCallbackMiddleware(frameModelStores[this.state.frameID], action, this.props.actionsCallback)
     try {
-      if(this.state.frameMouseMoveCounter % 1 === 0) {
+      if(this.state.frameMouseMoveCounter % this.props.procedureUpdateIntervalOnMouseMove === 0) {
         frameModelStores[this.state.frameID] = reducer(frameModelStores[this.state.frameID], action)
         frameModelRenderedGeometriesStores[this.state.frameID] = frameModelStores[this.state.frameID].displayGeometries()
         this.setState({
@@ -309,12 +310,16 @@ class Frame extends Component {
         analytics.event(`model dispatch: ${action.type}`, "Frame", frameModelStores[this.state.frameID].name)
       }
     } catch(e) { }
+    if(shouldcallUpdateParameters) {
+      this.callUpdateParameters()
+    }
+  }
+  callUpdateParameters() {
     if(this.props.updateParameters) {
+      // console.log('model dispatch update parameters ', action)
       try {
-        if(action.type === STOP_DRAGGING) {
           let extractedModel = frameModelStores[this.state.frameID].extractModel()
           this.props.updateParameters(extractedModel);
-        }
       } catch(e) {
 
       }
@@ -434,7 +439,8 @@ class Frame extends Component {
             payload: {
               x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
               y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height),
-              model: model
+              model: model,
+              mouseDown: this.state.mouseDown
             }
           });
         }
@@ -490,7 +496,11 @@ class Frame extends Component {
         x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
         y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
       }
+      
       if(startMouseCoords) {
+        if(this.state.draggingSelection) {
+          this.callUpdateParameters()
+        }
         if(Math.round(mouse_coords.x) === Math.round(startMouseCoords.x) && Math.round(mouse_coords.y) === Math.round(startMouseCoords.y)) {
           this.setState({
             draggingSelection: false
@@ -502,13 +512,14 @@ class Frame extends Component {
             this.props.onClickCallback(p2)
           }
         } else if(this.state.draggingSelection === false && !model.draggingAPoint) {
+          
           let p1 = {
             x: _.clamp((startMouseCoords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
             y: _.clamp((startMouseCoords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
           }
           let selectRect = new Rectangle(p1,p2)
           let selectedPoints = model.getEditablePointsInRectangle(selectRect)
-          if(selectedPoints.length > 0) {
+          if(selectedPoints.length > 0 && model.draggingAPoint === false) {
             this.modelDispatch({
               type: SELECT_BOX,
               payload: selectRect
@@ -520,12 +531,14 @@ class Frame extends Component {
           }
         }
       } else {
-        this.setState({
-          draggingSelection: false
-        })
-        this.modelDispatch({
-          type: RESET_SELECTION
-        })
+        if(this.state.draggingSelection) {
+          this.modelDispatch({
+            type: RESET_SELECTION
+          })
+          this.setState({
+            draggingSelection: false
+          })
+        }
       }
       this.setState({
         mouseDown: false,
@@ -750,6 +763,7 @@ class Frame extends Component {
                               scaling={algorithm_scaling}
                               onGeometryClickCallback={this.props.onGeometryClickCallback}
                               onPointClickCallback={this.props.onPointClickCallback}
+                              selectingPoints={model.selectingPoints}
                               />
                           );
                         })}
@@ -768,6 +782,8 @@ class Frame extends Component {
                               onPointClickCallback={this.props.onPointClickCallback}
                               geometry={{...geometry, editable: this.props.editable}}
                               showPointCoordinates={this.props.showPointCoordinates}
+                              selectingPoints={model.selectingPoints}
+                              startDraggingSelection={this.startDraggingSelection}
                               />
                           );
                         }
@@ -857,7 +873,8 @@ Frame.defaultProps = {
   showGridLines: false,
   gridLinesUnit: 'mm',
   showZoomControls: false,
-  showPointCoordinates: false
+  showPointCoordinates: false,
+  procedureUpdateIntervalOnMouseMove: 1
 }
 
 export default Frame;

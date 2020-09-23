@@ -20,26 +20,26 @@ model.setSize({
 model.addEditableGeometry(
     'test-path',
     new Path(
-        _.range(10).map(val => {
+        _.range(200 ).map(val => {
             return {
-                x: 10 + val * 20,
+                x: 10 + val * 5,
                 y: 50 + Math.random() * 900
             }
         })
     ).r(5)
 )
 
-model.addEditableGeometry(
-    'test-path-two',
-    new Path(
-        _.range(5).map(val => {
-            return {
-                x: 500,
-                y: 10 + val * 100
-            }
-        })
-    )
-)
+// model.addEditableGeometry(
+//     'test-path-two',
+//     new Path(
+//         _.range(5).map(val => {
+//             return {
+//                 x: 500,
+//                 y: 10 + val * 100
+//             }
+//         })
+//     )
+// )
 
 model.addProcedure(
     'test-procedure',
@@ -76,6 +76,7 @@ const ZoomPanFrameTest = ({
                         logModelDispatch={logging}
                         logModelState={logging}
                         onClickCallback={(e) => console.log(e)}
+                        updateParameters={(params) => { console.log('update parameters callback function') }}
                         showPointCoordinates={true}
                         />
                 )}

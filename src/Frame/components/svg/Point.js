@@ -10,8 +10,7 @@ import pathGenerator from './helpers/pathGenerator';
 import PointCoordinates from './point/PointCoordinates'
 import PointConstraints from './point/PointConstraints';
 import PointConstraint from './point/PointConstraint'
-import ModelContext from '../../ModelContext'
-import { FrameContext } from '../../Frame'
+import _ from 'lodash'
 
 const Point = React.memo(({
     point,
@@ -29,10 +28,10 @@ const Point = React.memo(({
     radius,
     geometryRadius,
     showCoordinates,
-    setEditingPoint
+    setEditingPoint,
+    selectingPoints,
+    startDraggingSelection
 }) => {
-    const model = useContext(ModelContext)
-    const frame = useContext(FrameContext)
     let curveControlLineOpacity = 0.5
     let strokeDasharray = "5 5"
     if(point.fill) {
@@ -175,7 +174,7 @@ const Point = React.memo(({
             key={i}
             className={controlPointClasses + " cubic"}
             onMouseDown={ (e) => {
-              if(modelDispatch !== undefined && model.selectingPoints === false) {
+              if(modelDispatch !== undefined && selectingPoints === false) {
                 modelDispatch({
                   type: SET_DRAGGED_CUBIC_CONTROL_POINT,
                   point_id: point.id,
@@ -185,7 +184,7 @@ const Point = React.memo(({
               }
             }}
             onTouchStart={ (e) => {
-              if(modelDispatch !== undefined && model.selectingPoints === false) {
+              if(modelDispatch !== undefined && selectingPoints === false) {
                 modelDispatch({
                   type: SET_DRAGGED_CUBIC_CONTROL_POINT,
                   point_id: point.id,
@@ -258,21 +257,21 @@ const Point = React.memo(({
                 onClickCallback()
               } else {
                 if(modelDispatch !== undefined) {
-                  if(model.selectingPoints === false) {
+                  if(selectingPoints === false) {
                     modelDispatch({
                       type: SET_DRAGGED_POINT,
                       point_id: point.id,
                       geometry_id: geometry_id
                     })
                   } else {
-                    frame.startDraggingSelection(e)
+                    startDraggingSelection(e)
                   }
                 }
               }
             }
           }}
           onTouchStart={ (e) => {
-            if(modelDispatch !== undefined && model.selectingPoints === false) {
+            if(modelDispatch !== undefined && selectingPoints === false) {
               modelDispatch({
                 type: SET_DRAGGED_POINT,
                 point_id: point.id,
@@ -312,6 +311,19 @@ const Point = React.memo(({
           ) : null}
         </g>
     )
+}, (prev, next) => {
+  let prevValues = prev.point.getValues()
+  let nextValues = next.point.getValues()
+  if(prevValues.some((v, i) => v !== nextValues[i])) {
+    return false
+  }
+  if(!_.isEqual(prev.scaling, next.scaling)) {
+    return false
+  }
+  if(prev.point.selected !== next.point.selected) {
+    return false
+  }
+  return true
 })
 
 Point.defaultProps = {

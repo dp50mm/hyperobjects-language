@@ -8,7 +8,9 @@ const Group = ({
   scaling,
   onPointClickCallback,
   setEditingPoint,
-  showCoordinates
+  showCoordinates,
+  startDraggingSelection,
+  selectingPoints
 }) => (
   <g>
     {geometry.showBounds && (
@@ -36,6 +38,8 @@ const Group = ({
         onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
         setEditingPoint={setEditingPoint}
         showCoordinates={showCoordinates}
+        startDraggingSelection={startDraggingSelection}
+        selectingPoints={selectingPoints}
         />
      )
    })}

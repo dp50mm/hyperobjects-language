@@ -12,7 +12,9 @@ const Path = React.memo(({
   onPointClickCallback,
   onPathClickCallback,
   setEditingPoint,
-  showCoordinates
+  showCoordinates,
+  selectingPoints,
+  startDraggingSelection
 }) => {
   const [mouseOver, setMouseOver] = useState(false)
   let editPoints = null;
@@ -49,6 +51,8 @@ const Path = React.memo(({
          onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
          setEditingPoint={setEditingPoint}
          showCoordinates={showCoordinates}
+         startDraggingSelection={startDraggingSelection}
+         selectingPoints={selectingPoints}
          />
       )
     });

@@ -27,8 +27,12 @@ import geometryReducer from './geometryReducer';
 const reducer = (prevState, action) => {
   switch(action.type) {
     // Move individual points 
-    case SET_DRAGGED_POINT:
     case MOVE_POINT:
+      return {
+        ...prevState,
+        geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
+      };
+    case SET_DRAGGED_POINT:
     case SET_DRAGGED_ARC_CONTROL_POINT:
     case SET_DRAGGED_CUBIC_CONTROL_POINT:
     case SET_DRAGGED_QUADRATIC_CONTROL_POINT:
@@ -54,7 +58,6 @@ const reducer = (prevState, action) => {
     case SELECT_BOX:
       return {
         ...prevState,
-        draggingAPoint: false,
         selectingPoints: true,
         geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
       }
@@ -62,6 +65,7 @@ const reducer = (prevState, action) => {
       return {
         ...prevState,
         selectingPoints: false,
+        draggingAPoint: false,
         geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
       }
     case ADD_TO_SELECTION:

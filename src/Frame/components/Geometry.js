@@ -9,16 +9,17 @@ import {
   PATH,
   TEXT
 } from '../../geometry/types';
-
-
-const Geometry = ({
+import _ from 'lodash'
+const Geometry = React.memo(({
   geometry,
   modelDispatch,
   scaling,
   onPointClickCallback,
   onGeometryClickCallback,
   setEditingPoint,
-  showPointCoordinates
+  showPointCoordinates,
+  selectingPoints,
+  startDraggingSelection
 }) => {
   switch (geometry.type) {
     case GROUP:
@@ -30,6 +31,8 @@ const Geometry = ({
           onPointClickCallback={onPointClickCallback}
           setEditingPoint={setEditingPoint}
           showCoordinates={showPointCoordinates}
+          selectingPoints={selectingPoints}
+          startDraggingSelection={startDraggingSelection}
           />
       );
     case POLYGON:
@@ -48,6 +51,8 @@ const Geometry = ({
           onPathClickCallback={onGeometryClickCallback}
           setEditingPoint={setEditingPoint}
           showCoordinates={showPointCoordinates}
+          selectingPoints={selectingPoints}
+          startDraggingSelection={startDraggingSelection}
           />
       );
     case TEXT:
@@ -62,7 +67,20 @@ const Geometry = ({
         <g><text>No type set for {geometry.name}</text></g>
       );
   }
-
-}
+}, (prevProps, nextProps) => {
+  const prevPropsAllValues = _.flattenDeep(prevProps.geometry.points.map(p => p.getValues()))
+  const nextPropsAllValues = _.flattenDeep(nextProps.geometry.points.map(p => p.getValues()))
+  if(!_.isEqual(prevPropsAllValues, nextPropsAllValues)) {
+    // console.log('geometries not equal', prevProps.geometry, nextProps.geometry)
+    return false
+  }
+  if(prevProps.setEditingPoint !== nextProps.setEditingPoint) {
+    return false
+  }
+  if(prevProps.selectingPoints !== nextProps.selectingPoints) {
+    return false
+  }
+  return prevProps.scaling.x === nextProps.scaling.x
+})
 
 export default Geometry;

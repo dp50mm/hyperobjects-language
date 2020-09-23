@@ -286,6 +286,12 @@ function Geometry(points, name, attributes) {
     })
     return this
   }
+
+  this.isEqual = (g) => {
+    return this.points.every((p, i) => {
+      return p.equals(g.points[i])
+    })
+  }
 }
 
 
