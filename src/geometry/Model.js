@@ -191,6 +191,7 @@ function Model(name, classes) {
   this.extractModel = function() {
     return {
       geometries: this.extractGeometries(),
+      editableGeometriesList: this.editableGeometriesList,
       procedures: this.extractProcedures(),
       inputs: this.extractInputs(),
       size: this.size
@@ -198,7 +199,9 @@ function Model(name, classes) {
   }
   this.importModel = function(modelElements) {
     this.setGeometries(modelElements.geometries)
-    this.editableGeometriesList = _.keys(modelElements.geometries)
+    let newGeometryKeys = _.get(modelElements, 'editableGeometriesList', false)
+    if(newGeometryKeys === false) newGeometryKeys = _.keys(modelElements.geometries)
+    this.editableGeometriesList = newGeometryKeys
     this.inputs = _.get(modelElements, 'inputs', {})
     this.inputsList = _.keys(modelElements.inputs)
     this.importProcedures(modelElements.procedures)

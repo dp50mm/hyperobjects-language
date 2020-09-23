@@ -53,7 +53,7 @@ const EditPointPopUp = React.memo(({
                 left: transformMatrix.translateX,
                 top: transformMatrix.translateY
             }}
-            >
+            > 
             <div className={styles['edit-point-pop-up']}
                 style={{
                     left: editPoint.x * transformMatrix.scaleX,
