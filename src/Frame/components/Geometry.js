@@ -68,6 +68,9 @@ const Geometry = React.memo(({
       );
   }
 }, (prevProps, nextProps) => {
+  if(prevProps.geometry.points.length !== nextProps.geometry.points.length) {
+    return false
+  }
   const prevPropsAllValues = _.flattenDeep(prevProps.geometry.points.map(p => p.getValues()))
   const nextPropsAllValues = _.flattenDeep(nextProps.geometry.points.map(p => p.getValues()))
   if(!_.isEqual(prevPropsAllValues, nextPropsAllValues)) {
