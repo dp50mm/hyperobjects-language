@@ -488,6 +488,7 @@ class Frame extends Component {
   svgOnMouseUp(e) {
     let mouse_coords = this.getMouseCoords(e);
     let startMouseCoords = this.state.mouseDownPoint
+    const panning = keysPressed.includes(' ')
     if(e.button === 0) {
       let transformMatrix = this.state.transformMatrix
       let model = frameModelStores[this.state.frameID];
@@ -519,7 +520,7 @@ class Frame extends Component {
           }
           let selectRect = new Rectangle(p1,p2)
           let selectedPoints = model.getEditablePointsInRectangle(selectRect)
-          if(selectedPoints.length > 0 && model.draggingAPoint === false) {
+          if(selectedPoints.length > 0 && model.draggingAPoint === false && !panning) {
             this.modelDispatch({
               type: SELECT_BOX,
               payload: selectRect

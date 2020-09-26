@@ -77,6 +77,11 @@ const Geometry = React.memo(({
     // console.log('geometries not equal', prevProps.geometry, nextProps.geometry)
     return false
   }
+  const prevPropsSelectedValues = prevProps.geometry.points.map(p => p.selected)
+  const nextPropsSelectedValues = nextProps.geometry.points.map(p => p.selected)
+  if(!_.isEqual(prevPropsSelectedValues, nextPropsSelectedValues)) {
+    return false
+  }
   if(prevProps.setEditingPoint !== nextProps.setEditingPoint) {
     return false
   }
