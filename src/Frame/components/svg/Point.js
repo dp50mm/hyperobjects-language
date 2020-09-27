@@ -323,7 +323,7 @@ const Point = React.memo(({
   if(!_.isEqual(prev.scaling, next.scaling)) {
     return false
   }
-  if(prev.onPointClickCallback !== next.onPointClickCallback) {
+  if(prev.onClickCallback !== next.onClickCallback) {
     return false
   }
   return true

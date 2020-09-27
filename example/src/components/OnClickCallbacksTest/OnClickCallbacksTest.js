@@ -45,7 +45,7 @@ newModel.addProcedure(
 const OnClickCallbacksTest = () => {
     const [clickState, setClickState] = useState("select")
     const [clickLog, setClickLog] = useState([])
-    let onClickCallback = false
+    let onClickCallback = (p) => { console.log(p) }
     let onGeometryClickCallback = false
     let onPointClickCallback = false
     function addLog(log) {
