@@ -88,6 +88,7 @@ const Path = React.memo(({
       opacity={geometry._opacity}
       strokeLinecap={geometry._strokeLinecap}
       strokeLinejoin={geometry._strokeLinejoin}
+      strokeDasharray={geometry._strokeDasharray / scaling.x}
       onClick={() => {
         if(onPathClickCallback) {
           onPathClickCallback(geometry)

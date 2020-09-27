@@ -28,6 +28,7 @@ function drawPath(gl, g, transformMatrix) {
   gl.lineWidth = g._strokeWidth * canvasScaling.x
   gl.lineCap = g._strokeLinecap
   gl.lineJoin = g._strokeLinejoin
+  gl.setLineDash([g._strokeDasharray * canvasScaling.x])
   // console.log('line width: ', gl.lineWidth, 'strokestyle: ', gl.strokeStyle, ' globalApha: ', gl.globalAlpha);
 
   gl.stroke()

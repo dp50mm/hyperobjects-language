@@ -20,6 +20,7 @@ function Styling(attributes) {
   this._opacity = _.get(attributes, "_opacity", 1)
   this._strokeLinecap = _.get(attributes, "_strokeLinecap", 'butt')
   this._strokeLinejoin = _.get(attributes, "_strokeLinejoin", 'miter')
+  this._strokeDasharray = _.get(attributes, '_strokeDasharray', 0)
   this._showCoordinates = _.get(attributes, "_showCoordinates", false)
   this._shadowBlur = _.get(attributes, "_shadowBlur", 0)
   this._shadowColor = _.get(attributes, "_shadowColor", 'transparent')
@@ -106,6 +107,11 @@ function Styling(attributes) {
     return this
   }
 
+  this.strokeDasharray = (dashArray) => {
+    this._strokeDasharray = dashArray
+    return this
+  }
+
   this.shadowBlur = (blur) => {
     this._shadowBlur = blur
     return this
@@ -115,7 +121,7 @@ function Styling(attributes) {
     return this
   }
   this.shadowOpacity = (opacity) => {
-    this._shadowOpacity = (opacity)
+    this._shadowOpacity = opacity
     return this
   }
   this.shadowOffsetX = (offset) => {

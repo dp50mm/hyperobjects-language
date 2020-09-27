@@ -27,7 +27,7 @@ model.addEditableGeometry(
                 y: 50 + Math.random() * 900
             }
         })
-    ).r(4)
+    ).r(4).strokeDasharray(3)
 )
 
 // model.addEditableGeometry(
@@ -45,8 +45,13 @@ model.addEditableGeometry(
 model.addProcedure(
     'test-procedure',
     (self) => {
-        return self.geometries['test-path'].clone()
-            .translate({x: 50, y: 50}).stroke("rgb(0,150,50)").strokeWidth(1)
+        return new Path(self.geometries['test-path'].points)
+            .translate({x: 50, y: 50})
+            .strokeDasharray(5)
+            .stroke("rgb(0,150,50)")
+            .strokeWidth(1)
+            .fill('blue')
+            
     }
 )
 
