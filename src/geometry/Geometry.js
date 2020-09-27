@@ -292,6 +292,11 @@ function Geometry(points, name, attributes) {
       return p.equals(g.points[i])
     })
   }
+
+  this.addPoint = (p) => {
+    this.points.forEach(p => p.selected = false)
+    this.points.push(new Point(p))
+  }
 }
 
 

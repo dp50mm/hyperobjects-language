@@ -314,15 +314,16 @@ const Point = React.memo(({
 }, (prev, next) => {
   let prevValues = prev.point.getValues()
   let nextValues = next.point.getValues()
+  if(prev.point.selected !== next.point.selected) {
+    return false
+  }
   if(prevValues.some((v, i) => v !== nextValues[i])) {
     return false
   }
   if(!_.isEqual(prev.scaling, next.scaling)) {
     return false
   }
-  if(prev.point.selected !== next.point.selected) {
-    return false
-  }
+  
   return true
 })
 

@@ -68,6 +68,9 @@ const Geometry = React.memo(({
       );
   }
 }, (prevProps, nextProps) => {
+  if(nextProps.modelHasUpdated) {
+    return false
+  }
   if(prevProps.geometry.points.length !== nextProps.geometry.points.length) {
     return false
   }
@@ -79,7 +82,7 @@ const Geometry = React.memo(({
   }
   const prevPropsSelectedValues = prevProps.geometry.points.map(p => p.selected)
   const nextPropsSelectedValues = nextProps.geometry.points.map(p => p.selected)
-  if(!_.isEqual(prevPropsSelectedValues, nextPropsSelectedValues)) {
+  if(prevPropsSelectedValues.some((p, i) => p !== nextPropsSelectedValues[i])) {
     return false
   }
   if(prevProps.setEditingPoint !== nextProps.setEditingPoint) {

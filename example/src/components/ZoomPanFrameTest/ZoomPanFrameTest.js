@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import useComponentSize from '@rehooks/component-size'
 import {
     Frame,
     Model,
-    Path
+    Path,
+    Point
 } from 'hyperobjects-language'
 import {
     Button
@@ -20,13 +21,13 @@ model.setSize({
 model.addEditableGeometry(
     'test-path',
     new Path(
-        _.range(200 ).map(val => {
+        _.range(3).map(val => {
             return {
                 x: 10 + val * 5,
                 y: 50 + Math.random() * 900
             }
         })
-    ).r(5)
+    ).r(4)
 )
 
 // model.addEditableGeometry(
@@ -44,7 +45,8 @@ model.addEditableGeometry(
 model.addProcedure(
     'test-procedure',
     (self) => {
-        return self.geometries['test-path'].clone().translate({x: 50, y: 50}).stroke("red").strokeWidth(4)
+        return self.geometries['test-path'].clone()
+            .translate({x: 50, y: 50}).stroke("rgb(0,150,50)").strokeWidth(1)
     }
 )
 
@@ -53,9 +55,18 @@ const ZoomPanFrameTest = ({
 }) => {
     const ref = useRef(null)
     const [logging, setLogging] = useState(false)
+    const [modelHasUpdated, setModelHasUpdated] = useState(false)
     const size = useComponentSize(ref)
     const width = _.max([size.width, 100])
     const height = window.innerHeight - 300
+    useEffect(() => {
+        if(modelHasUpdated) {
+            setTimeout(() => {
+                setModelHasUpdated(false)
+            }, 10)
+            
+        }
+    })
     return (
         <div className='zoom-pan-frame-test'>
             <h2>Zoom pan frame test</h2>
@@ -75,8 +86,16 @@ const ZoomPanFrameTest = ({
                         showZoomControls={true}
                         logModelDispatch={logging}
                         logModelState={logging}
-                        onClickCallback={(e) => console.log(e)}
-                        updateParameters={(params) => { console.log('update parameters callback function') }}
+                        modelHasUpdated={modelHasUpdated}
+                        onClickCallback={(e) => {
+                            model.geometries['test-path'].addPoint(e)
+                            setModelHasUpdated(true)
+                        }}
+                        updateParameters={(params) => {
+                            model.updateGeometryValues(params.geometries)
+                            // model.geometries = params.geometries
+                            // setModelHasUpdated(true)
+                         }}
                         showPointCoordinates={true}
                         />
                 )}

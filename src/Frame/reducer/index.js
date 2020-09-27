@@ -59,6 +59,7 @@ const reducer = (prevState, action) => {
       return {
         ...prevState,
         selectingPoints: true,
+        selectedPoints: true,
         geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
       }
     case RESET_SELECTION:
@@ -66,6 +67,7 @@ const reducer = (prevState, action) => {
         ...prevState,
         selectingPoints: false,
         draggingAPoint: false,
+        selectedPoints: false,
         geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
       }
     case ADD_TO_SELECTION:

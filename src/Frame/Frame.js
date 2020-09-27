@@ -487,6 +487,7 @@ class Frame extends Component {
   }
   svgOnMouseUp(e) {
     let mouse_coords = this.getMouseCoords(e);
+    
     let startMouseCoords = this.state.mouseDownPoint
     const panning = keysPressed.includes(' ')
     if(e.button === 0) {
@@ -502,16 +503,18 @@ class Frame extends Component {
         if(this.state.draggingSelection) {
           this.callUpdateParameters()
         }
-        if(Math.round(mouse_coords.x) === Math.round(startMouseCoords.x) && Math.round(mouse_coords.y) === Math.round(startMouseCoords.y)) {
+        const MIN_DRAG_DISTANCE = 3 
+        if(Math.abs(mouse_coords.x - startMouseCoords.x) < MIN_DRAG_DISTANCE && Math.abs(mouse_coords.y - startMouseCoords.y) < MIN_DRAG_DISTANCE) {
+          
+          if(this.props.onClickCallback && frameModelStores[this.state.frameID].selectedPoints === false) {
+            this.props.onClickCallback(p2)
+          }
           this.setState({
             draggingSelection: false
           })
           this.modelDispatch({
             type: RESET_SELECTION
           })
-          if(this.props.onClickCallback) {
-            this.props.onClickCallback(p2)
-          }
         } else if(this.state.draggingSelection === false && !model.draggingAPoint) {
           
           let p1 = {
@@ -785,6 +788,7 @@ class Frame extends Component {
                               showPointCoordinates={this.props.showPointCoordinates}
                               selectingPoints={model.selectingPoints}
                               startDraggingSelection={this.startDraggingSelection}
+                              modelHasUpdated={this.props.modelHasUpdated}
                               />
                           );
                         }

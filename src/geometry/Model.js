@@ -69,6 +69,7 @@ function Model(name, classes) {
   this.draggingAPoint = false
   this.editingPoint = false
   this.selectingPoints = false
+  this.selectedPoints = false
   this.focussed = false
   this.geometries = {}
   this.procedures = {}
@@ -307,6 +308,15 @@ function Model(name, classes) {
    this.getEditablePointsInRectangle = function(rect) {
      let allPoints = _.flatten(this.editableGeometries().map(g => g.points))
      return allPoints.filter(p => rect.containsPoint(p))
+   }
+
+   this.updateGeometryValues = function(newGeometries) {
+     let newGeometryKeys = _.keys(newGeometries)
+     this.editableGeometriesList.forEach(key => {
+       if(newGeometryKeys.includes(key)) {
+         this.geometries[key].points = newGeometries[key].points
+       }
+     })
    }
 }
 
