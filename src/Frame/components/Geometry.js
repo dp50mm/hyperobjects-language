@@ -91,6 +91,9 @@ const Geometry = React.memo(({
   if(prevProps.selectingPoints !== nextProps.selectingPoints) {
     return false
   }
+  if(prevProps.onPointClickCallback !== nextProps.onPointClickCallback) {
+    return false
+  }
   return prevProps.scaling.x === nextProps.scaling.x
 })
 
