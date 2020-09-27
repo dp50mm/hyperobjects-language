@@ -72,19 +72,24 @@ const Geometry = React.memo(({
   if(nextProps.modelHasUpdated) {
     return false
   }
-  if(prevProps.geometry.points.length !== nextProps.geometry.points.length) {
+  if(!_.isUndefined(prevProps) || !_.isUndefined(nextProps)) {
     return false
   }
-  const prevPropsAllValues = _.flattenDeep(prevProps.geometry.points.map(p => p.getValues()))
-  const nextPropsAllValues = _.flattenDeep(nextProps.geometry.points.map(p => p.getValues()))
-  if(!_.isEqual(prevPropsAllValues, nextPropsAllValues)) {
-    // console.log('geometries not equal', prevProps.geometry, nextProps.geometry)
-    return false
-  }
-  const prevPropsSelectedValues = prevProps.geometry.points.map(p => p.selected)
-  const nextPropsSelectedValues = nextProps.geometry.points.map(p => p.selected)
-  if(prevPropsSelectedValues.some((p, i) => p !== nextPropsSelectedValues[i])) {
-    return false
+  if(prevProps.geometry.points && nextProps.geoemtry.points) {
+    if(prevProps.geometry.points.length !== nextProps.geometry.points.length) {
+      return false
+    }
+    const prevPropsAllValues = _.flattenDeep(prevProps.geometry.points.map(p => p.getValues()))
+    const nextPropsAllValues = _.flattenDeep(nextProps.geometry.points.map(p => p.getValues()))
+    if(!_.isEqual(prevPropsAllValues, nextPropsAllValues)) {
+      // console.log('geometries not equal', prevProps.geometry, nextProps.geometry)
+      return false
+    }
+    const prevPropsSelectedValues = prevProps.geometry.points.map(p => p.selected)
+    const nextPropsSelectedValues = nextProps.geometry.points.map(p => p.selected)
+    if(prevPropsSelectedValues.some((p, i) => p !== nextPropsSelectedValues[i])) {
+      return false
+    }
   }
   if(prevProps.setEditingPoint !== nextProps.setEditingPoint) {
     return false
