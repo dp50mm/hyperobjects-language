@@ -28,7 +28,7 @@ const SegmentsLengthsLabels = React.memo(({
                             >
                         <textPath
                             startOffset="50%"
-                            baselineShift="3px"
+                            baselineShift={3 / scaling.x} 
                             href={`#${segmentId}`}
                             >
                             {_.round(segment.getLength(), 1)}{unit}
