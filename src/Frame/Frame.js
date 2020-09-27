@@ -387,54 +387,54 @@ class Frame extends Component {
 
   }
   mouseMove(e) {
-    if(this.props.editable) {
-      let mouse_coords = this.getMouseCoords(e);
-      let size = this.sizing()
-      let model = frameModelStores[this.state.frameID];
-      const transformMatrix = this.state.transformMatrix
-      if(mouse_coords) {
-        if(this.props.logMouseMove) {
-          console.log(mouse_coords)
+    let mouse_coords = this.getMouseCoords(e);
+    let size = this.sizing()
+    let model = frameModelStores[this.state.frameID];
+    const transformMatrix = this.state.transformMatrix
+    if(mouse_coords) {
+      if(this.props.logMouseMove) {
+        console.log(mouse_coords)
+      }
+      const panning = keysPressed.includes(' ')
+      if(panning) {
+        if(this.state.mouseDown) {
+          this.setState({
+            transformMatrix: {
+              ...this.state.transformMatrix,
+              translateX: this.state.panStart.x + mouse_coords.x - this.state.mouseDownPoint.x,
+              translateY: this.state.panStart.y + mouse_coords.y - this.state.mouseDownPoint.y
+            }
+          })
         }
-        const panning = keysPressed.includes(' ')
-        if(panning) {
-          if(this.state.mouseDown) {
-            this.setState({
-              transformMatrix: {
-                ...this.state.transformMatrix,
-                translateX: this.state.panStart.x + mouse_coords.x - this.state.mouseDownPoint.x,
-                translateY: this.state.panStart.y + mouse_coords.y - this.state.mouseDownPoint.y
+      } else if(this.state.mouseDown) {
+        let previousMouseCoords = this.state.mouse_select
+
+        if(this.state.draggingSelection) {
+          const previousPoint = {
+            x: (previousMouseCoords.x - transformMatrix.translateX) / transformMatrix.scaleX,
+            y: (previousMouseCoords.y - transformMatrix.translateY) / transformMatrix.scaleY
+          }
+          const currentPoint = {
+            x: (mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX,
+            y: (mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY
+          }
+          const dx = currentPoint.x - previousPoint.x
+          const dy = currentPoint.y - previousPoint.y
+          if(!isNaN(dx) && !isNaN(dy) && this.props.editable) {
+            this.modelDispatch({
+              type: MOVE_SELECTION,
+              payload: {
+                dx: dx,
+                dy: dy
               }
             })
           }
-        } else if(this.state.mouseDown) {
-          let previousMouseCoords = this.state.mouse_select
-
-          if(this.state.draggingSelection) {
-            const previousPoint = {
-              x: (previousMouseCoords.x - transformMatrix.translateX) / transformMatrix.scaleX,
-              y: (previousMouseCoords.y - transformMatrix.translateY) / transformMatrix.scaleY
-            }
-            const currentPoint = {
-              x: (mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX,
-              y: (mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY
-            }
-            const dx = currentPoint.x - previousPoint.x
-            const dy = currentPoint.y - previousPoint.y
-            if(!isNaN(dx) && !isNaN(dy)) {
-              this.modelDispatch({
-                type: MOVE_SELECTION,
-                payload: {
-                  dx: dx,
-                  dy: dy
-                }
-              })
-            }
-          }
-          this.setState({
-            mouse_select: mouse_coords
-          })
-        } else {
+        }
+        this.setState({
+          mouse_select: mouse_coords
+        })
+      } else {
+        if(this.props.editable) {
           this.modelDispatch({
             type: MOVE_POINT,
             payload: {
