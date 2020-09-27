@@ -34,6 +34,7 @@ const Group = ({
         strokeOpacity={geometry.controls.strokeOpacity}
         scaling={scaling}
         geometry_id={geometry.id}
+        geometryKey={geometry.key}
         modelDispatch={modelDispatch}
         onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
         setEditingPoint={setEditingPoint}

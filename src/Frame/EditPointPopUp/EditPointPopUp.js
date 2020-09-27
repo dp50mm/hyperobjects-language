@@ -12,7 +12,8 @@ const EditPointPopUp = React.memo(({
     editPoint,
     setEditingPoint,
     modelDispatch,
-    transformMatrix
+    transformMatrix,
+    callUpdateParameters
 }) => {
     const [newX, setNewX] = useState(editPoint.x)
     const [newY, setNewY] = useState(editPoint.y)
@@ -80,6 +81,9 @@ const EditPointPopUp = React.memo(({
                                     x: parseFloat(newX)
                                 }
                             })
+                            setTimeout(() => {
+                                callUpdateParameters()
+                            }, 1)
                         }
                         handleUIKeys(e)
                     }}
@@ -101,6 +105,9 @@ const EditPointPopUp = React.memo(({
                                     y: parseFloat(newY)
                                 }
                             })
+                            setTimeout(() => {
+                                callUpdateParameters()
+                            }, 1)
                         }
                         handleUIKeys(e)
                     }}

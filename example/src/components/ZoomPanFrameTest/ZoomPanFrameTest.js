@@ -91,9 +91,6 @@ const ZoomPanFrameTest = ({
                             model.geometries['test-path'].addPoint(e)
                             setModelHasUpdated(true)
                         }}
-                        onPointClickCallback={(geometry, point, i) => {
-                            console.log(geometry, point, i)
-                        }}
                         updateParameters={(params) => {
                             model.updateGeometryValues(params.geometries)
                             // model.geometries = params.geometries

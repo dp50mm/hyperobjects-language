@@ -46,6 +46,7 @@ const Path = React.memo(({
          strokeColor={geometry.controls.stroke}
          strokeOpacity={geometry.controls.strokeOpacityValue}
          geometry_id={geometry.id}
+         geometryKey={geometry.key}
          previous_point={previous_point}
          modelDispatch={modelDispatch}
          onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}

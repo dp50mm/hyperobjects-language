@@ -30,7 +30,8 @@ const Point = React.memo(({
     showCoordinates,
     setEditingPoint,
     selectingPoints,
-    startDraggingSelection
+    startDraggingSelection,
+    geometryKey
 }) => {
     let curveControlLineOpacity = 0.5
     let strokeDasharray = "5 5"
@@ -283,7 +284,7 @@ const Point = React.memo(({
             setEditingPoint({
               point_id: point.id,
               geometry_id: geometry_id,
-              geometry_key: point.geometry.key
+              geometry_key: geometryKey
             })
             e.preventDefault()
           }}
@@ -333,7 +334,8 @@ Point.defaultProps = {
   showCoordinates: false,
   radius: 15,
   scaling: {x: 1, y: 1},
-  onClickCallback: false
+  onClickCallback: false,
+  geometryKey: false
 }
 
 

@@ -12,6 +12,7 @@ import {
 import _ from 'lodash'
 const Geometry = React.memo(({
   geometry,
+  geometryKey,
   modelDispatch,
   scaling,
   onPointClickCallback,

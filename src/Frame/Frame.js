@@ -107,6 +107,7 @@ class Frame extends Component {
     this.moveToZero = this.moveToZero.bind(this)
     this.setEditingPoint = this.setEditingPoint.bind(this)
     this.startDraggingSelection = this.startDraggingSelection.bind(this)
+    this.callUpdateParameters = this.callUpdateParameters.bind(this)
   }
   sizing() {
     return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
@@ -623,7 +624,10 @@ class Frame extends Component {
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
     let editPoint = false
     if(this.state.editingPoint) {
-      editPoint = _.find(model.geometries[this.state.editingPoint.geometry_key].points, p => p.id === this.state.editingPoint.point_id)
+      let editPointGeometryKey = _.get(this.state, 'editingPoint.geometry_key', false)
+      if(editPointGeometryKey) {
+        editPoint = _.find(model.geometries[editPointGeometryKey].points, p => p.id === this.state.editingPoint.point_id)
+      }
     }
     let size = this.sizing()
     let algorithm_scaling = {
@@ -719,6 +723,7 @@ class Frame extends Component {
                 setEditingPoint={this.setEditingPoint}
                 transformMatrix={this.state.transformMatrix}
                 modelDispatch={this.modelDispatch.bind(this)}
+                callUpdateParameters={this.callUpdateParameters}
                 
                 />
             )}
