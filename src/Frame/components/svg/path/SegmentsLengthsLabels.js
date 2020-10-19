@@ -24,7 +24,7 @@ const SegmentsLengthsLabels = React.memo(({
                         <text
                             textAnchor="middle"
                             className='segment-length'
-                            fontSize={12 / scaling.x}
+                            fontSize={10 / scaling.x}
                             >
                         <textPath
                             startOffset="50%"

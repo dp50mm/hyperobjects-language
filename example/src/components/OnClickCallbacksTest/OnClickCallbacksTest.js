@@ -79,6 +79,7 @@ const OnClickCallbacksTest = () => {
                 onClickCallback={onClickCallback}
                 onGeometryClickCallback={onGeometryClickCallback}
                 onPointClickCallback={onPointClickCallback}
+                exportControls={true}
                 />
             <ReactJson src={clickLog} collapsed={true} />
             </div>

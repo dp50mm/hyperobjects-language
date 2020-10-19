@@ -102,6 +102,7 @@ const ZoomPanFrameTest = ({
                             // setModelHasUpdated(true)
                          }}
                         showPointCoordinates={true}
+                        exportControls={true}
                         />
                 )}
                 </div>
