@@ -1,5 +1,4 @@
 import _Frame from './Frame'
-
 import _Model from './geometry/Model'
 import _Point from './geometry/Point'
 import _Group from './geometry/Group'
@@ -10,6 +9,8 @@ import _Text from './geometry/Text'
 import _Input from './geometry/Input'
 import _Rectangle from './geometry/shapes/Rectangle'
 import _Circle from './geometry/shapes/Circle'
+import Assets from './assets/assets'
+
 
 export const Frame = _Frame
 

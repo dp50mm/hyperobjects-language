@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from './frame.module.css';
+import './frame.scss'
 import reducer from './reducer/index';
 import Geometry from './components/Geometry';
 import { Rectangle } from '../geometry'
@@ -686,7 +686,7 @@ class Frame extends Component {
       canvasContainerStyle.opacity = 0
     }
     return (
-      <div  style={focussedStyle} className={styles['hyperobject-frame']+designer_focussed_class}>
+      <div  style={focussedStyle} className={'hyperobject-frame'}>
         {model.procedureErrors.length > 0 ? (
           <div className='procedure-errors-box'>
           <p>Model contains procedure errors:</p>

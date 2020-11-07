@@ -22,7 +22,9 @@ export var Circle = _Circle
 export var Rectangle = _Rectangle
 export var HexPattern = _HexPattern
 
-
+/**
+ * geometries output
+ */
 const geometry = {
   model: _Model,
   group: _Group,

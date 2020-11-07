@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import styles from '../frame.module.css'
+
 const SelectBox = ({
     mouseDownPoint,
     mouseSelect
@@ -17,7 +17,7 @@ const SelectBox = ({
     let dy = Math.abs(mouseDownPoint.y - mouseSelect.y)
     return (
         <rect
-            className={styles['select-box']}
+            className='select-box'
             x={x}
             y={y}
             width={dx}

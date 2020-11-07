@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from './frame.module.css';
+import './frame.scss'
 import reducer from './reducer';
 import {
   ANIMATE

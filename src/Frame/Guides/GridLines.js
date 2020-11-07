@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './guides.module.scss'
 import _ from 'lodash'
 import * as d3 from 'd3'
 
@@ -35,7 +34,7 @@ const GridLines = React.memo(({
                         x2={0}
                         y1={0}
                         y2={height}
-                        className={styles['grid-line']}
+                        className="grid-line"
                         strokeWidth={0.5 / transformMatrix.scaleX}
                         />
                     <text
@@ -59,7 +58,7 @@ const GridLines = React.memo(({
                         y1={0}
                         y2={0}
                         strokeWidth={0.5 / transformMatrix.scaleX}
-                        className={styles['grid-line']}
+                        className="grid-line"
                         />
                     <text
                         x={5 / transformMatrix.scaleX - xTextShift}

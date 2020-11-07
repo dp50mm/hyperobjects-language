@@ -23,3 +23,6 @@ yarn-error.log*
 
 .vscode
 .code-workspace
+
+# docs
+docs

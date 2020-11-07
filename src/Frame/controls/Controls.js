@@ -2,7 +2,7 @@ import React from 'react'
 import AnimationControls from './AnimationControls'
 import ExportControls from './ExportControls'
 import RenderControls from './RenderControls'
-import styles from './controls.module.scss'
+import './controls.scss'
 
 const Controls = ({
     model,
@@ -11,8 +11,7 @@ const Controls = ({
     displayGeometries
 }) => {
     return (
-        <div className={styles.controls}>
-            <div className='controls'>
+        <div className='controls'>
             {frame.props.animationControls && model.animated ? (
                 <AnimationControls
                 playing={model.playing}
@@ -40,7 +39,6 @@ const Controls = ({
                 name={model.name}
                 />
             ) : null}
-            </div>
         </div>
     )
 }

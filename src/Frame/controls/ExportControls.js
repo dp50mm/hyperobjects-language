@@ -5,7 +5,6 @@ import { saveAs } from 'file-saver'
 import {
   Button
 } from 'semantic-ui-react'
-import styles from './controls.module.scss'
 
 function downloadSVG(svg_id, _name) {
   let name = 'svg-name'
@@ -105,25 +104,24 @@ class ExportControls extends Component {
   }
   
   render() {
-    console.log(styles)
     return (
       <div className='frame-controls export'>
-        <Button size="tiny" className={styles['control-button']} onClick={this.triggerSVGExport}>
+        <Button size="tiny" className="control-button" onClick={this.triggerSVGExport}>
           <i className='pe-7s-vector pe-2x'></i>
           <p className='tooltip'>Download SVG</p>
         </Button>
         <br/>
-        <Button size="tiny" className={styles['control-button']} onClick={this.triggerPNGExport}>
+        <Button size="tiny" className="control-button" onClick={this.triggerPNGExport}>
           <i className='pe-7s-photo pe-2x'></i>
           <p className='tooltip'>Download PNG</p>
         </Button>
         <br/>
-        <Button size="tiny" className={styles['control-button']} onClick={this.downloadGCode}>
+        <Button size="tiny" className="control-button" onClick={this.downloadGCode}>
           <i className='pe-7s-download pe-2x'></i>
           <p className='tooltip'>Download GCODE</p>
         </Button>
         <br/>
-        <Button size="tiny" className={styles['control-button']} onClick={this.downloadJSON}>
+        <Button size="tiny" className="control-button" onClick={this.downloadJSON}>
           <i className='pe-7s-download pe-2x'></i>
           <p className='tooltip'>Download JSON</p>
         </Button>

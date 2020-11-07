@@ -1,5 +1,5 @@
 import React from 'react'
-import './frame-controls.css'
+import './frame-controls.scss'
 
 const AnimationControls = ({playing, playCallback, pauseCallback, rewindCallback }) => {
   return (

@@ -1,57 +1,52 @@
 .hyperobject-frame {
   transition: background 0.5s, opacity 0.5s;
   position: relative;
+  svg {
+    transition: top 0.5s;
+    overflow: visible;
+    text {
+      -webkit-user-select: none;
+      user-select: none;
+      font-family: 'Europa';
+    }
+  }
+  &.focussed {
+    z-index: 10000;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    opacity: 1;
+    background: rgba(20,20,50,1);
+    svg {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+  }
+  .display-geometries {
+    pointer-events: none;
+  }
+  .point {
+    &.clickable {
+      cursor: pointer;
+    }
+    &.editable {
+      cursor: move;
+      &:hover {
+        opacity: 0.7;
+      }
+    }
+    &.selected {
+      fill: rgba(20,20,50, 1) !important;
+      fill-opacity: 1;
+    }
+  }
 }
 
-.hyperobject-frame.focussed {
-  z-index: 10000;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  opacity: 1;
-  background: rgba(20,20,50,1);
-}
 
-.hyperobject-frame svg {
-  transition: top 0.5s;
-  overflow: visible;
-}
-
-.hyperobject-frame svg text {
-  -webkit-user-select: none;
-  user-select: none;
-  font-family: 'Europa';
-}
-
-.hyperobject-frame.focussed > svg {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-
-.display-geometries {
-  pointer-events: none;
-}
-
-.point.editable {
-  cursor: move;
-}
-
-.point.editable:hover {
-  opacity: 0.7;
-}
-
-.point.clickable {
-  cursor: pointer;
-}
-
-.point.selected {
-  fill: rgba(20,20,50, 1) !important;
-  fill-opacity: 1;
-}
 
 .focussed-text {
   pointer-events: none;
@@ -87,17 +82,6 @@
 .control-point {
   cursor: move;
 }
-
-.square-0 {
-  fill: green;
-}
-
-.hyperobject-frame .controls {
-  position: absolute;
-  top: 5px;
-  left: -5px;
-}
-
 
 .canvas-3d-view {
   user-select: none;

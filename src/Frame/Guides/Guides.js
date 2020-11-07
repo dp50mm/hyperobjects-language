@@ -1,5 +1,5 @@
 import React from 'react'
-import styles from './guides.module.scss'
+import './guides.scss'
 import GridLines from './GridLines'
 
 const Guides = React.memo(({
@@ -16,7 +16,7 @@ const Guides = React.memo(({
 }) => {
     return (
         <svg
-            className={styles['guides-svg']}
+            className="guides-svg"
             width={svgWidth}
             height={svgHeight}
             >
@@ -27,7 +27,7 @@ const Guides = React.memo(({
                             <rect
                                 width={width}
                                 height={height}
-                                className={styles['model-bounds']}
+                                className="model-bounds"
                                 strokeWidth={1 / transformMatrix.scaleX}
                                 />
                         )}

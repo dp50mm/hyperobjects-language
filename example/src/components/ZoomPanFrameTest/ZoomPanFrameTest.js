@@ -81,7 +81,7 @@ const ZoomPanFrameTest = ({
                 {width > 100 && (
                     <Frame
                         model={model}
-                        editable={false}
+                        editable={true}
                         fitInContainer={true}
                         maintainAspectRatio={true}
                         width={width}

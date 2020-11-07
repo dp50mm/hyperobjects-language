@@ -5,7 +5,6 @@ import {
   SET_DRAGGED_CUBIC_CONTROL_POINT,
 
 } from '../../reducer/actionTypes';
-import styles from '../../../Frame/frame.module.css';
 import pathGenerator from './helpers/pathGenerator';
 import PointCoordinates from './point/PointCoordinates'
 import PointConstraints from './point/PointConstraints';
@@ -40,17 +39,17 @@ const Point = React.memo(({
     }
     let classes = `geometry-${point.type} `
     let controlPointClasses =`${point.type} `
-    classes += styles.point;
-    controlPointClasses += styles.point + " "
+    classes += "point ";
+    controlPointClasses += ' point '
     if (point.cssClasses !== undefined) {
       classes += point.cssClasses + ' ';
     }
     if(modelDispatch !== undefined) {
-      classes += styles.editable;
-      controlPointClasses += styles.editable
+      classes += " editable ";
+      controlPointClasses += " editable "
     }
     if(onClickCallback) {
-      classes += ` ${styles.clickable}`
+      classes += ` clickable `
     }
     let _radius = radius
 
@@ -58,7 +57,7 @@ const Point = React.memo(({
       _radius = geometryRadius
     }
     if(point.selected) {
-      classes += ` ${styles.selected}`
+      classes += ` selectable `
     }
 
     let control_points = null;
