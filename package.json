@@ -63,8 +63,6 @@
     "ogl": "0.0.54",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-ga": "^3.0.0",
-    "react-json-view": "^1.19.1",
     "react-scripts": "^3.4.1",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^1.1.1"
