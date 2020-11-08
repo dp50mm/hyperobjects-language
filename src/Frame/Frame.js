@@ -746,6 +746,13 @@ class Frame extends Component {
             onClick={() => {
               getKeysPressed((newKeys) => keysPressed = newKeys)
             }}
+            onPointerEnter={() => {
+              getKeysPressed((newKeys) => keysPressed = newKeys)
+            }}
+            onPointerLeave={() => {
+              console.log('pointer leave')
+              removeKeyEventListeners()
+            }}
             >
               
             {editPoint && (
