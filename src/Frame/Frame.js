@@ -28,7 +28,10 @@ import EditPointPopUp from './EditPointPopUp'
 import analytics from '../utils/analytics'
 import _ from 'lodash'
 import calculateSizing from './utils/calculateSizing'
-import getKeysPressed from './utils/keysPressed'
+import getKeysPressed, {
+  keyDownEventListener,
+  removeKeyEventListeners
+} from './utils/keysPressed'
 import Guides from './Guides'
 import SelectBox from './components/SelectBox'
 import {
@@ -151,8 +154,6 @@ class Frame extends Component {
       }.bind(this), 1)
     })
     document.addEventListener("mouseup", (e) => {
-      getKeysPressed((newKeys) => keysPressed = newKeys)
-      
       if(e.button === 0) {
         this.setState({
           mouseDown: false
@@ -718,13 +719,35 @@ class Frame extends Component {
           <Inputs modelDispatch={this.modelDispatch.bind(this)} />
         )}
         {focussedTitle}
+        {keyDownEventListener === undefined && (
+          <div
+            style={{
+              position: 'absolute',
+              zIndex: 100,
+              cursor: 'pointer',
+              opacity: 0.5,
+              top: 5,
+              right: 5,
+              background: 'rgb(245,245,245)',
+              borderRadius: 4,
+              padding: 5,
+              pointerEvents: "auto"
+            }}
+            onClick={() => {
+              removeKeyEventListeners()
+            }}
+            >
+            Frame focussed
+          </div>
+        )}
         {model.dimensions === 2 ? (
           <div className='svg-container'
             style={{padding: this.props.svgPadding, background: model.background}}
+            onClick={() => {
+              getKeysPressed((newKeys) => keysPressed = newKeys)
+            }}
             >
-              {this.state.frameFocussed && (
-                <p>Frame focussed</p>
-              )}
+              
             {editPoint && (
               <EditPointPopUp
                 editPoint={editPoint}

@@ -1,7 +1,7 @@
 let keysPressed = []
 
-let keyDownEventListener = false
-let keyUpEventListener = false
+export var keyDownEventListener = false
+export var keyUpEventListener = false
 function getKeysPressed(callback) {
     if(keyDownEventListener === false) {
         keyDownEventListener = window.addEventListener('keydown', (e) => {
@@ -10,7 +10,7 @@ function getKeysPressed(callback) {
                 e.preventDefault()
             }
             if(key === "Escape") {
-                removeEventListener()
+                removeKeyEventListeners()
             }
             if(!keysPressed.includes(key)) {
                 keysPressed.push(key)
@@ -27,12 +27,14 @@ function getKeysPressed(callback) {
     return keysPressed
 }
 
-export function removeEventListener() {
-    if(keyDownEventListener) {
-        window.removeEventListener('keydown', eventListener)
+export function removeKeyEventListeners() {
+    if(keyDownEventListener !== false) {
+        window.removeEventListener('keydown', keyDownEventListener)
+        keyDownEventListener = false
     }
-    if(keyUpEventListener) {
+    if(keyUpEventListener !== false) {
         window.removeEventListener('keyup', keyUpEventListener)
+        keyUpEventListener = false
     }
     
 }
