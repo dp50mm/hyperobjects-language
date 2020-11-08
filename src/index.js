@@ -10,7 +10,10 @@ import _Input from './geometry/Input'
 import _Rectangle from './geometry/shapes/Rectangle'
 import _Circle from './geometry/shapes/Circle'
 import Assets from './assets/assets'
-
+import {
+    hyperobjectsLanguageWrapper as _hyperobjectsLanguageWrapper,
+    executeCode as _executeCode
+} from './utils/codeExecution'
 
 export const Frame = _Frame
 
@@ -24,3 +27,6 @@ export const Text = _Text
 export const Input = _Input
 export const Rectangle = _Rectangle
 export const Circle = _Circle
+
+export const hyperobjectsLanguageWrapper = _hyperobjectsLanguageWrapper
+export const executeCode = _executeCode

@@ -15,6 +15,7 @@ import InputsPage from 'containers/InputsPage'
 import ImportExportPage from 'containers/ImportExportPage'
 import ModelsPage from 'containers/ModelsPage'
 import FramePage from 'containers/FramePage'
+import ScriptingPage from 'containers/ScriptingPage'
 
 import 'hyperobjects-language/dist/index.css'
 import 'semantic-ui-css/semantic.min.css';
@@ -49,6 +50,9 @@ const App = () => {
           <Menu.Item>
           <Link to='/frame'>Frame</Link>
           </Menu.Item>
+          <Menu.Item>
+            <Link to='/scripting'>Scripting</Link>
+          </Menu.Item>
         </Menu>
         <div className='page-content'>
           <Switch>
@@ -58,6 +62,7 @@ const App = () => {
             <Route path='/procedures'><ProceduresPage /></Route>
             <Route path='/inputs'><InputsPage /></Route>
             <Route path='/frame'><FramePage /></Route>
+            <Route path='/scripting'><ScriptingPage /></Route>
             <Route path='/'><MainPage /></Route>
           </Switch>
         </div>
