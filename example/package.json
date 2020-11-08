@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@rehooks/component-size": "^1.0.3",
+    "esprima": "^4.0.1",
     "hyperobjects-language": "file:..",
     "node-sass": "^4.14.1",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
+    "react-json-view": "^1.19.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "file:../node_modules/react-scripts",
     "semantic-ui-css": "^2.4.1",

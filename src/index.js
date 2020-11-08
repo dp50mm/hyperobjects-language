@@ -9,7 +9,7 @@ import _Text from './geometry/Text'
 import _Input from './geometry/Input'
 import _Rectangle from './geometry/shapes/Rectangle'
 import _Circle from './geometry/shapes/Circle'
-
+import _HexPattern from './geometry/shapes/HexPattern'
 import Assets from './assets/assets'
 import {
     hyperobjectsLanguageWrapper as _hyperobjectsLanguageWrapper,
@@ -21,6 +21,8 @@ import {
   } from './utils/animation'
 
 import _ from 'lodash'
+
+import * as ogl from 'ogl'
 
 
 export const Frame = _Frame
@@ -35,6 +37,8 @@ export const Text = _Text
 export const Input = _Input
 export const Rectangle = _Rectangle
 export const Circle = _Circle
+export const HexPattern = _HexPattern
+
 
 export const hyperobjectsLanguageWrapper = _hyperobjectsLanguageWrapper
 export const executeCode = _executeCode
@@ -51,9 +55,13 @@ export function setupCodeExecution() {
         shapes: {
           Rectangle: Rectangle,
           Circle: Circle,
+          HexPattern: HexPattern,
         },
         lodash: _,
         animate: _animate,
-        EasingFunctions: _EasingFunctions
+        EasingFunctions: _EasingFunctions,
+        EXTRA_LIBRARIES: {
+          ogl: ogl
+        }
       }
 }

@@ -24,7 +24,6 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
   var Text = window.HYPEROBJECTS.Text
   var Rectangle = window.HYPEROBJECTS.shapes.Rectangle
   var Circle = window.HYPEROBJECTS.shapes.Circle
-  var Voronoi = window.HYPEROBJECTS.shapes.Voronoi
   var HexPattern = window.HYPEROBJECTS.shapes.HexPattern
   var _ = window.HYPEROBJECTS.lodash
   var animate = window.HYPEROBJECTS.animate
