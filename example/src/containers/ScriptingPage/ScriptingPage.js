@@ -1,7 +1,10 @@
 import React from 'react'
 import {
-    hyperobjectsLanguageWrapper
+    hyperobjectsLanguageWrapper,
+    setupCodeExecution
 } from 'hyperobjects-language'
+
+setupCodeExecution()
 
 const ScriptingPage = ({
 

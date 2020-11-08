@@ -9,11 +9,19 @@ import _Text from './geometry/Text'
 import _Input from './geometry/Input'
 import _Rectangle from './geometry/shapes/Rectangle'
 import _Circle from './geometry/shapes/Circle'
+
 import Assets from './assets/assets'
 import {
     hyperobjectsLanguageWrapper as _hyperobjectsLanguageWrapper,
     executeCode as _executeCode
 } from './utils/codeExecution'
+import {
+    EasingFunctions as _EasingFunctions,
+    animate as _animate
+  } from './utils/animation'
+
+import _ from 'lodash'
+
 
 export const Frame = _Frame
 
@@ -30,3 +38,22 @@ export const Circle = _Circle
 
 export const hyperobjectsLanguageWrapper = _hyperobjectsLanguageWrapper
 export const executeCode = _executeCode
+
+export function setupCodeExecution() {
+    // Function to set up necessary variables for code execution
+    window.HYPEROBJECTS = {
+        Model: Model,
+        Group: Group,
+        Path: Path,
+        Segment: Segment,
+        Text: Text,
+        Point: Point,
+        shapes: {
+          Rectangle: Rectangle,
+          Circle: Circle,
+        },
+        lodash: _,
+        animate: _animate,
+        EasingFunctions: _EasingFunctions
+      }
+}
