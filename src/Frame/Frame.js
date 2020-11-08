@@ -51,7 +51,7 @@ var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 let svgIDCounter = 0;
 
 let keysPressed = []
-getKeysPressed((newKeys) => keysPressed = newKeys )
+
 
 let frameModelStores = []
 let frameModelRenderedGeometriesStores = []
@@ -66,6 +66,7 @@ class Frame extends Component {
     this.designerRef = React.createRef();
     this.state = {
       modelHasUpdated: false,
+      frameSelected: false,
       render: false,
       startFrame: 0,
       endFrame: 5,
@@ -113,7 +114,7 @@ class Frame extends Component {
     return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
 
   }
-  componentDidMount() {
+  componentDidMount() {    
     frameModelStores[this.state.frameID] = this.props.model
     if(this.props.model === undefined) {
       console.log('model is undefined');
@@ -150,6 +151,8 @@ class Frame extends Component {
       }.bind(this), 1)
     })
     document.addEventListener("mouseup", (e) => {
+      getKeysPressed((newKeys) => keysPressed = newKeys)
+      
       if(e.button === 0) {
         this.setState({
           mouseDown: false
@@ -716,7 +719,12 @@ class Frame extends Component {
         )}
         {focussedTitle}
         {model.dimensions === 2 ? (
-          <div className='svg-container' style={{padding: this.props.svgPadding, background: model.background}}>
+          <div className='svg-container'
+            style={{padding: this.props.svgPadding, background: model.background}}
+            >
+              {this.state.frameFocussed && (
+                <p>Frame focussed</p>
+              )}
             {editPoint && (
               <EditPointPopUp
                 editPoint={editPoint}
