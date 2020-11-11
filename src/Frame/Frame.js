@@ -750,7 +750,6 @@ class Frame extends Component {
               getKeysPressed((newKeys) => keysPressed = newKeys)
             }}
             onPointerLeave={() => {
-              console.log('pointer leave')
               removeKeyEventListeners()
             }}
             >

@@ -52,6 +52,7 @@ export function setupCodeExecution() {
         Segment: Segment,
         Text: Text,
         Point: Point,
+        Input: Input,
         shapes: {
           Rectangle: Rectangle,
           Circle: Circle,

@@ -17,6 +17,8 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
     id: increment,
     script: `
   var Model = window.HYPEROBJECTS.Model
+  var Input = window.HYPEROBJECTS.Input
+  
   var Point = window.HYPEROBJECTS.Point
   var Group = window.HYPEROBJECTS.Group
   var Path = window.HYPEROBJECTS.Path
@@ -24,6 +26,7 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
   var Text = window.HYPEROBJECTS.Text
   var Rectangle = window.HYPEROBJECTS.shapes.Rectangle
   var Circle = window.HYPEROBJECTS.shapes.Circle
+  
   var HexPattern = window.HYPEROBJECTS.shapes.HexPattern
   var _ = window.HYPEROBJECTS.lodash
   var animate = window.HYPEROBJECTS.animate
