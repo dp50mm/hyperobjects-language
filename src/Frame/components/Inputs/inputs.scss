@@ -1,16 +1,19 @@
-.inputs {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    margin: 10px;
-    padding: 20px;
-    z-index: 100;
-    border: 1px solid rgb(220,220,220);
-    background: rgba(240,240,240,0.7);
-    border-radius: 5px;
-    width: 200px;
-    text-align: right;
-    .input {
-
+.hyperobject-frame {
+    .inputs {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        margin: 10px;
+        padding: 20px;
+        z-index: 100;
+        border: 1px solid rgb(220,220,220);
+        background: rgba(240,240,240,0.7);
+        border-radius: 5px;
+        width: 200px;
+        text-align: right;
+        .input {
+    
+        }
     }
 }
+
