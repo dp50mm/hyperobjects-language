@@ -44,76 +44,76 @@
       fill-opacity: 1;
     }
   }
-}
 
 
 
-.focussed-text {
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-select: none;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  color: white;
-  padding: 20px;
-  text-align: center;
-}
+  .focussed-text {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
 
-.disable-focussed {
-  position: absolute;
-  bottom: 5px;
-  left: 5px;
-  right: 5px;
-  text-align: center;
-  background: rgba(255,255,255, 0.2);
-  border-radius: 5px;
-  color: white;
-  padding: 5px;
-}
+  .disable-focussed {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    right: 5px;
+    text-align: center;
+    background: rgba(255,255,255, 0.2);
+    border-radius: 5px;
+    color: white;
+    padding: 5px;
+  }
 
-.test-display-point {
-  fill: rgba(200,200,255,0.8);
-  stroke-width: 0px;
-}
-
-
-.control-point {
-  cursor: move;
-}
-
-.canvas-3d-view {
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-canvas:focus {
-  outline: none;
-}
-
-.procedure-errors-box {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
-}
-
-.procedure-errors-box .procedure-error {
-  color: red;
-}
-
-.svg-export text {
-  -webkit-user-select: none;
-  user-select: none;
-  font-family: 'Europa';
-}
+  .test-display-point {
+    fill: rgba(200,200,255,0.8);
+    stroke-width: 0px;
+  }
 
 
-.select-box {
-  pointer-events: none;
-  user-select: none;
-  fill: transparent;
-  stroke: grey;
-  stroke-width: 1px;
-  stroke-dasharray: 5 5;
+  .control-point {
+    cursor: move;
+  }
+
+  .canvas-3d-view {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  canvas:focus {
+    outline: none;
+  }
+
+  .procedure-errors-box {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+  }
+
+  .procedure-errors-box .procedure-error {
+    color: red;
+  }
+
+  .svg-export text {
+    -webkit-user-select: none;
+    user-select: none;
+    font-family: 'Europa';
+  }
+
+
+  .select-box {
+    pointer-events: none;
+    user-select: none;
+    fill: transparent;
+    stroke: grey;
+    stroke-width: 1px;
+    stroke-dasharray: 5 5;
+  }
 }

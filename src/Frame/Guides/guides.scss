@@ -1,14 +1,16 @@
-.model-bounds {
-    fill: transparent;
-    pointer-events: none;
-    stroke: rgba(0,0,0,0.4);
-}
-.grid-line {
-    stroke: rgba(0,0,0,0.2);
-}
-
-.guides-svg {
-    position: absolute;
-    pointer-events: none;
-    z-index: -10;
+.hyperobject-frame {
+    .model-bounds {
+        fill: transparent;
+        pointer-events: none;
+        stroke: rgba(0,0,0,0.4);
+    }
+    .grid-line {
+        stroke: rgba(0,0,0,0.2);
+    }
+    
+    .guides-svg {
+        position: absolute;
+        pointer-events: none;
+        z-index: -10;
+    }
 }
