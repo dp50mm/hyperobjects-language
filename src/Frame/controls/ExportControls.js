@@ -92,7 +92,7 @@ class ExportControls extends Component {
   }
   downloadGCode() {
     let model = this.props.model
-    let gcode = model.gcode.generate()
+    let gcode = model.gcode.generate(model)
     download(`${model.name}.gcode`, gcode)
   }
   downloadJSON() {

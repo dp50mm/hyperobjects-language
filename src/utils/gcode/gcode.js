@@ -37,13 +37,25 @@ function GCode(_name = 'name') {
   this.footer = toTopFooter
   this.movesGCode = testMoves
   this.moves = []
-  this.generators = []
+  this.generators = {}
+  this.generatorKeys = []
   this.addGenerator = function (name, generator) {
     // functions that are called to generate the print moves
-    // console.log(name, generator);
+    this.generators[name] = generator
+    this.generatorKeys.push(name)
   }
   this._layerCounter = 0
-  this.generate = () => {
+  this.generate = (model) => {
+    let moves = this.moves.slice()
+    let movesWithGeneratorMoves = moves.slice()
+    this.generatorKeys.forEach(key => {
+      let generatorMoves = this.generators[key](model)
+      if(_.isArray(generatorMoves)) {
+        generatorMoves = _.flatten(generatorMoves)
+      }
+      movesWithGeneratorMoves = movesWithGeneratorMoves.concat(generatorMoves)
+    })
+    
     if (this.gcodeSet === false ) {
       return 'no gcode set for this model'
     }
@@ -71,7 +83,7 @@ function GCode(_name = 'name') {
         this.currentPauseTimeAfterLinearMove = this.linearMovePauseTime
       }
       movesGcode += this.layerIncrement(layer)
-      this.moves.forEach((move) => {
+      movesWithGeneratorMoves.forEach((move) => {
         if(layer >= move.layerRange[0] && layer <= move.layerRange[1]) {
           move.geometry.points.forEach((p, i, a) => {
             if(i === 0) {

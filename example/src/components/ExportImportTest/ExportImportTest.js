@@ -26,7 +26,7 @@ newModel.addEditableGeometry('one-point-path-23o 02f',
 )
 
 // stress testing a lot of geometries
-_.range(100).map(val => {
+_.range(10).map(val => {
   newModel.addEditableGeometry(`testing-multiple-paths-${val}`, 
     new Path([{x: 500, y: 500 + val * 5}])
   )

@@ -91,6 +91,7 @@ function Model(name, classes) {
   }
   this.setSize = function(dimensions) {
     this.size = {
+      ...this.size,
       width: dimensions.width,
       height: dimensions.height
     };
