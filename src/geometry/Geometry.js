@@ -92,14 +92,17 @@ function Geometry(points, name, attributes) {
   this.flattenPoints = function() {
     let curvesFlattened = []
     let totalDistance = 0;
+    const lutSteps = 50
     this.points.forEach((p, i, a) => {
+      var nextPoint = false
       if(i === a.length - 1) {
-        curvesFlattened.push(p)
         if(this.closedPath) {
-          curvesFlattened.push(a[0])
+          nextPoint = a[0]
         }
       } else {
-        let nextPoint = a[i+1]
+        nextPoint = a[i+1]
+      }
+      if(nextPoint) {
         if(nextPoint.c) {
           const curve = new Bezier(
             p.x,
@@ -111,7 +114,7 @@ function Geometry(points, name, attributes) {
             nextPoint.x,
             nextPoint.y
           )
-          let lut = curve.getLUT()
+          let lut = curve.getLUT(lutSteps)
           curvesFlattened = curvesFlattened.concat(lut)
         } else if(nextPoint.q) {
           const curve = new Bezier(
@@ -122,7 +125,7 @@ function Geometry(points, name, attributes) {
             nextPoint.x,
             nextPoint.y
           )
-          let lut = curve.getLUT()
+          let lut = curve.getLUT(lutSteps)
           curvesFlattened = curvesFlattened.concat(lut)
         } else {
           curvesFlattened.push(p)
