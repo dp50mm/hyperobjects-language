@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styles from './edit-point-pop-up.module.scss'
+import './edit-point-pop-up.scss'
 import {
     Button,
     Input
@@ -49,13 +49,13 @@ const EditPointPopUp = React.memo(({
     }
 
     return (
-        <div className={styles['edit-point-pan-position']}
+        <div className='edit-point-pan-position'
             style={{
                 left: transformMatrix.translateX,
                 top: transformMatrix.translateY
             }}
             > 
-            <div className={styles['edit-point-pop-up']}
+            <div className='edit-point-pop-up'
                 style={{
                     left: editPoint.x * transformMatrix.scaleX,
                     top: editPoint.y * transformMatrix.scaleY
@@ -88,9 +88,10 @@ const EditPointPopUp = React.memo(({
                         handleUIKeys(e)
                     }}
                     type="number"
+                    size="mini"
                     onChange={(e) => setNewX(e.target.value)}
                     label={{basic: true, content: 'x (mm)'}}
-                    className={newX == editPoint.x ? 'normal' : styles['italic']}
+                    className={newX == editPoint.x ? 'normal' : 'italic'}
                     labelPosition={'right'}
                     />
                 <Input
@@ -112,9 +113,10 @@ const EditPointPopUp = React.memo(({
                         handleUIKeys(e)
                     }}
                     type="number"
+                    size="mini"
                     onChange={(e) => setNewY(e.target.value)}
                     label={{basic: true, content: 'y (mm)'}}
-                    className={newY == editPoint.y ? 'normal' : styles['italic']}
+                    className={newY == editPoint.y ? 'normal' : 'italic'}
                     labelPosition={'right'}
                     />
             </div>

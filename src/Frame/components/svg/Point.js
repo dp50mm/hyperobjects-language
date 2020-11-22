@@ -57,7 +57,7 @@ const Point = React.memo(({
       _radius = geometryRadius
     }
     if(point.selected) {
-      classes += ` selectable `
+      classes += ` selected `
     }
 
     let control_points = null;
