@@ -13,6 +13,9 @@ import _ from 'lodash'
 
 let model = new Model("zoom-pan-test")
 
+
+model.animated = true
+
 model.setSize({
     width: 1000,
     height: 2000
@@ -103,6 +106,7 @@ const ZoomPanFrameTest = ({
                          }}
                         showPointCoordinates={true}
                         exportControls={true}
+                        animationControls={true}
                         />
                 )}
                 </div>
