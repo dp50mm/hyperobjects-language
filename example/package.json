@@ -10,6 +10,7 @@
     "eject": "node ../node_modules/react-scripts/bin/react-scripts.js eject"
   },
   "dependencies": {
+    "@monaco-editor/react": "^3.7.0",
     "@rehooks/component-size": "^1.0.3",
     "esprima": "^4.0.1",
     "hyperobjects-language": "file:..",
