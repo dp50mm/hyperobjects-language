@@ -39,7 +39,7 @@ function Model(name, classes) {
     }
 
   } else {
-    console.warn("No model css classes provided")
+    // console.warn("No model css classes provided")
   }
   this.name = modelName
   this.cssClasses = modelCssClasses
@@ -212,21 +212,31 @@ function Model(name, classes) {
   this.importProcedures = function(inputProcedures) {
     let input = {}
     for (var key in inputProcedures) {
-      let fnString = _.trim(inputProcedures[key])
-      if(fnString.startsWith("function (self)")) {
-        fnString = _.trimStart(fnString, 'function (self)')
+      const procedure = inputProcedures[key]
+      if (_.isFunction(procedure)) {
+        input[key] = procedure
+      } else if (_.isString(procedure)) {
+        let fnString = _.trim(inputProcedures[key])
+        if(fnString.startsWith("function (self)")) {
+          fnString = _.trimStart(fnString, 'function (self)')
+        } else {
+          fnString = _.trimStart(fnString, 'self =>')
+        }
+        fnString = _.trim(fnString)
+        fnString = _.trimStart(fnString, '{')
+        fnString = _.trimEnd(fnString, '}')
+        
+        fnString = _.replace(fnString, 'lodash__WEBPACK_IMPORTED_MODULE_3___default.a', '_')
+        fnString = _.replace(fnString, 'hyperobjects_language__WEBPACK_IMPORTED_MODULE_2__["Path"]', 'Path')
+        input[key] = new Function('self', fnString)
       } else {
-        fnString = _.trimStart(fnString, 'self =>')
+        input[key] = () => { console.log('Unknown function type provided'); return [] }
       }
-      fnString = _.trim(fnString)
-      fnString = _.trimStart(fnString, '{')
-      fnString = _.trimEnd(fnString, '}')
       
-      fnString = _.replace(fnString, 'lodash__WEBPACK_IMPORTED_MODULE_3___default.a', '_')
-      fnString = _.replace(fnString, 'hyperobjects_language__WEBPACK_IMPORTED_MODULE_2__["Path"]', 'Path')
-      input[key] = new Function('self', fnString)
     }
     this.procedures = input
+    this.proceduresList = _.keys(this.procedures)
+
   }
   this.staticGeometries = function() {
     return this.staticGeometriesList.map((name) => {
