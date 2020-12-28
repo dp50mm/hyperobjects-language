@@ -1,0 +1,3 @@
+import EditablePointsPerformanceTest from './EditablePointsPerformanceTest'
+
+export default EditablePointsPerformanceTest

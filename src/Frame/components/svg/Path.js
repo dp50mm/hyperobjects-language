@@ -4,6 +4,11 @@ import pathGenerator from './helpers/pathGenerator';
 import { CLICKED_GEOMETRY } from '../../reducer/actionTypes';
 import BoundsRectangle from './path/BoundsRectangle';
 import SegmentsLengthsLabels from './path/SegmentsLengthsLabels'
+import PreviewPoint from './PreviewPoint';
+
+function simpleDistance(p1, p2) {
+  return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y)
+}
 
 const Path = React.memo(({
   geometry,
@@ -14,7 +19,8 @@ const Path = React.memo(({
   setEditingPoint,
   showCoordinates,
   selectingPoints,
-  startDraggingSelection
+  startDraggingSelection,
+  modelSpaceMouseCoords
 }) => {
   const [mouseOver, setMouseOver] = useState(false)
   let editPoints = null;
@@ -23,8 +29,26 @@ const Path = React.memo(({
   classes += 'path '
   classes += geometry.cssClasses
   let fillOpacity = geometry.closedPath ? geometry._fillOpacity : 0
+  let pointRadius = geometry._r ? geometry._r : point.radius
   if(geometry.editable) {
     editPoints = geometry.points.map((point, i, a) => {
+      if(!point.selected && !point.dragging && simpleDistance(point, modelSpaceMouseCoords) > (pointRadius * 2) / scaling.x) {
+        return (
+          <PreviewPoint
+          key={point.id}
+           point={point}
+           scaling={scaling}
+           showCoordinates={showCoordinates}
+           unit={geometry.unit}
+           fillColor={geometry.controls.fill}
+           fillOpacity={geometry.controls.fillOpacity}
+           strokeWidth={geometry.controls.strokeWidth}
+           strokeColor={geometry.controls.stroke}
+           strokeOpacity={geometry.controls.strokeOpacity}
+           geometryRadius={geometry._r}
+           />
+        )
+      }
       let previous_point = false;
       if(point.c && i > 0) {
         previous_point = a[i-1];

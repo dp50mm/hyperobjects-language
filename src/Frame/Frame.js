@@ -82,6 +82,7 @@ class Frame extends Component {
       draggingSelection: false,
       containerRendered: false,
       editingPoint: false,
+      modelSpaceMouseCoords: {x: 0, y: 0},
       windowResizeIncrement: 0,
       panStart: {x: 0, y: 0},
       frameID: `frame-id-${svgIDCounter}`,
@@ -448,6 +449,12 @@ class Frame extends Component {
               mouseDown: this.state.mouseDown
             }
           });
+          this.setState({
+            modelSpaceMouseCoords: {
+              x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
+              y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
+            }
+          })
         }
       }
     }
@@ -831,6 +838,7 @@ class Frame extends Component {
                               selectingPoints={model.selectingPoints}
                               startDraggingSelection={this.startDraggingSelection}
                               modelHasUpdated={this.props.modelHasUpdated}
+                              modelSpaceMouseCoords={this.state.modelSpaceMouseCoords}
                               />
                           );
                         }

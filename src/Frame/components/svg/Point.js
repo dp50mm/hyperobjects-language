@@ -326,6 +326,12 @@ const Point = React.memo(({
   if(prev.onClickCallback !== next.onClickCallback) {
     return false
   }
+  if(prev.selected !== next.selected) {
+    return false
+  }
+  if(prev.dragging !== next.dragging) {
+    return false
+  }
   return true
 })
 

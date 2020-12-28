@@ -20,7 +20,8 @@ const Geometry = React.memo(({
   setEditingPoint,
   showPointCoordinates,
   selectingPoints,
-  startDraggingSelection
+  startDraggingSelection,
+  modelSpaceMouseCoords
 }) => {
   switch (geometry.type) {
     case GROUP:
@@ -34,6 +35,7 @@ const Geometry = React.memo(({
           showCoordinates={showPointCoordinates}
           selectingPoints={selectingPoints}
           startDraggingSelection={startDraggingSelection}
+          modelSpaceMouseCoords={modelSpaceMouseCoords}
           />
       );
     case POLYGON:
@@ -54,6 +56,7 @@ const Geometry = React.memo(({
           showCoordinates={showPointCoordinates}
           selectingPoints={selectingPoints}
           startDraggingSelection={startDraggingSelection}
+          modelSpaceMouseCoords={modelSpaceMouseCoords}
           />
       );
     case TEXT:
