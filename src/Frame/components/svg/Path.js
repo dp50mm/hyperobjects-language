@@ -5,6 +5,7 @@ import { CLICKED_GEOMETRY } from '../../reducer/actionTypes';
 import BoundsRectangle from './path/BoundsRectangle';
 import SegmentsLengthsLabels from './path/SegmentsLengthsLabels'
 import PreviewPoint from './PreviewPoint';
+import previewCheck from './helpers/previewCheck';
 
 function simpleDistance(p1, p2) {
   return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y)
@@ -29,10 +30,26 @@ const Path = React.memo(({
   classes += 'path '
   classes += geometry.cssClasses
   let fillOpacity = geometry.closedPath ? geometry._fillOpacity : 0
-  let pointRadius = geometry._r ? geometry._r : point.radius
+  
   if(geometry.editable) {
     editPoints = geometry.points.map((point, i, a) => {
-      if(!point.selected && !point.dragging && simpleDistance(point, modelSpaceMouseCoords) > (pointRadius * 2) / scaling.x) {
+      let pointRadius = geometry._r ? geometry._r : point.radius
+      let q = _.get(point, 'q', false)
+      let c = _.get(point, 'c', false)
+      var points = [point]
+      if(q) { points.push(q) }
+      if(c) { points = points.concat(c) }
+      let previous_point = false;
+      if(point.c && i > 0) {
+        previous_point = a[i-1];
+      } else if(point.q && i > 0) {
+        previous_point = a[i-1];
+      } else if(i === 0) {
+        previous_point = a[a.length - 1]
+      }
+
+      let next_point = _.get(a, i + 1, a[0])
+      if(points.every(p => previewCheck(modelSpaceMouseCoords, p, pointRadius, scaling))) {
         return (
           <PreviewPoint
           key={point.id}
@@ -46,17 +63,12 @@ const Path = React.memo(({
            strokeColor={geometry.controls.stroke}
            strokeOpacity={geometry.controls.strokeOpacity}
            geometryRadius={geometry._r}
+           previous_point={previous_point}
+           next_point={next_point}
            />
         )
       }
-      let previous_point = false;
-      if(point.c && i > 0) {
-        previous_point = a[i-1];
-      } else if(point.q && i > 0) {
-        previous_point = a[i-1];
-      } else if(i === 0) {
-        previous_point = a[a.length - 1]
-      }
+      
       return (
         <Point
          geometryRadius={geometry._r}
@@ -72,6 +84,7 @@ const Path = React.memo(({
          geometry_id={geometry.id}
          geometryKey={geometry.key}
          previous_point={previous_point}
+         next_point={next_point}
          modelDispatch={modelDispatch}
          onClickCallback={onPointClickCallback ? () => onPointClickCallback(geometry, point, i) : false}
          setEditingPoint={setEditingPoint}

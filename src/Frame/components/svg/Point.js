@@ -105,6 +105,7 @@ const Point = React.memo(({
                 point_id: point.id,
                 geometry_id: geometry_id
               });
+              e.preventDefault()
             }
           }}
           onTouchStart={ (e) => {
@@ -181,6 +182,7 @@ const Point = React.memo(({
                   i: i,
                   geometry_id: geometry_id
                 });
+                e.preventDefault()
               }
             }}
             onTouchStart={ (e) => {
@@ -268,6 +270,7 @@ const Point = React.memo(({
                   }
                 }
               }
+              e.preventDefault()
             }
           }}
           onTouchStart={ (e) => {
@@ -331,6 +334,11 @@ const Point = React.memo(({
   }
   if(prev.dragging !== next.dragging) {
     return false
+  }
+  if(next.q && prev.q) {
+    if(next.q.x !== prev.q.x || next.q.y !== prev.q.y) {
+      return false
+    }
   }
   return true
 })

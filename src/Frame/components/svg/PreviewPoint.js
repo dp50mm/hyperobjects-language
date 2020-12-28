@@ -1,5 +1,10 @@
 import React from 'react'
+import CPreview from './point/CPreview'
+import QPreview from './point/QPreview'
 
+/**
+ * Point component without any pointer events for React rendering efficiency
+ */
 const PreviewPoint = React.memo(({
     point,
     showCoordinates,
@@ -10,7 +15,8 @@ const PreviewPoint = React.memo(({
     strokeColor,
     strokeWidth,
     unit,
-    geometryRadius
+    geometryRadius,
+    previous_point
 }) => {
     let _radius = point.radius
 
@@ -42,6 +48,38 @@ const PreviewPoint = React.memo(({
               {point.label}
             </text>
           ) : null}
+          {point.q && (
+              <QPreview
+                p={point}
+                q={point.q}
+                showCoordinates={showCoordinates}
+                scaling={scaling}
+                fillColor={fillColor}
+                fillOpacity={fillOpacity}
+                strokeOpacity={strokeOpacity}
+                strokeColor={strokeColor}
+                strokeWidth={strokeWidth}
+                unit={unit}
+                radius={_radius}
+                previous_point={previous_point}
+                />
+          )}
+          {point.c && (
+            <CPreview
+                p={point}
+                c={point.c}
+                showCoordinates={showCoordinates}
+                scaling={scaling}
+                fillColor={fillColor}
+                fillOpacity={fillOpacity}
+                strokeOpacity={strokeOpacity}
+                strokeColor={strokeColor}
+                strokeWidth={strokeWidth}
+                unit={unit}
+                radius={_radius}
+                previous_point={previous_point}
+                />
+          )}
         </React.Fragment>
     )
 }, (prev, next) => {
@@ -61,6 +99,11 @@ const PreviewPoint = React.memo(({
     }
     if(prev.dragging !== next.dragging) {
         return false
+    }
+    if(next.q && prev.q) {
+        if(next.q.x !== prev.q.x || next.q.y !== prev.q.y) {
+            return false
+        }
     }
     return true
 })

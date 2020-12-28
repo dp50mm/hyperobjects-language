@@ -13,4 +13,14 @@
         pointer-events: none;
         z-index: -10;
     }
+    .grid-lines {
+        pointer-events: none;
+        user-select: none;
+        -webkit-user-select: none;
+        text {
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+    }
 }

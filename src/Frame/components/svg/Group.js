@@ -2,10 +2,8 @@ import React from 'react';
 import Point from './Point';
 import BoundsRectangle from './path/BoundsRectangle'
 import PreviewPoint from './PreviewPoint';
+import previewCheck from './helpers/previewCheck'
 
-function simpleDistance(p1, p2) {
-  return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y)
-}
 
 const Group = ({
   geometry,
@@ -23,7 +21,14 @@ const Group = ({
       <BoundsRectangle rectangle={geometry.getBounds()} scaling={scaling} />
     )}
    {geometry.points.map((point, i) => {
-     if(!point.selected || !point.dragging || simpleDistance(point, modelSpaceMouseCoords) > 20) {
+     let pointRadius = geometry._r ? geometry._r : point.radius
+     let q = _.get(point, 'q', false)
+     let c = _.get(point, 'c', false)
+     var points = [point]
+     if(q) { points.push(q) }
+     if(c) { points = points.concat(c) }
+     console.log(points)
+     if(points.some(p => previewCheck(modelSpaceMouseCoords, p, pointRadius, scaling))) {
        return (
          <PreviewPoint
           point={point}

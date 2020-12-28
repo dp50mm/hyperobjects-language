@@ -490,6 +490,7 @@ class Frame extends Component {
         }
         
       }
+      e.preventDefault()
     }
   }
   svgOnTouchEnd() {
@@ -674,7 +675,9 @@ class Frame extends Component {
     }
 
     if(this.state.keysPressed.includes('Control')) svgStyle.cursor = 'zoom-in'
-    if(panning) svgStyle.cursor = 'grab'
+    if(panning) {
+      svgStyle.cursor = 'grab'
+    }
     let group_translate_transform = `translate(${this.state.transformMatrix.translateX}, ${this.state.transformMatrix.translateY})`
 
     let canvasContainerStyle = {

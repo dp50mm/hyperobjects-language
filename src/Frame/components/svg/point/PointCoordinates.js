@@ -13,6 +13,7 @@ const PointCoordinates = React.memo(({ radius, point, unit, scaling }) => {
         alignmentBaseline="hanging"
         textAnchor="middle"
         fontSize={12 / scaling.x}
+        className='point-coordinate'
         >
       {Math.round(point.x)}
       </text>
@@ -23,6 +24,7 @@ const PointCoordinates = React.memo(({ radius, point, unit, scaling }) => {
         x={`${point.x + (radius + coordinatesMargins) / scaling.x}${unit}`}
         y={`${point.y}${unit}`}
         fontSize={12 / scaling.x}
+        className='point-coordinate'
         >
       {Math.round(point.y)}
       </text>

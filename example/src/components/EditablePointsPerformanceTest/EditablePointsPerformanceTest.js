@@ -15,10 +15,38 @@ function generate(groups, points) {
         const val = g / groups
         var group = new Path(
             _.range(points).map(p => {
-                return {
+                var qPoint = false
+                var cPoints = false
+                var point = {
                     x: val * 800 + Math.random() * 100,
                     y: Math.random() * 1000
                 }
+                if(Math.random() < 0.3) {
+                    qPoint = {
+                        x: val * 800 + Math.random() * 100,
+                        y: Math.random() * 1000
+                    }
+                }
+                if(qPoint === false && Math.random() < 0.6) {
+                    cPoints = [
+                        {
+                            x: val * 800 + Math.random() * 100,
+                            y: Math.random() * 1000
+                        },
+                        {
+                            x: val * 800 + Math.random() * 100,
+                            y: Math.random() * 1000
+                        }
+                    ]
+                }
+                if(qPoint) {
+                    point.q = qPoint
+                } else if(cPoints) {
+                    point.c = cPoints
+                }
+                
+                
+                return point
             })
         ).r(5).controlsFill(`rgb(${val * 245}, 0, ${255 - (val * 255)})`).controlsFillOpacity(1)
         console.log('geometry: ', g)

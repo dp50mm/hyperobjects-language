@@ -1,9 +1,13 @@
 .hyperobject-frame {
   transition: background 0.5s, opacity 0.5s;
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
   svg {
     transition: top 0.5s;
     overflow: visible;
+    user-select: none;
+    -webkit-user-select: none;
     text {
       -webkit-user-select: none;
       user-select: none;
@@ -42,6 +46,16 @@
     &.selected {
       fill: rgba(20,20,50, 1) !important;
       fill-opacity: 1;
+    }
+    &.dragging {
+      cursor: grabbing !important;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .point-coordinate {
+      user-select: none;
+      -webkit-user-select: none;
+      pointer-events: none;
     }
   }
 
@@ -111,6 +125,7 @@
   .select-box {
     pointer-events: none;
     user-select: none;
+    -webkit-user-select: none;
     fill: transparent;
     stroke: grey;
     stroke-width: 1px;
