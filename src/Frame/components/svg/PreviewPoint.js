@@ -26,6 +26,7 @@ const PreviewPoint = React.memo(({
     return (
         <React.Fragment>
         <circle
+            className='preview-point'
             cx={`${point.x}${unit}`}
             cy={`${point.y}${unit}`}
             r={`${_radius / scaling.x}${unit}`}

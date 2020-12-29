@@ -58,8 +58,8 @@ function generate(groups, points) {
 }
 
 const EditablePointsPerformanceTest = () => {
-    const [groups, setGroups] = useState(3)
-    const [pointsPerGroup, setPointsPerGroup] = useState(3)
+    const [groups, setGroups] = useState(5)
+    const [pointsPerGroup, setPointsPerGroup] = useState(12)
     const [generated, setGenerated] = useState(false)
     return (
         <div style={{position: 'relative'}} className='editable-points-performance-test'>
