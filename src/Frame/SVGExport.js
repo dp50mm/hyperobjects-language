@@ -9,7 +9,12 @@ class SVGExport extends Component {
     let model = this.props.model
     let width = model.size.width
     let height = model.size.height
-    let unit = 'mm'
+    const scaling = {
+      x: 1,
+      y: 1,
+      z: 1
+    }
+    let unit = this.props.unit
     return (
         <svg
           id={this.props.svgID}
@@ -50,6 +55,7 @@ class SVGExport extends Component {
                     unit: geometry_unit,
                     editable: false}}
                   unit={unit}
+                  scaling={scaling}
                   />
               )
             }
@@ -70,12 +76,37 @@ class SVGExport extends Component {
                     unit: geometry_unit,
                     editable: true}}
                   unit={unit}
+                  scaling={scaling}
                   />
               )
             }
           }
           return null
-        }) : null}
+        }) : (
+          <React.Fragment>
+            {this.props.editableGeometries.filter(g => g._export).map((geometry, i) => {
+              let geometry_unit = 'px'
+              if (geometry === undefined) {
+                return null
+              }
+              if(geometry !== undefined) {
+                if(geometry._export || model.exportAll) {
+                  return (
+                    <Geometry
+                      key={i}
+                      geometry={{...geometry,
+                        unit: geometry_unit,
+                        editable: true}}
+                      unit={unit}
+                      scaling={scaling}
+                      />
+                  )
+                }
+              }
+              return null
+            })}
+          </React.Fragment>
+        )}
 
         </g>
         </svg>
@@ -84,7 +115,8 @@ class SVGExport extends Component {
 }
 
 SVGExport.defaultProps = {
-  mountedCallback: () => { console.log('set component mounted callback'); }
+  mountedCallback: () => { console.log('set component mounted callback'); },
+  unit: 'mm'
 }
 
 export default SVGExport

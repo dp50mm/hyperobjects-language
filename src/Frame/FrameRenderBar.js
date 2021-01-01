@@ -17,7 +17,7 @@ const FrameRenderBar = ({
             }}>
             <p style={{
               position: 'absolute',
-              top: size.height - 10,
+              top: size.height - 30,
               left: 0,
               fontSize: 10
               }}

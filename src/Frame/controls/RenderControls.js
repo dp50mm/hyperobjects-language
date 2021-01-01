@@ -1,4 +1,9 @@
 import React, { Component } from 'react'
+import {
+  Button
+} from 'semantic-ui-react'
+import RenderSettingsPopup from './RenderSettingsPopup'
+
 
 class RenderControls extends Component {
   constructor(props) {
@@ -16,33 +21,18 @@ class RenderControls extends Component {
   render() {
     return (
       <div className='frame-controls'>
-        {this.state.showSettings ? (
-          <div className='render-settings'>
-            <p className='label'>Start frame</p>
-            <input value={this.props.startFrame}
-              type='number'
-              onChange={(e) => {
-                this.props.startFrameCallback(e.target.value)
-              }}>
-              </input>
-            <p className='label'>End frame</p>
-            <input value={this.props.endFrame}
-              type='number'
-              onChange={(e) => {
-                this.props.endFrameCallback(e.target.value)
-              }}>
-              </input>
-          </div>
-        ) : null}
-        <button onClick={this.props.renderCallback}>
+        <Button size='tiny' className='control-button' onClick={this.props.renderCallback}>
           <i className='pe-7s-video pe-2x'></i>
           <p className='tooltip'>Render animation</p>
-        </button>
+        </Button>
         <br />
-        <button onClick={this.toggleSettings}>
+        <Button size='tiny' className='control-button' onClick={this.toggleSettings}>
           <i className='pe-7s-settings pe-2x'></i>
           <p className='tooltip'>Animation settings</p>
-        </button>
+        </Button>
+        {this.state.showSettings ? (
+          <RenderSettingsPopup {...this.props} />
+        ) : null}
       </div>
     )
   }

@@ -4,6 +4,7 @@ import OnClickCallbacksTest from 'components/OnClickCallbacksTest'
 import PathDisplayFeaturesTest from 'components/PathDisplayFeaturesTest'
 import FlattenPathTest from 'components/FlattenPathTest'
 import MirrorPathTest from 'components/MirrorPathTest'
+import StylingGeometriesTest from 'components/StylingGeometriesTest'
 
 import {
     Tab
@@ -27,6 +28,10 @@ const panes = [
         menuItem: 'Mirror path',
         render: () => <Tab.Pane attached={false}><MirrorPathTest /></Tab.Pane>
     },
+    {
+        menuItem: "Styling",
+        render: () => <Tab.Pane attached={false}><StylingGeometriesTest /></Tab.Pane>
+    }
 ]
 
 const GeometriesPage = () => {

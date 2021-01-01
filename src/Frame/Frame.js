@@ -61,6 +61,13 @@ let frameModelRenderedGeometriesStores = []
 
 export const FrameContext = React.createContext('frame')
 
+function shouldRenderFrame(frameState) {
+  return (frameModelStores[frameState.frameID].animation_frame >= frameState.startFrame
+          && frameModelStores[frameState.frameID].animation_frame <= frameState.endFrame
+          && frameState.render)
+}
+
+
 class Frame extends Component {
   constructor(props) {
     super(props);
@@ -73,6 +80,7 @@ class Frame extends Component {
       render: false,
       startFrame: 0,
       endFrame: 5,
+      renderScaling: 'screen',
       frameHasSaved: false,
       frameMouseMoveCounter: 0,
       keysPressedCounter: 0,
@@ -113,6 +121,7 @@ class Frame extends Component {
     this.setEditingPoint = this.setEditingPoint.bind(this)
     this.startDraggingSelection = this.startDraggingSelection.bind(this)
     this.callUpdateParameters = this.callUpdateParameters.bind(this)
+    this.setRenderScaling = this.setRenderScaling.bind(this)
   }
   sizing() {
     return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
@@ -245,10 +254,7 @@ class Frame extends Component {
   animateModel() {
     let fps = 1000/60
     if(frameModelStores[this.state.frameID].playing) {
-      if(frameModelStores[this.state.frameID].animation_frame >= this.state.startFrame
-          && frameModelStores[this.state.frameID].animation_frame <= this.state.endFrame
-          && this.state.render
-        ) {
+      if(shouldRenderFrame(this.state)) {
           if(this.props.renderType === "SVG") {
             // SvgToPng.saveSvgAsPng(
             //   document.getElementById(this.state.svgID+'-export'),
@@ -256,12 +262,14 @@ class Frame extends Component {
             // );
           } else if(this.props.renderType === "CANVAS") {
             var canvas = document.getElementById(this.state.canvasID);
+            if(this.state.renderScaling === 'model') {
+              canvas = document.getElementById(`model-scale-render-canvas-${this.state.canvasID}`)
+            }
             var name = `${frameModelStores[this.state.frameID].name}-frame-${String(frameModelStores[this.state.frameID].animation_frame).padStart(6, '0')}`
             // draw to canvas...
 
             canvas.toBlob(blob => {
               saveAs(blob, name, () => {
-                console.log('done');
                 this.modelDispatch({
                   type: ANIMATE
                 });
@@ -378,6 +386,11 @@ class Frame extends Component {
   setEndFrame(frameNr) {
     this.setState({
       endFrame: frameNr
+    })
+  }
+  setRenderScaling(renderScaling) {
+    this.setState({
+      renderScaling: renderScaling
     })
   }
   getMouseCoords = (e) => {
@@ -662,7 +675,6 @@ class Frame extends Component {
      * Should be implemented in the model object output
      */
     let displayGeometries = _.flatten(frameModelRenderedGeometriesStores[this.state.frameID])
-    let designer_focussed_class = "";
     let focussedTitle = (
       <div></div>
     );
@@ -854,6 +866,8 @@ class Frame extends Component {
                 {this.props.renderType === 'CANVAS' ? (
                   <div style={canvasContainerStyle}>
                     <CanvasView
+                      model={model}
+                      shouldRenderFrame={shouldRenderFrame(this.state)}
                       editable={this.props.editable}
                       animated={model.animated}
                       playing={model.playing}
@@ -861,6 +875,7 @@ class Frame extends Component {
                       background={model.background}
                       width={this.props.width}
                       height={size.height}
+                      renderScaling={this.state.renderScaling}
                       transformMatrix={this.state.transformMatrix}
                       geometries={staticGeometries.concat(displayGeometries)}
                       />

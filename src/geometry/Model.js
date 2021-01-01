@@ -60,7 +60,7 @@ function Model(name, classes) {
   this.background = 'transparent'
   this.animation_frame = 0
   this.animated = false
-  this.playing = true
+  this.playing = false
   this.autoplay = false
   this.loopAnimation = false
   this.startFrame = 0

@@ -5,28 +5,11 @@ import { saveAs } from 'file-saver'
 import {
   Button
 } from 'semantic-ui-react'
+import downloadPng from './exportUtils/downloadPng'
+import downloadSVG from './exportUtils/downloadSVG'
 
-function downloadSVG(svg_id, _name) {
-  let name = 'svg-name'
-  if(_name) {
-    name = _name
-  }
-  let svgEl = document.getElementById(svg_id)
-  svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  svgEl.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-  svgEl.setAttribute("style", "enable-background:new 0 0 768 1366;");
-  svgEl.setAttribute("xml:space", "preserve");
-  var svgData = svgEl.outerHTML;
-  var preface = '<?xml version="1.0" encoding="utf-8" standalone="no"?>\r\n';
-  var svgBlob = new Blob([preface, svgData], {type:"image/svg+xml;charset=utf-8"});
-  var svgUrl = URL.createObjectURL(svgBlob);
-  var downloadLink = document.createElement("a");
-  downloadLink.href = svgUrl;
-  downloadLink.download = `${name}.svg`;
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-}
+
+
 
 class ExportControls extends Component {
   constructor(props) {
@@ -51,15 +34,12 @@ class ExportControls extends Component {
   }
   triggerPNGExport() {
     if(this.props.model.dimensions === 2) {
-      console.log('trigger 2d png export from SVG');
       this.setState({
         renderSVG: true,
         export: 'PNG'
       })
     } else if(this.props.model.dimensions === 3) {
-      console.log(this.props.canvasID);
       var canvas = document.getElementById(this.props.canvasID);
-      console.log(canvas);
       let name = `${this.props.name}`
       canvas.toBlob(function(blob) {
           saveAs(blob, name);
@@ -82,13 +62,13 @@ class ExportControls extends Component {
     }
   }
   downloadPNG() {
-    // SvgToPng.saveSvgAsPng(document.getElementById(this.props.svg_id), this.props.name)
+    downloadPng(this.props.svg_id, this.props.name, this.props.model)
     setTimeout(function () {
       this.setState({
         renderSVG: false,
         export: false
       })
-    }.bind(this), 10);
+    }.bind(this), 50);
   }
   downloadGCode() {
     let model = this.props.model
@@ -133,6 +113,7 @@ class ExportControls extends Component {
               editableGeometries={this.props.editableGeometries}
               mountedCallback={this.triggerDownload}
               svgID={`${this.props.svg_id}`}
+              unit={this.props.export === 'SVG' ? "mm" : ""}
               />
           </div>
         ) : null}

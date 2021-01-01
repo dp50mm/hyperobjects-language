@@ -2,7 +2,24 @@ import React, { useContext } from 'react'
 import './inputs.scss'
 import ModelContext from '../../ModelContext';
 import { Slider } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles';
+
 import {INPUT_SET_VALUE} from '../../reducer/actionTypes'
+
+const CustomSlider = withStyles({
+    root: {
+        color: '#15232E'
+    },
+    thumb: {
+        '&:focus, &:hover, &$active': {
+        boxShadow: '0px 0px 0px 1px rgba(234, 52, 76, 0.0)',
+        // Reset on touch devices, it doesn't add specificity
+        '@media (hover: none)': {
+            boxShadow: "none",
+        },
+        }
+    }
+})(Slider);
 
 const Inputs = ({ modelDispatch }) => {
     const { inputs, inputsList } = useContext(ModelContext)
@@ -14,7 +31,7 @@ const Inputs = ({ modelDispatch }) => {
                 return (
                     <div key={inputName} className='input'>
                         <p>{inputName}</p>
-                        <Slider
+                        <CustomSlider
                             defaultValue={input.range[0]}
                             min={input.range[0]}
                             max={input.range[1]}

@@ -25,9 +25,22 @@ function drawPath(gl, g, transformMatrix) {
   gl.shadowOpacity = g._shadowOpacity
   gl.shadowBlur = g._shadowBlur
   gl.strokeStyle = g._stroke
-  gl.lineWidth = g._strokeWidth * canvasScaling.x
+  var strokeWidth = g._strokeWidth
+  if(g._scaledStrokeWidth) {
+    strokeWidth = strokeWidth / canvasScaling.x * 4
+  } else {
+    strokeWidth = strokeWidth * transformMatrix.scaleX
+  }
+  gl.lineWidth = strokeWidth
   gl.lineCap = g._strokeLinecap
   gl.lineJoin = g._strokeLinejoin
+  var strokeDasharray = g._strokeDasharray
+  if(_.isNumber(strokeDasharray)) strokeDasharray / canvasScaling.x
+  if(strokeDasharray === 0) {
+    gl.setLineDash([])
+  } else {
+    gl.setLineDash([strokeDasharray])
+  }
   gl.setLineDash([g._strokeDasharray * canvasScaling.x])
   // console.log('line width: ', gl.lineWidth, 'strokestyle: ', gl.strokeStyle, ' globalApha: ', gl.globalAlpha);
 

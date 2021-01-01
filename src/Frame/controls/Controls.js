@@ -4,7 +4,7 @@ import ExportControls from './ExportControls'
 import RenderControls from './RenderControls'
 import './controls.scss'
 
-const Controls = ({
+const Controls = React.memo(({
     model,
     frame,
     editableGeometries,
@@ -18,6 +18,7 @@ const Controls = ({
                 playCallback={frame.playModel}
                 pauseCallback={frame.pauseModel}
                 rewindCallback={frame.rewindModel}
+                animation_frame={model.animation_frame}
                 />
             ) : null}
             {frame.props.renderControls && model.animated ? (
@@ -27,6 +28,8 @@ const Controls = ({
                 renderCallback={frame.renderModel}
                 startFrameCallback={frame.setStartFrame}
                 endFrameCallback={frame.setEndFrame}
+                renderScaling={frame.state.renderScaling}
+                setRenderScaling={frame.setRenderScaling}
                 />
             ) : null}
             {frame.props.exportControls ? (
@@ -41,6 +44,6 @@ const Controls = ({
             ) : null}
         </div>
     )
-}
+})
 
 export default Controls

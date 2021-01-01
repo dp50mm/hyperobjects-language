@@ -7,10 +7,6 @@ import SegmentsLengthsLabels from './path/SegmentsLengthsLabels'
 import PreviewPoint from './PreviewPoint';
 import previewCheck from './helpers/previewCheck';
 
-function simpleDistance(p1, p2) {
-  return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y)
-}
-
 const Path = React.memo(({
   geometry,
   modelDispatch,
@@ -103,6 +99,11 @@ const Path = React.memo(({
       style.cursor = 'pointer'
     }
   }
+  var strokeDasharray = geometry._strokeDasharray
+  if(_.isNumber(strokeDasharray)) strokeDasharray = strokeDasharray / scaling.x
+  
+  var strokeWidth = geometry._strokeWidth
+  if(geometry._scaledStrokeWidth) strokeWidth = strokeWidth / scaling.x
   return (
     <g>
     {(onPathClickCallback && mouseOver) && (
@@ -120,12 +121,12 @@ const Path = React.memo(({
       fill={geometry._fill}
       fillOpacity={fillOpacity}
       stroke={geometry._stroke}
-      strokeWidth={geometry._strokeWidth / scaling.x}
+      strokeWidth={strokeWidth}
       strokeOpacity={geometry._strokeOpacity}
       opacity={geometry._opacity}
       strokeLinecap={geometry._strokeLinecap}
       strokeLinejoin={geometry._strokeLinejoin}
-      strokeDasharray={geometry._strokeDasharray / scaling.x}
+      strokeDasharray={strokeDasharray}
       onClick={() => {
         if(onPathClickCallback) {
           onPathClickCallback(geometry)
@@ -151,7 +152,8 @@ const Path = React.memo(({
 
 Path.defaultProps = {
   onPointClickCallback: false,
-  onPathClickCallback: false
+  onPathClickCallback: false,
+  modelSpaceMouseCoords: {x: 0, y: 0}
 }
 
 export default Path;

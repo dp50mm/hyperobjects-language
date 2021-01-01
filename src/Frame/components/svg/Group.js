@@ -27,7 +27,6 @@ const Group = ({
      var points = [point]
      if(q) { points.push(q) }
      if(c) { points = points.concat(c) }
-     console.log(points)
      if(points.some(p => previewCheck(modelSpaceMouseCoords, p, pointRadius, scaling))) {
        return (
          <PreviewPoint

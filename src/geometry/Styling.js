@@ -16,6 +16,7 @@ function Styling(attributes) {
   this._strokeOpacity = _.get(attributes, "_strokeOpacity", 1)
   this._strokeChroma.alpha = () => { return 0.5 } //(this._strokeOpacity)
   this._strokeWidth = _.get(attributes, "_strokeWidth", 1)
+  this._scaledStrokeWidth = _.get(attributes, '_scaledStrokeWidth', true)
   this._r = _.get(attributes, "_r", false)
   this._opacity = _.get(attributes, "_opacity", 1)
   this._strokeLinecap = _.get(attributes, "_strokeLinecap", 'butt')
@@ -77,6 +78,10 @@ function Styling(attributes) {
   this.strokeWidth = function(width) {
     this._strokeWidth = width;
     return this;
+  }
+  this.scaledStrokeWidth = function(toggle) {
+    this._scaledStrokeWidth = toggle
+    return this
   }
   this.radius = function(radius) {
     this._r = radius;
@@ -141,9 +146,11 @@ function Styling(attributes) {
     this._stroke = g._stroke
     this._strokeOpacity = g._strokeOpacity
     this._strokeWidth = g._strokeWidth
+    this._scaledStrokeWidth = g._scaledStrokeWidth
     this._r = g._r
     this._opacity = g._opacity
     this._strokeLinecap = g._strokeLinecap
+    this._strokeDasharray = g._strokeDasharray
     this._shadowBlur = g._shadowBlur
     this._shadowColor = g._shadowColor
     this._shadowOpacity = g._shadowOpacity

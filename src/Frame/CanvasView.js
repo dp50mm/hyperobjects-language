@@ -13,10 +13,13 @@ export const canvasScaling = {
 }
 
 function CanvasView(props) {
-  const width = props.width * canvasScaling.x
-  const height = props.height * canvasScaling.y
+  const renderScaling = props.renderScaling
+  var width = props.width * canvasScaling.x
+  var height = props.height * canvasScaling.y
+  var transformMatrix = props.transformMatrix
+  const model = props.model
   canvasViewGeometries[props.canvasID] = props.geometries
-  const transformMatrix = props.transformMatrix
+  
   if(backgroundGeometry[props.canvasID] === undefined) {
     backgroundGeometry[props.canvasID] = new Rectangle({
       x: 0,
@@ -35,8 +38,16 @@ function CanvasView(props) {
       drawn: false,
       redraw: false
     }
+    canvasShouldAnimate[`model-scale-render-canvas-${props.canvasID}`] = {
+      drawn: false,
+      redraw: false
+    }
   } else {
     canvasShouldAnimate[props.canvasID] = {
+      drawn: false,
+      redraw: true
+    }
+    canvasShouldAnimate[`model-scale-render-canvas-${props.canvasID}`] = {
       drawn: false,
       redraw: true
     }
@@ -64,14 +75,57 @@ function CanvasView(props) {
     }
 
   }, '2d')
+  const modelScaleCanvasRef = useCanvas(gl => {
+    if(props.shouldRenderFrame && renderScaling === 'model') {
+      let should_draw = false
+      if(canvasShouldAnimate[`model-scale-render-canvas-${props.canvasID}`].drawn === false) {
+        should_draw = true
+        canvasShouldAnimate[`model-scale-render-canvas-${props.canvasID}`].drawn = true
+      }
+      if(canvasShouldAnimate[`model-scale-render-canvas-${props.canvasID}`].redraw) {
+        should_draw = true
+
+      }
+      if(should_draw) {
+        //gl.strokeStyle = 'transparent'
+        //gl.fillStyle = 'transparent'
+        // gl.globalAlpha = 1
+        gl.clearRect(0, 0, width * 100, height * 100)
+        drawCanvasGeometry(gl, backgroundGeometry[props.canvasID], transformMatrix)
+        //gl.clearRect(-1000, -1000, 100 * 100, 100 * 100)
+        canvasViewGeometries[props.canvasID].forEach(g => {
+          drawCanvasGeometry(gl, g, {
+            scaleX: 1 / canvasScaling.x,
+            scaleY: 1 / canvasScaling.y,
+            skewX: 0,
+            skewY: 0,
+            translateX: 0,
+            translateY: 0
+          })
+        })
+      }
+    }
+  })
+
   return (
-    <canvas
-      id={props.canvasID}
-      style={{width: width / 2}}
-      ref={canvasRef}
-      width={width}
-      height={Math.round(height/2) * 2}
-      />
+    <div style={{overflow: 'hidden'}}>
+      <canvas
+        id={props.canvasID}
+        style={{width: width / 2}}
+        ref={canvasRef}
+        width={width}
+        height={Math.round(height/2) * 2}
+        />
+      <div style={{display: 'none'}}>
+        <canvas
+          id={`model-scale-render-canvas-${props.canvasID}`}
+          style={{width: model.size.width, height: model.size.height}}
+          ref={modelScaleCanvasRef}
+          width={model.size.width}
+          height={model.size.height}
+          />
+      </div>
+    </div>
   )
 }
 
@@ -89,5 +143,6 @@ function useCanvas(draw, context = '2d') {
   }, [draw, context])
   return canvasRef
 }
+
 
 export default CanvasView
