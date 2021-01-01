@@ -282,6 +282,8 @@ class Frame extends Component {
 
           }
 
+      } else if(this.state.render && frameModelStores[this.state.frameID].animation_frame > this.state.endFrame) {
+        this.pauseModel()
       } else {
         this.modelDispatch({
           type: ANIMATE

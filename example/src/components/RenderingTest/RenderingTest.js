@@ -14,6 +14,8 @@ model.setSize({
     height: 4000
 })
 
+model.background = 'black'
+
 model.animated = true
 
 
@@ -27,14 +29,21 @@ model.addEditableGeometry(
 model.addProcedure(
     "test-lines",
     (self) => {
+        var position = self.center()
+        if(self.animation_frame % 2 === 0) {
+            position.x -= 100
+        } else {
+            position.x += 100
+        }
         return _.range(10).map(val => {
             return new Circle(
-                self.center(),
+                position,
                 100 + (1 + val) * 40,
                 100,
                 100
             ).strokeWidth(5 + val)
             .fillOpacity(0)
+            .stroke(`rgb(0, ${255 - val * 10}, ${val * 20})`)
             .scaledStrokeWidth(false).export(true)
         })
     }
