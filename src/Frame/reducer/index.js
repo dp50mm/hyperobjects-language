@@ -19,6 +19,7 @@ import {
   PLAY,
   PAUSE,
   REWIND,
+  SET_FRAME,
   INPUT_SET_VALUE,
 
 } from './actionTypes';
@@ -124,6 +125,11 @@ const reducer = (prevState, action) => {
       return {
         ...prevState,
         playing: false
+      }
+    case SET_FRAME:
+      return {
+        ...prevState,
+        animation_frame: action.payload
       }
     case REWIND:
       return {

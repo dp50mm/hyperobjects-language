@@ -14,6 +14,7 @@ import {
   PLAY,
   PAUSE,
   REWIND,
+  SET_FRAME,
   MOVE_SELECTION, SET_DRAGGED_POINT
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
@@ -375,6 +376,10 @@ class Frame extends Component {
 
   }
   renderModel() {
+    this.modelDispatch({
+      type: SET_FRAME,
+      payload: parseInt(this.state.startFrame)
+    })
     this.setState({
       render: true
     })
