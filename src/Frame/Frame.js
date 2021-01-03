@@ -376,10 +376,12 @@ class Frame extends Component {
 
   }
   renderModel() {
-    this.modelDispatch({
-      type: SET_FRAME,
-      payload: parseInt(this.state.startFrame)
-    })
+    if (frameModelStores[this.state.frameID].animation_frame < this.state.startFrame) {
+      this.modelDispatch({
+        type: SET_FRAME,
+        payload: parseInt(this.state.startFrame)
+      })
+    }
     this.setState({
       render: true
     })
