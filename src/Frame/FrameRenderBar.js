@@ -13,7 +13,8 @@ const FrameRenderBar = ({
             padding: 20,
             top: 0,
             left: 20,
-            right: 20
+            right: 20,
+            pointerEvents: 'none'
             }}>
             <p style={{
               position: 'absolute',
