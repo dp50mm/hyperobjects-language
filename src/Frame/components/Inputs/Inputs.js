@@ -6,21 +6,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import {INPUT_SET_VALUE} from '../../reducer/actionTypes'
 
-const CustomSlider = withStyles({
-    root: {
-        color: '#15232E'
-    },
-    thumb: {
-        '&:focus, &:hover, &:active': {
-        boxShadow: '0px 0px 0px 1px rgba(234, 52, 76, 0.0)',
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-            boxShadow: "none",
-        },
-        }
-    }
-})(Slider);
-
 const Inputs = ({ modelDispatch }) => {
     const { inputs, inputsList } = useContext(ModelContext)
     return (
@@ -33,7 +18,7 @@ const Inputs = ({ modelDispatch }) => {
                 return (
                     <div key={inputName} className='input'>
                         <p>{inputName}</p>
-                        <CustomSlider
+                        <Slider
                             defaultValue={min}
                             min={min}
                             max={max}
