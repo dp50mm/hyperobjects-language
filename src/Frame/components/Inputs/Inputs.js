@@ -11,7 +11,7 @@ const CustomSlider = withStyles({
         color: '#15232E'
     },
     thumb: {
-        '&:focus, &:hover, &$active': {
+        '&:focus, &:hover, &:active': {
         boxShadow: '0px 0px 0px 1px rgba(234, 52, 76, 0.0)',
         // Reset on touch devices, it doesn't add specificity
         '@media (hover: none)': {
@@ -28,13 +28,15 @@ const Inputs = ({ modelDispatch }) => {
             <h3>Inputs</h3>
             {inputsList.map(inputName => {
                 let input = inputs[inputName]
+                let min = _.get(input, 'range[0]', 0)
+                let max = _.get(input, 'range[1]', 1)
                 return (
                     <div key={inputName} className='input'>
                         <p>{inputName}</p>
                         <CustomSlider
-                            defaultValue={input.range[0]}
-                            min={input.range[0]}
-                            max={input.range[1]}
+                            defaultValue={min}
+                            min={min}
+                            max={max}
                             step={0.01}
                             valueLabelDisplay="auto"
                             onChange={(e, value) => {
