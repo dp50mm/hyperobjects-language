@@ -10,6 +10,7 @@ import _Input from './geometry/Input'
 import _Rectangle from './geometry/shapes/Rectangle'
 import _Circle from './geometry/shapes/Circle'
 import _HexPattern from './geometry/shapes/HexPattern'
+import _Voronoi from './geometry/shapes/Voronoi'
 import Assets from './assets/assets'
 import {
     hyperobjectsLanguageWrapper as _hyperobjectsLanguageWrapper,
@@ -38,7 +39,7 @@ export const Input = _Input
 export const Rectangle = _Rectangle
 export const Circle = _Circle
 export const HexPattern = _HexPattern
-
+export const Voronoi = _Voronoi
 
 export const hyperobjectsLanguageWrapper = _hyperobjectsLanguageWrapper
 export const executeCode = _executeCode
@@ -57,6 +58,7 @@ export function setupCodeExecution() {
           Rectangle: Rectangle,
           Circle: Circle,
           HexPattern: HexPattern,
+          Voronoi: Voronoi
         },
         lodash: _,
         animate: _animate,

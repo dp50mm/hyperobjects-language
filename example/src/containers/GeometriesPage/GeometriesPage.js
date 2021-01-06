@@ -5,6 +5,7 @@ import PathDisplayFeaturesTest from 'components/PathDisplayFeaturesTest'
 import FlattenPathTest from 'components/FlattenPathTest'
 import MirrorPathTest from 'components/MirrorPathTest'
 import StylingGeometriesTest from 'components/StylingGeometriesTest'
+import VoronoiTest from 'components/VoronoiTest'
 
 import {
     Tab
@@ -31,6 +32,10 @@ const panes = [
     {
         menuItem: "Styling",
         render: () => <Tab.Pane attached={false}><StylingGeometriesTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Voronoi",
+        render: () => <Tab.Pane attached={false}><VoronoiTest /></Tab.Pane>
     }
 ]
 
