@@ -4,7 +4,8 @@ import {
     Frame,
     Model,
     Path,
-    Point
+    Point,
+    Text
 } from 'hyperobjects-language'
 import {
     Button
@@ -55,6 +56,16 @@ model.addProcedure(
             .strokeWidth(1)
             .fill('blue')
             
+    }
+)
+
+model.addProcedure(
+    'text-output',
+    (self) => {
+        return new Text(
+            "TEST",
+            {x: 500, y: 500}
+        )
     }
 )
 

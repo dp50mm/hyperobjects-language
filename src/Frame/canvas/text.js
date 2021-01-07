@@ -1,3 +1,5 @@
+import { canvasScaling } from '../CanvasView'
+
 function drawText(gl, g, transformMatrix) {
   gl.font = `${g._fontWeight} ${g._fontSize * transformMatrix.scaleX}px Europa`
   gl.fillStyle = g._fill
@@ -12,14 +14,16 @@ function drawText(gl, g, transformMatrix) {
     g.text.forEach((t, i) => {
       gl.fillText(
         t,
-        g.x * canvasScaling.x ,
-        g.y * transformMatrix.scaleY + g._lineHeight * i  * transformMatrix.scaleY)
+        (g.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+        (g.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+        )
     })
   } else {
     gl.fillText(
       g.text,
-      g.x * transformMatrix.scaleX,
-      g.y * transformMatrix.scaleY)
+      (g.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+      (g.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+      )
   }
 
 }
