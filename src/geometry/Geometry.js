@@ -1,12 +1,13 @@
 import Styling from './Styling';
 import Transforms from './Transforms';
 import Point from './Point';
-import Bezier from 'bezier-js';
 import Matrix from './Matrix'
 import Path from './Path'
 import interpolate from './path/interpolate'
 import Group from './Group'
 import getBounds from './path/getBounds'
+import flattenPoints from './path/flattenPoints'
+import segmentLength from './path/segmentLength'
 import {
   PATH,
   GROUP
@@ -53,12 +54,12 @@ function Geometry(points, name, attributes) {
     return this.points.reduce((acc, p, i, a) => {
       if(i === a.length -1) {
         if(this.closedPath) {
-          return acc += distance(p, a[0])
+          return acc += segmentLength(p, a[0])
         } else {
           return acc
         }
       } else {
-        return acc += distance(p, a[i+1])
+        return acc += segmentLength(p, a[i+1])
       }
     }, 0)
   }
@@ -90,87 +91,21 @@ function Geometry(points, name, attributes) {
 
   this._pointsFlattened = false
   this.flattenPoints = function() {
-    let curvesFlattened = []
-    let totalDistance = 0;
-    const lutSteps = 50
-    this.points.forEach((p, i, a) => {
-      var nextPoint = false
-      if(i === a.length - 1) {
-        if(this.closedPath) {
-          nextPoint = a[0]
-        }
-      } else {
-        nextPoint = a[i+1]
-      }
-      if(nextPoint) {
-        if(nextPoint.c) {
-          const curve = new Bezier(
-            p.x,
-            p.y,
-            nextPoint.c[0].x,
-            nextPoint.c[0].y,
-            nextPoint.c[1].x,
-            nextPoint.c[1].y,
-            nextPoint.x,
-            nextPoint.y
-          )
-          let lut = curve.getLUT(lutSteps)
-          curvesFlattened = curvesFlattened.concat(lut)
-        } else if(nextPoint.q) {
-          const curve = new Bezier(
-            p.x,
-            p.y,
-            nextPoint.q.x,
-            nextPoint.q.y,
-            nextPoint.x,
-            nextPoint.y
-          )
-          let lut = curve.getLUT(lutSteps)
-          curvesFlattened = curvesFlattened.concat(lut)
-        } else {
-          curvesFlattened.push(p)
-        }
-      }
-    })
-    curvesFlattened = curvesFlattened.map((p) => {
-      return {
-        ...p,
-        q: false,
-        c: false
-      }
-    })
-    let distances = curvesFlattened.map((p, i, a) => {
-      if(i === a.length-1) {
-        if(this.closedPath) {
-          totalDistance = totalDistance + distance(p, a[0])
-        }
-        return {
-          ...p,
-          distance: distance(p, a[0])
-        }
-      } else {
-        totalDistance = totalDistance + distance(p, a[i+1])
-        return {
-          ...p,
-          distance: distance(p, a[i+1])
-        }
-      }
-    })
-    this._pointsFlattened = distances
-    this.totalDistance = totalDistance
+    flattenPoints(this)
   }
+
   this.simpleInterpolate = function(_degree) {
     let degree = _degree * 0.99999999
     const length = this.length()
     if(this.points.length > 1) {
       let interpolationDistance = length * degree
       let index = 0
-      let nextDistance = distance(this.points[0], this.points[1])
+      let nextDistance = segmentLength(this.points[0], this.points[1])
 
       while (interpolationDistance - nextDistance > 0) {
         interpolationDistance -= nextDistance
         index++
-        nextDistance = distance(this.points[index], this.points[index+1])
+        nextDistance = segmentLength(this.points[index], this.points[index+1])
       }
       return interpolate(this.points[index], this.points[index + 1], interpolationDistance/nextDistance)
     } else if(this.points.length === 1) {
@@ -208,14 +143,14 @@ function Geometry(points, name, attributes) {
 
         }
       }
-      let _degree = interpolationDistance/this._pointsFlattened[index].distance
+      let calculatedDegree = interpolationDistance/this._pointsFlattened[index].distance
       p1 = this._pointsFlattened[index]
       if(index === this._pointsFlattened.length - 1) {
         p2 = this._pointsFlattened[0]
       } else {
         p2 = this._pointsFlattened[index + 1]
       }
-      return interpolate(p1, p2, _degree)
+      return interpolate(p1, p2, calculatedDegree)
     } else if(this.points.length === 1) {
       return this.points[0]
     } else {
@@ -304,33 +239,5 @@ function Geometry(points, name, attributes) {
 
 
 
-function distance(p1, p2) {
-  if(p2.c) {
-    const cubicCurve = new Bezier(
-      p1.x,
-      p1.y,
-      p2.c[0].x,
-      p2.c[0].y,
-      p2.c[1].x,
-      p2.c[1].y,
-      p2.x,
-      p2.y
-    )
-    return cubicCurve.length()
-  } else if(p2.q) {
-    const quadraticCurve = new Bezier(
-      p1.x,
-      p1.y,
-      p2.q.x,
-      p2.q.y,
-      p2.x,
-      p2.y
-    )
-    return quadraticCurve.length()
-  }
-  let x = p1.x - p2.x
-  let y = p1.y - p2.y
-  return Math.sqrt(x * x + y * y);
-}
 
 export default Geometry;

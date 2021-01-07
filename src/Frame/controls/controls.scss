@@ -8,8 +8,12 @@
         display: flex;
         justify-content: center;
         z-index: 100;
+        pointer-events: none;
         .buttons {
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            button.ui.button {
+                pointer-events: initial;
+            }
         }
     }
     

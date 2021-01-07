@@ -345,7 +345,7 @@ const Point = React.memo(({
 
 Point.defaultProps = {
   showCoordinates: false,
-  radius: 15,
+  radius: 6,
   scaling: {x: 1, y: 1},
   onClickCallback: false,
   geometryKey: false

@@ -10,6 +10,7 @@ import VoronoiTest from 'components/VoronoiTest'
 import {
     Tab
 } from 'semantic-ui-react'
+import PathInterpolateTest from 'components/PathInterpolateTest'
 
 const panes = [
     {
@@ -28,6 +29,10 @@ const panes = [
     {
         menuItem: 'Mirror path',
         render: () => <Tab.Pane attached={false}><MirrorPathTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Interpolation",
+        render: () => <Tab.Pane attached={false}><PathInterpolateTest /></Tab.Pane>
     },
     {
         menuItem: "Styling",
