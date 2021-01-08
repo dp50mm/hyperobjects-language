@@ -40,7 +40,7 @@ model.addProcedure(
     (self) => {
         var path = self.geometries['path'].clone()
         var mirrorPoint = self.geometries['mirror-points'].points[0]
-        return path.scale({x: -1, y: 1}, mirrorPoint)
+        return path.scale({x: -1, y: 1}, mirrorPoint).setShowSegmentLengthLabels(true)
     }
 )
 
@@ -49,7 +49,7 @@ model.addProcedure(
     (self) => {
         var mirror = self.procedures['mirror'](self)
         var mirrorPoint = self.geometries['mirror-points'].points[1]
-        return mirror.scale({x: 1, y: -1}, mirrorPoint)
+        return mirror.scale({x: 1, y: -1}, mirrorPoint).setShowSegmentLengthLabels(true)
     }
 )
 

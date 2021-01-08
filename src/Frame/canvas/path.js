@@ -1,4 +1,5 @@
 import { canvasScaling } from '../CanvasView'
+import text_path from './textPath'
 
 function drawPath(gl, g, transformMatrix) {
   // console.log(g.points);
@@ -17,6 +18,40 @@ function drawPath(gl, g, transformMatrix) {
       drawCurveStep(gl, a[0], transformMatrix)
     }
   })
+  if(g.showSegmentLengthLabels) {
+    const segments = g.segments()
+    gl.font = "18px Europa";
+    gl.textAlign = "center";
+    gl.textBaseline = "bottom";
+    gl.strokeStyle =  "transparent";
+    gl.fillStyle = 'black'
+    gl.lineWidth = 0;
+    segments.forEach(segment => {
+      var points = []
+      if(segment.type === "linear") {
+        points = points.concat([
+          [
+            (segment.p1.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+            (segment.p1.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+          ],
+          [
+            (segment.p2.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+            (segment.p2.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+          ]
+        ])
+      } else {
+        segment.lut().filter((lut_p, i) => i % 10 === 0).forEach(lut_p => {
+          points = points.concat([
+            (lut_p.x  * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+            (lut_p.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+          ])
+        })
+      }
+      
+      gl.textPath(`${_.round(segment.getLength(), 1)}mm`, points)
+    })
+      
+  }
 
   gl.globalAlpha = g._strokeOpacity * g._opacity
   gl.shadowOffsetX = g._shadowOffsetX
@@ -42,7 +77,6 @@ function drawPath(gl, g, transformMatrix) {
     gl.setLineDash([strokeDasharray])
   }
   gl.setLineDash([g._strokeDasharray * canvasScaling.x])
-  // console.log('line width: ', gl.lineWidth, 'strokestyle: ', gl.strokeStyle, ' globalApha: ', gl.globalAlpha);
 
   gl.stroke()
   if(g.closedPath) {
