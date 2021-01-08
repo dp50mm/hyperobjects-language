@@ -609,8 +609,11 @@ class Frame extends Component {
   
   svgOnWheel(e) {
     const panning = keysPressed.includes(' ')
-    if (e.ctrlKey && !panning) {
-      const deltaScaling = 1/300
+    if (!panning) {
+      var deltaScaling = -1/150
+      if(keysPressed.includes('Control')) {
+        deltaScaling = 1/300
+      }
       const mouseCoords = this.getMouseCoords(e)
       const { transformMatrix } = this.state;
       let localPoint = {
