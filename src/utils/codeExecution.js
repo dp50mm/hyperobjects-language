@@ -33,6 +33,7 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
   var EasingFunctions = window.HYPEROBJECTS.EasingFunctions
 
   var ogl = window.HYPEROBJECTS.EXTRA_LIBRARIES.ogl
+  var chroma = window.HYPEROBJECTS.EXTRA_LIBRARIES.chroma
   var model = new Model(${wrapString(modelName)},${wrapString(test_name)})
   model.setSize({
     width: 1000,

@@ -21,6 +21,8 @@ import {
     animate as _animate
   } from './utils/animation'
 
+import chroma from 'chroma-js'
+
 import _ from 'lodash'
 
 import * as ogl from 'ogl'
@@ -64,7 +66,8 @@ export function setupCodeExecution() {
         animate: _animate,
         EasingFunctions: _EasingFunctions,
         EXTRA_LIBRARIES: {
-          ogl: ogl
+          ogl: ogl,
+          chroma: chroma
         }
       }
 }
