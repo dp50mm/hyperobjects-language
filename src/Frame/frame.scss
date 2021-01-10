@@ -131,4 +131,13 @@
     stroke-width: 1px;
     stroke-dasharray: 5 5;
   }
+  .frame-render-bar {
+    background: rgba(255,255,255,0.4);
+    border-radius: 10px;
+    z-index: 20;
+    p {
+      z-index: 30;
+      top: 0;
+    }
+  }
 }

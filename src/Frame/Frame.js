@@ -253,7 +253,10 @@ class Frame extends Component {
     })
   }
   animateModel() {
-    let fps = 1000/60
+    let fps = this.props.animationFps
+    if(shouldRenderFrame(this.state)) {
+      fps = this.props.renderFps
+    }
     if(frameModelStores[this.state.frameID].playing) {
       if(shouldRenderFrame(this.state)) {
           if(this.props.renderType === "SVG") {
@@ -959,7 +962,9 @@ Frame.defaultProps = {
   gridLinesUnit: 'mm',
   showZoomControls: false,
   showPointCoordinates: false,
-  procedureUpdateIntervalOnMouseMove: 1
+  procedureUpdateIntervalOnMouseMove: 1,
+  animationFps: 1000/60,
+  renderFps: 1000/30
 }
 
 export default Frame;

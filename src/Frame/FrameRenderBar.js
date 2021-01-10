@@ -10,34 +10,30 @@ const FrameRenderBar = ({
             position: 'absolute',
             height: size.height,
             zIndex: 1000,
-            padding: 20,
-            top: 0,
+            padding: 10,
+            bottom: 30,
+            height: 12,
             left: 20,
             right: 20,
             pointerEvents: 'none'
-            }}>
+            }} className='frame-render-bar'>
             <p style={{
               position: 'absolute',
-              top: size.height - 30,
-              left: 0,
-              fontSize: 10
+              left: 5,
               }}
               >
               {state.startFrame}
             </p>
             <p style={{
               position: 'absolute',
-              top: size.height - 10,
-              right: 0,
-              fontSize: 10
+              right: 5
               }}>
               {state.endFrame}
             </p>
             <p
             style={{
               position:'absolute',
-              top: size.height - 30,
-              left: `calc(${model.animation_frame / state.endFrame * 100}% - 20px)`
+              left: `calc(${model.animation_frame / state.endFrame * 99}% + 0px)`
             }}
             >
             {model.animation_frame}
