@@ -27,6 +27,7 @@ function Geometry(points, name, attributes) {
   this.name = geometryName;
   this.id = geometry_id;
   this.unit = 'px';
+  this.displayUnit = 'mm';
   this._export = false;
   this.showBounds = false;
   this.export = function(shouldExport) {

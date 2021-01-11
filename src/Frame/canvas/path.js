@@ -1,5 +1,6 @@
 import { canvasScaling } from '../CanvasView'
 import text_path from './textPath'
+import _ from 'lodash'
 
 function drawPath(gl, g, transformMatrix) {
   // console.log(g.points);
@@ -24,31 +25,36 @@ function drawPath(gl, g, transformMatrix) {
     gl.textAlign = "center";
     gl.textBaseline = "bottom";
     gl.strokeStyle =  "transparent";
-    gl.fillStyle = 'black'
+    gl.globalAlpha = 1
+    gl.fillStyle = 'rgba(0,0,0,1)'
     gl.lineWidth = 0;
     segments.forEach(segment => {
       var points = []
-      if(segment.type === "linear") {
-        points = points.concat([
-          [
-            (segment.p1.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
-            (segment.p1.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
-          ],
-          [
-            (segment.p2.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
-            (segment.p2.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
-          ]
-        ])
-      } else {
-        segment.lut().filter((lut_p, i) => i % 10 === 0).forEach(lut_p => {
+      const segmentLength = segment.getLength()
+      const text = `${_.round(segmentLength, 1)}${g.displayUnit}`
+      if(text.length * 20 < segmentLength * transformMatrix.scaleX * canvasScaling.x ) {
+        if(segment.type === "linear") {
           points = points.concat([
-            (lut_p.x  * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
-            (lut_p.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+            [
+              (segment.p1.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+              (segment.p1.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+            ],
+            [
+              (segment.p2.x * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+              (segment.p2.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+            ]
           ])
-        })
+        } else {
+          segment.lut().filter((lut_p, i) => i % 10 === 0).forEach(lut_p => {
+            points = points.concat([
+              (lut_p.x  * canvasScaling.x * transformMatrix.scaleX) + transformMatrix.translateX * canvasScaling.x,
+              (lut_p.y * canvasScaling.y * transformMatrix.scaleY) + transformMatrix.translateY * canvasScaling.y
+            ])
+          })
+        }
       }
       
-      gl.textPath(`${_.round(segment.getLength(), 1)}mm`, points)
+      gl.textPath(text, points)
     })
       
   }

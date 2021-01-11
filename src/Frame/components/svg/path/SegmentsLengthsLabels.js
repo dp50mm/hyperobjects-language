@@ -4,14 +4,22 @@ import _ from 'lodash'
 
 const SegmentsLengthsLabels = React.memo(({
     path,
-    scaling,
-    unit
+    scaling
 }) => {
     const segments = path.segments()
+    
     return (
         <g className='segments-lengths-labels'>
             {segments.map((segment, i) => {
                 const segmentId = `${path.id}-segment-${i}`
+                const segmentLength = segment.getLength()
+                const text = `${_.round(segmentLength, 1)}${path.displayUnit}`
+
+
+                
+                if(text.length * 10 > segmentLength * scaling.x) {
+                    return null
+                }
                 return (
                     <g key={i}>
                         <path
@@ -31,7 +39,7 @@ const SegmentsLengthsLabels = React.memo(({
                             baselineShift={3 / scaling.x} 
                             href={`#${segmentId}`}
                             >
-                            {_.round(segment.getLength(), 1)}{unit}
+                            {text}
                         </textPath>
                         </text>
                     </g>
@@ -41,8 +49,5 @@ const SegmentsLengthsLabels = React.memo(({
     )
 })
 
-SegmentsLengthsLabels.defaultProps = {
-    unit: 'mm'
-}
 
 export default SegmentsLengthsLabels
