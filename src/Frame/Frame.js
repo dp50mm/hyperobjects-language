@@ -44,8 +44,12 @@ import {
   identityMatrix,
   scaleMatrix,
 } from './utils/matrix';
-
-
+import Hammer from 'hammerjs'
+import {
+  handlePinch,
+  touchStartForPinch,
+  touchEndForPinch
+} from './utils/touchEvents'
 
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
@@ -123,12 +127,21 @@ class Frame extends Component {
     this.startDraggingSelection = this.startDraggingSelection.bind(this)
     this.callUpdateParameters = this.callUpdateParameters.bind(this)
     this.setRenderScaling = this.setRenderScaling.bind(this)
-  }
-  sizing() {
-    return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
+    this.initializeHammerJs = this.initializeHammerJs.bind(this)
+    this.onTouchStart = this.onTouchStart.bind(this)
+    this.onTouchEnd = this.onTouchEnd.bind(this)
 
   }
-  componentDidMount() {    
+  /**
+   * Sizing function
+   */
+  sizing() {
+    return calculateSizing(this.props, this.state, frameModelStores[this.state.frameID], this.designerRef)
+  }
+  /**
+   * Component did mount
+   */
+  componentDidMount() {
     frameModelStores[this.state.frameID] = this.props.model
     if(this.props.model === undefined) {
       console.log('model is undefined');
@@ -184,23 +197,16 @@ class Frame extends Component {
       })
     })
     window.addEventListener('wheel', (e) => {
-        if(e.ctrlKey) {
-          e.preventDefault()
-        }
+        if(e.ctrlKey) { e.preventDefault() }
       }, {
         passive: false
       })
     if(this.props.model.animated && this.props.model.playing) {
-      setTimeout(function () {
-        this.animateModel();
-      }.bind(this), 10);
+      setTimeout(function () { this.animateModel(); }.bind(this), 10);
     }
     if(this.props.model.autoplay) {
-      setTimeout(function () {
-        this.playModel();
-      }.bind(this), 10);
+      setTimeout(function () { this.playModel(); }.bind(this), 10);
     }
-    
     setTimeout(function () {
       this.setState({
         containerRendered: true
@@ -209,7 +215,37 @@ class Frame extends Component {
       let size = this.sizing()
       this.props.sizeCallback(size)
     }.bind(this), 10);
+
+    setTimeout(function() {
+      this.initializeHammerJs()
+    }.bind(this), 10)
   }
+
+
+  /**
+   * Initialize hammer js
+   */
+  initializeHammerJs() {
+    if(!_.isNull(this.designerRef) && !_.isUndefined(this.designerRef)) {
+      this.hammertime = new Hammer(this.designerRef.current)
+      this.hammertime.get('pinch').set({enable: true})
+      this.hammertime.on('pinch', (ev) => { handlePinch(ev, this) })
+    } else {
+      setTimeout(function() {
+        this.initializeHammerJs()
+      }.bind(this), 100 + Math.random() * 500)
+    }
+  }
+  onTouchStart(e) {
+    touchStartForPinch(e)
+  }
+  onTouchEnd(e) {
+    touchEndForPinch(e)
+  }
+
+  /**
+   * Get derived state from props
+   */
   static getDerivedStateFromProps(props, state) {
     if(props.modelHasUpdated) {
       frameModelStores[state.frameID] = props.model
@@ -224,6 +260,10 @@ class Frame extends Component {
       modelHasUpdated: false
     }
   }
+
+  /**
+   * Fit to frame
+   */
   fitToFrame() {
     const zoom = this.props.height / this.props.model.size.height
     const frameAspectRatio = this.props.width / this.props.height
@@ -242,7 +282,16 @@ class Frame extends Component {
         translateY: 0
       }
     })
+    setTimeout(() => {
+      this.setState({
+        windowResizeIncrement: this.state.windowResizeIncrement + 1
+      })
+    })
   }
+
+  /**
+   * Move to zero
+   */
   moveToZero() {
     this.setState({
       transformMatrix:{
@@ -251,7 +300,16 @@ class Frame extends Component {
         translateY: 0
       }
     })
+    setTimeout(() => {
+      this.setState({
+        windowResizeIncrement: this.state.windowResizeIncrement + 1
+      })
+    })
   }
+
+  /**
+   * Animate model
+   */
   animateModel() {
     let fps = this.props.animationFps
     if(shouldRenderFrame(this.state)) {
@@ -345,14 +403,15 @@ class Frame extends Component {
       }
     }
   }
+  /**
+   * Play pause rewind model
+   */
   playModel() {
     if(frameModelStores[this.state.frameID].animated) {
       if(frameModelStores[this.state.frameID].playing) {
         console.log('model is already playing');
       } else {
-        this.modelDispatch({
-          type: PLAY
-        })
+        this.modelDispatch({  type: PLAY })
         setTimeout(function () {
           this.animateModel()
         }.bind(this), 10);
@@ -362,22 +421,17 @@ class Frame extends Component {
     }
   }
   pauseModel() {
-    this.setState({
-      render: false
-    })
-    this.modelDispatch({
-      type: PAUSE
-    })
+    this.setState({  render: false  })
+    this.modelDispatch({  type: PAUSE  })
   }
   rewindModel() {
-    this.setState({
-      render: false
-    })
-    this.modelDispatch({
-      type: REWIND
-    })
-
+    this.setState({  render: false  })
+    this.modelDispatch({  type: REWIND  })
   }
+
+  /**
+   * Render model animation frames
+   */
   renderModel() {
     if (frameModelStores[this.state.frameID].animation_frame < this.state.startFrame) {
       this.modelDispatch({
@@ -605,9 +659,7 @@ class Frame extends Component {
   }
 
   setEditingPoint(point) {
-    this.setState({
-      editingPoint: point
-    })
+    this.setState({ editingPoint: point })
   }
   
   svgOnWheel(e) {
@@ -656,7 +708,6 @@ class Frame extends Component {
 
   render() {
     if(!frameModelStores[this.state.frameID]) return (<div></div>)
-    // console.log(keysPressed)
     
     let panning = keysPressed.includes(' ')
 
@@ -801,7 +852,10 @@ class Frame extends Component {
                 
                 />
             )}
-            <div ref={this.designerRef} style={{overflow: 'hidden'}}>
+            <div ref={this.designerRef} style={{overflow: 'hidden'}}
+                onTouchStart={this.onTouchStart}
+                onTouchEnd={this.onTouchEnd}
+                >
                 <Guides
                   svgWidth={this.props.width}
                   svgHeight={size.height}

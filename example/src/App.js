@@ -17,12 +17,18 @@ import ModelsPage from 'containers/ModelsPage'
 import FramePage from 'containers/FramePage'
 import ScriptingPage from 'containers/ScriptingPage'
 import PerformancePage from 'containers/PerformancePage'
+import FullScreenTestPage from 'containers/FullScreenTestPage'
 
 import 'hyperobjects-language/dist/index.css'
 import 'semantic-ui-css/semantic.min.css';
 import './app.scss';
 
 const App = () => {
+  if(window.location.href.includes('/full-screen-test')) {
+    return (
+      <FullScreenTestPage />
+    )
+  }
   return (
     <div className='app'>
       <Router>
