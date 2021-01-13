@@ -4,6 +4,7 @@ import OnClickCallbacksTest from 'components/OnClickCallbacksTest'
 import PathDisplayFeaturesTest from 'components/PathDisplayFeaturesTest'
 import FlattenPathTest from 'components/FlattenPathTest'
 import MirrorPathTest from 'components/MirrorPathTest'
+import ReversePathTest from 'components/ReversePathTest'
 import StylingGeometriesTest from 'components/StylingGeometriesTest'
 import VoronoiTest from 'components/VoronoiTest'
 
@@ -29,6 +30,10 @@ const panes = [
     {
         menuItem: 'Mirror path',
         render: () => <Tab.Pane attached={false}><MirrorPathTest /></Tab.Pane>
+    },
+    {
+        menuItem: 'Reverse path',
+        render: () => <Tab.Pane attached={false}><ReversePathTest /></Tab.Pane>
     },
     {
         menuItem: "Interpolation",

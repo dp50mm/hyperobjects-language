@@ -23,6 +23,35 @@ function PathFunctions() {
   this.endPoint = function() {
     return this.points[this.points.length - 1]
   }
+  this.reverse = function() {
+    return new Path(
+      _.reverse(this.points).map((p, i, a) => {
+        var next_p = false
+        var prev_p = false
+        if(i === 0) {
+          prev_p = a[a.length-1]
+        } else {
+          prev_p = a[i - 1]
+        }
+        if(i < a.length - 1) {
+          next_p = a[i + i]
+        } else {
+          next_p = a[0]
+        }
+        var c = _.get(prev_p, 'c', false)
+        if(_.isArray(c)) {
+          c = _.reverse(c)
+        }
+        return {
+          x: p.x,
+          y: p.y,
+          q: _.get(prev_p, 'q', false),
+          c: c
+        }
+      })
+    ).copyStyle(this)
+  }
+
   this.subPath = function(a, b) {
     return new Path(this.points.filter((p, i) => {
       if(i >= a && i <=b) {
