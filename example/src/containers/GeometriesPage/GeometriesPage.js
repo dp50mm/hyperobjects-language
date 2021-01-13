@@ -5,6 +5,7 @@ import PathDisplayFeaturesTest from 'components/PathDisplayFeaturesTest'
 import FlattenPathTest from 'components/FlattenPathTest'
 import MirrorPathTest from 'components/MirrorPathTest'
 import ReversePathTest from 'components/ReversePathTest'
+import PathContainsPointTest from 'components/PathContainsPointTest'
 import StylingGeometriesTest from 'components/StylingGeometriesTest'
 import VoronoiTest from 'components/VoronoiTest'
 
@@ -34,6 +35,10 @@ const panes = [
     {
         menuItem: 'Reverse path',
         render: () => <Tab.Pane attached={false}><ReversePathTest /></Tab.Pane>
+    },
+    {
+        menuItem: 'Path contains point',
+        render: () => <Tab.Pane attached={false}><PathContainsPointTest /></Tab.Pane>
     },
     {
         menuItem: "Interpolation",

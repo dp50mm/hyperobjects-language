@@ -49,7 +49,7 @@ function PathFunctions() {
           c: c
         }
       })
-    ).copyStyle(this)
+    ).copyStyle(this).closed(this.closedPath)
   }
 
   this.subPath = function(a, b) {
