@@ -52,7 +52,7 @@ function PathFunctions() {
     ).copyStyle(this).closed(this.closedPath)
   }
 
-  this.subPath = function(a, b) {
+  this.subPoints = function(a, b) {
     return new Path(this.points.filter((p, i) => {
       if(i >= a && i <=b) {
         return true
@@ -136,16 +136,20 @@ function PathFunctions() {
   this.splitAt = function(time) {
     let totalLength = this.getLength()
     let segments = this.segments()
-    let splitDistance = totalLength * time + 0.1
+    let splitDistance = totalLength * time + 0.01
     let i = 0
+    // find the segment index for provided time
     while (i < segments.length && splitDistance > segments[i].getLength()) {
       splitDistance -= segments[i].getLength()
       i++
     }
     let path1 = new Path()
     let path2 = new Path()
+    // loop through segments to build split paths
     segments.forEach((segment, _i) => {
+      
       if(_i < i) {
+        // add segments below split segment
         path1.addSegment(segment)
       } else if( _i === i) {
         // split segment and add first part to path1 and second path to path2
@@ -159,13 +163,66 @@ function PathFunctions() {
     return [path1, path2]
   }
 
+
+
+  this.subPath = function(_startTime, _endTime) {
+    var startTime = _startTime
+    var endTime = _endTime
+    if(startTime > endTime) {
+      startTime = _endTime
+      endTime = _startTime
+    }
+    if(startTime === endTime) {
+      return new Path()
+    }
+    let totalLength = this.getLength()
+    let segments = this.segments()
+    let splitDistanceStart = totalLength * startTime + 0.01
+    let splitDistanceEnd = totalLength * endTime + 0.01
+    let start_i = 0
+    let end_i = 0
+    while(start_i < segments.length && splitDistanceStart > segments[start_i].getLength()) {
+      splitDistanceStart -= segments[start_i].getLength()
+      start_i ++
+    }
+    while(end_i < segments.length && splitDistanceEnd > segments[end_i].getLength()) {
+      splitDistanceEnd -= segments[end_i].getLength()
+      end_i ++
+    }
+    let subPath = new Path()
+    if(start_i === end_i) {
+      let segment = segments[start_i]
+      segment = segment.subSegment(
+        splitDistanceStart/segment.getLength(),
+        splitDistanceEnd/segment.getLength()
+      )
+      subPath.addSegment(segment)
+    } else {
+      segments.forEach((segment, segment_i) => {
+        if(segment_i === start_i) {
+          let splitSegment = segment.subSegment(splitDistanceStart / segment.getLength(), 1)
+          subPath.addSegment(splitSegment)
+        } else if(segment_i > start_i && segment_i < end_i) {
+          subPath.addSegment(segment)
+        } else if(segment_i === end_i) {
+          let splitSegment = segment.subSegment(0, splitDistanceEnd/segment.getLength())
+          subPath.addSegment(splitSegment)
+        }
+      })
+    }
+    
+
+    return subPath
+
+  }
+
   this.addSegment = function(segment) {
     if(this.points.length === 0) {
       this.points.push(segment.p1)
       this.points.push(segment.p2)
     } else {
       let last_point = this.points[this.points.length-1]
-      if(!last_point.equals(segment.p1)) {
+      if(!last_point.equals(segment.p1) && segment.type !== "LINEAR") {
         this.points.push(segment.p1)
       }
       this.points.push(segment.p2)

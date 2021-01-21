@@ -1,4 +1,9 @@
 import React from 'react'
+import {
+    Tab
+} from 'semantic-ui-react'
+import './geometries-page.scss'
+
 import CurveTypesTest from 'components/CurveTypesTest'
 import OnClickCallbacksTest from 'components/OnClickCallbacksTest'
 import PathDisplayFeaturesTest from 'components/PathDisplayFeaturesTest'
@@ -8,11 +13,10 @@ import ReversePathTest from 'components/ReversePathTest'
 import PathContainsPointTest from 'components/PathContainsPointTest'
 import StylingGeometriesTest from 'components/StylingGeometriesTest'
 import VoronoiTest from 'components/VoronoiTest'
-
-import {
-    Tab
-} from 'semantic-ui-react'
+import PathAngleAtTest from 'components/PathAngleAtTest'
 import PathInterpolateTest from 'components/PathInterpolateTest'
+import SubPathTest from 'components/SubPathTest'
+
 
 const panes = [
     {
@@ -51,6 +55,15 @@ const panes = [
     {
         menuItem: "Voronoi",
         render: () => <Tab.Pane attached={false}><VoronoiTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Path angle at",
+        render: () => <Tab.Pane attached={false}><PathAngleAtTest /></Tab.Pane>
+    }
+    ,
+    {
+        menuItem: "Sub path",
+        render: () => <Tab.Pane attached={false}><SubPathTest /></Tab.Pane>
     }
 ]
 
@@ -58,7 +71,7 @@ const GeometriesPage = () => {
     return (
         <div className='geometries-page'>
             <h1>Geometries tests</h1>
-            <Tab menu={{pointing: true}} panes={panes} />
+            <Tab menu={{pointing: true, vertical: true, fluid: true}} panes={panes} />
             
             
         </div>

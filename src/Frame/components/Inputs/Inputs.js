@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import './inputs.scss'
 import ModelContext from '../../ModelContext';
 import { Slider } from '@material-ui/core'
-
+import _ from 'lodash'
 import {INPUT_SET_VALUE} from '../../reducer/actionTypes'
 
 const Inputs = ({ modelDispatch }) => {
@@ -21,7 +21,7 @@ const Inputs = ({ modelDispatch }) => {
                     <div key={inputName} className='input'>
                         <p>{inputName}</p>
                         <Slider
-                            defaultValue={min}
+                            value={_.get(input, 'value', min)}
                             min={min}
                             max={max}
                             step={0.01}
