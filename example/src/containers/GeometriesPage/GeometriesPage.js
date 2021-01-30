@@ -59,8 +59,7 @@ const panes = [
     {
         menuItem: "Path angle at",
         render: () => <Tab.Pane attached={false}><PathAngleAtTest /></Tab.Pane>
-    }
-    ,
+    },
     {
         menuItem: "Sub path",
         render: () => <Tab.Pane attached={false}><SubPathTest /></Tab.Pane>

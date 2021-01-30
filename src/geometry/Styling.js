@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import chroma from 'chroma-js'
-
+import { PATH } from './types'
 let rgbText = 'rgb(100,0,0)'
 
 let chromaObject = chroma(rgbText)
@@ -156,6 +156,11 @@ function Styling(attributes) {
     this._shadowOpacity = g._shadowOpacity
     this._shadowOffsetX = g._shadowOffsetX
     this._shadowOffsetY = g._shadowOffsetY
+    // path specific styling
+    if(this.type === PATH) {
+      this.showSegmentLengthLabels = _.get(g, 'showSegmentLengthLabels', false)
+    }
+    
     this.controls = {
       fill: g.controls.fill,
       fillOpacity: g.controls.fillOpacity,

@@ -20,6 +20,7 @@ import {
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import Controls from './controls/Controls'
 import ZoomControls from './controls/ZoomControls'
+import VectorExportMenu from './controls/VectorExportMenu'
 import saveAs from './saveAs'
 import ModelContext from './ModelContext'
 import CanvasView from './CanvasView'
@@ -792,182 +793,186 @@ class Frame extends Component {
           </div>
         ) : null}
         <FrameContext.Provider value={{startDraggingSelection: this.startDraggingSelection}}>
-        <ModelContext.Provider value={model}>
-          <Controls model={model} frame={this}
-            editableGeometries={editableGeometries}
-            displayGeometries={displayGeometries}
-            />
-          {this.props.showZoomControls && (
-            <ZoomControls
-              fitToFrame={this.fitToFrame}
-              moveToZero={this.moveToZero}
+          <ModelContext.Provider value={model}>
+            <Controls model={model} frame={this}
+              editableGeometries={editableGeometries}
+              displayGeometries={displayGeometries}
               />
-          )}
-        {(this.props.showInputsByDefault && model.inputsList.length > 0) && (
-          <Inputs modelDispatch={this.modelDispatch.bind(this)} />
-        )}
-        {focussedTitle}
-        {keyDownEventListener === undefined && (
-          <div
-            style={{
-              position: 'absolute',
-              zIndex: 100,
-              cursor: 'pointer',
-              opacity: 0.5,
-              top: 5,
-              right: 5,
-              background: 'rgb(245,245,245)',
-              borderRadius: 4,
-              padding: 5,
-              pointerEvents: "auto"
-            }}
-            onClick={() => {
-              removeKeyEventListeners()
-            }}
-            >
-            Frame focussed
-          </div>
-        )}
-        {model.dimensions === 2 ? (
-          <div className='svg-container'
-            style={{padding: this.props.svgPadding, background: model.background}}
-            onClick={() => {
-              getKeysPressed((newKeys) => keysPressed = newKeys)
-            }}
-            onPointerEnter={() => {
-              getKeysPressed((newKeys) => keysPressed = newKeys)
-            }}
-            onPointerLeave={() => {
-              removeKeyEventListeners()
-            }}
-            >
-              
-            {editPoint && (
-              <EditPointPopUp
-                editPoint={editPoint}
-                setEditingPoint={this.setEditingPoint}
-                transformMatrix={this.state.transformMatrix}
-                modelDispatch={this.modelDispatch.bind(this)}
-                callUpdateParameters={this.callUpdateParameters}
-                
+            {this.props.showZoomControls && (
+              <ZoomControls
+                fitToFrame={this.fitToFrame}
+                moveToZero={this.moveToZero}
                 />
             )}
-            <div ref={this.designerRef} style={{overflow: 'hidden'}}
-                onTouchStart={this.onTouchStart}
-                onTouchEnd={this.onTouchEnd}
+            {this.props.vectorExportMenu && (
+              <VectorExportMenu
+                />
+            )}
+            {(this.props.showInputsByDefault && model.inputsList.length > 0) && (
+              <Inputs modelDispatch={this.modelDispatch.bind(this)} />
+            )}
+            {focussedTitle}
+            {keyDownEventListener === undefined && (
+              <div
+                style={{
+                  position: 'absolute',
+                  zIndex: 100,
+                  cursor: 'pointer',
+                  opacity: 0.5,
+                  top: 5,
+                  right: 5,
+                  background: 'rgb(245,245,245)',
+                  borderRadius: 4,
+                  padding: 5,
+                  pointerEvents: "auto"
+                }}
+                onClick={() => {
+                  removeKeyEventListeners()
+                }}
                 >
-                <Guides
-                  svgWidth={this.props.width}
-                  svgHeight={size.height}
-                  group_scale_transform={group_scale_transform}
-                  group_translate_transform={group_translate_transform}
-                  width={model.size.width}
-                  height={model.size.height}
-                  transformMatrix={this.state.transformMatrix}
-                  showBounds={this.props.showBounds}
-                  showGridLines={this.props.showGridLines}
-                  gridLinesUnit={this.props.gridLinesUnit}
-                  />
-                <svg
-                  id={this.state.svgID}
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  x="0px"
-                  y="0px"
-                  style={svgStyle}
-                  ref={this.svgRef}
-                  onMouseDown={this.svgOnMouseDown}
-                  onTouchEnd={this.svgOnTouchEnd}
-                  onMouseUp={this.svgOnMouseUp} 
-                  onWheel={this.svgOnWheel}
-                  width={this.props.width}
-                  height={size.height}>
-                    {(this.state.mouse_select && !this.state.draggingSelection) && (
-                      <SelectBox
-                        mouseDownPoint={this.state.mouseDownPoint}
-                        mouseSelect={this.state.mouse_select}
-                        />
-                    )}
-                <g transform={group_translate_transform}>
-                  <g transform={group_scale_transform}>
-                      {this.props.renderType === 'SVG' ? (
-                        <g className='display-geometries'>
-                        {displayGeometries.map((geometry, i) => {
-                          return (
-                            <Geometry
-                              key={i}
-                              geometry={{...geometry, editable: false}}
-                              scaling={algorithm_scaling}
-                              onGeometryClickCallback={this.props.onGeometryClickCallback}
-                              onPointClickCallback={this.props.onPointClickCallback}
-                              selectingPoints={model.selectingPoints}
-                              />
-                          );
-                        })}
-                        </g>
-                      ) : null}
-                      <g className='editable-geometries'>
-                      {editableGeometries.map((geometry) => {
-                        if(geometry !== undefined && geometry.visibility) {
-                          return (
-                            <Geometry
-                              scaling={algorithm_scaling}
-                              modelDispatch={this.modelDispatch.bind(this)}
-                              setEditingPoint={this.setEditingPoint}
-                              key={geometry.id}
-                              onGeometryClickCallback={this.props.onGeometryClickCallback}
-                              onPointClickCallback={this.props.onPointClickCallback}
-                              geometry={{...geometry, editable: this.props.editable}}
-                              showPointCoordinates={this.props.showPointCoordinates}
-                              selectingPoints={model.selectingPoints}
-                              startDraggingSelection={this.startDraggingSelection}
-                              modelHasUpdated={this.props.modelHasUpdated}
-                              modelSpaceMouseCoords={this.state.modelSpaceMouseCoords}
-                              />
-                          );
-                        }
-                        return null
-                      })}
-                      </g>
-                    </g>
-                  </g>
-                </svg>
-                {this.props.renderType === 'CANVAS' ? (
-                  <div style={canvasContainerStyle}>
-                    <CanvasView
-                      model={model}
-                      shouldRenderFrame={shouldRenderFrame(this.state)}
-                      editable={this.props.editable}
-                      animated={model.animated}
-                      playing={model.playing}
-                      canvasID={this.state.canvasID}
-                      background={model.background}
-                      width={this.props.width}
-                      height={size.height}
-                      renderScaling={this.state.renderScaling}
+                Frame focussed
+              </div>
+            )}
+            {model.dimensions === 2 ? (
+              <div className='svg-container'
+                style={{padding: this.props.svgPadding, background: model.background}}
+                onClick={() => {
+                  getKeysPressed((newKeys) => keysPressed = newKeys)
+                }}
+                onPointerEnter={() => {
+                  getKeysPressed((newKeys) => keysPressed = newKeys)
+                }}
+                onPointerLeave={() => {
+                  removeKeyEventListeners()
+                }}
+                >
+                  
+                {editPoint && (
+                  <EditPointPopUp
+                    editPoint={editPoint}
+                    setEditingPoint={this.setEditingPoint}
+                    transformMatrix={this.state.transformMatrix}
+                    modelDispatch={this.modelDispatch.bind(this)}
+                    callUpdateParameters={this.callUpdateParameters}
+                    
+                    />
+                )}
+                <div ref={this.designerRef} style={{overflow: 'hidden'}}
+                    onTouchStart={this.onTouchStart}
+                    onTouchEnd={this.onTouchEnd}
+                    >
+                    <Guides
+                      svgWidth={this.props.width}
+                      svgHeight={size.height}
+                      group_scale_transform={group_scale_transform}
+                      group_translate_transform={group_translate_transform}
+                      width={model.size.width}
+                      height={model.size.height}
                       transformMatrix={this.state.transformMatrix}
-                      geometries={staticGeometries.concat(displayGeometries)}
+                      showBounds={this.props.showBounds}
+                      showGridLines={this.props.showGridLines}
+                      gridLinesUnit={this.props.gridLinesUnit}
                       />
-                  </div>
-                ) : null}
+                    <svg
+                      id={this.state.svgID}
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      style={svgStyle}
+                      ref={this.svgRef}
+                      onMouseDown={this.svgOnMouseDown}
+                      onTouchEnd={this.svgOnTouchEnd}
+                      onMouseUp={this.svgOnMouseUp} 
+                      onWheel={this.svgOnWheel}
+                      width={this.props.width}
+                      height={size.height}>
+                        {(this.state.mouse_select && !this.state.draggingSelection) && (
+                          <SelectBox
+                            mouseDownPoint={this.state.mouseDownPoint}
+                            mouseSelect={this.state.mouse_select}
+                            />
+                        )}
+                    <g transform={group_translate_transform}>
+                      <g transform={group_scale_transform}>
+                          {this.props.renderType === 'SVG' ? (
+                            <g className='display-geometries'>
+                            {displayGeometries.map((geometry, i) => {
+                              return (
+                                <Geometry
+                                  key={i}
+                                  geometry={{...geometry, editable: false}}
+                                  scaling={algorithm_scaling}
+                                  onGeometryClickCallback={this.props.onGeometryClickCallback}
+                                  onPointClickCallback={this.props.onPointClickCallback}
+                                  selectingPoints={model.selectingPoints}
+                                  />
+                              );
+                            })}
+                            </g>
+                          ) : null}
+                          <g className='editable-geometries'>
+                          {editableGeometries.map((geometry) => {
+                            if(geometry !== undefined && geometry.visibility) {
+                              return (
+                                <Geometry
+                                  scaling={algorithm_scaling}
+                                  modelDispatch={this.modelDispatch.bind(this)}
+                                  setEditingPoint={this.setEditingPoint}
+                                  key={geometry.id}
+                                  onGeometryClickCallback={this.props.onGeometryClickCallback}
+                                  onPointClickCallback={this.props.onPointClickCallback}
+                                  geometry={{...geometry, editable: this.props.editable}}
+                                  showPointCoordinates={this.props.showPointCoordinates}
+                                  selectingPoints={model.selectingPoints}
+                                  startDraggingSelection={this.startDraggingSelection}
+                                  modelHasUpdated={this.props.modelHasUpdated}
+                                  modelSpaceMouseCoords={this.state.modelSpaceMouseCoords}
+                                  />
+                              );
+                            }
+                            return null
+                          })}
+                          </g>
+                        </g>
+                      </g>
+                    </svg>
+                    {this.props.renderType === 'CANVAS' ? (
+                      <div style={canvasContainerStyle}>
+                        <CanvasView
+                          model={model}
+                          shouldRenderFrame={shouldRenderFrame(this.state)}
+                          editable={this.props.editable}
+                          animated={model.animated}
+                          playing={model.playing}
+                          canvasID={this.state.canvasID}
+                          background={model.background}
+                          width={this.props.width}
+                          height={size.height}
+                          renderScaling={this.state.renderScaling}
+                          transformMatrix={this.state.transformMatrix}
+                          geometries={staticGeometries.concat(displayGeometries)}
+                          />
+                      </div>
+                    ) : null}
 
 
-            </div>
-          </div>
-        ) : null}
-        {model.dimensions === 3 ? (
-          <div style={canvas3DContainerStyle}>
-            <Canvas3DView
-              width={size.width}
-              height={size.height}
-              editableGeometries={editableGeometries}
-              displayGeometries={staticGeometries.concat(displayGeometries)}
-              canvasID={this.props.canvasID}
-              backgroundColor={model.background}
-              />
-          </div>
-        ) : null}
-        </ModelContext.Provider>
+                </div>
+              </div>
+            ) : null}
+            {model.dimensions === 3 ? (
+              <div style={canvas3DContainerStyle}>
+                <Canvas3DView
+                  width={size.width}
+                  height={size.height}
+                  editableGeometries={editableGeometries}
+                  displayGeometries={staticGeometries.concat(displayGeometries)}
+                  canvasID={this.props.canvasID}
+                  backgroundColor={model.background}
+                  />
+              </div>
+            ) : null}
+          </ModelContext.Provider>
         </FrameContext.Provider>
         {this.state.render ? (
             <FrameRenderBar
@@ -1003,6 +1008,7 @@ Frame.defaultProps = {
   animationControls: false,
   renderControls: false,
   exportControls: false,
+  vectorExportMenu: false,
   svgPadding: 0,
   scaleToContainer: false,
   showProcedureErrors: false,
