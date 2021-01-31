@@ -72,6 +72,12 @@ class ExportControls extends Component {
     } else {
       console.log('svg id is not set');
     }
+    setTimeout(function () {
+      this.setState({
+        renderSVG: false,
+        export: false
+      })
+    }.bind(this), 50);
   }
   downloadPNG() {
     downloadPng(this.props.svg_id, this.props.name, this.props.model)
@@ -83,6 +89,7 @@ class ExportControls extends Component {
     }.bind(this), 50);
   }
   downloadPDF() {
+    let model = this.props.model
     const doc = new jsPDF({
       unit: 'mm',
       format: [
@@ -95,7 +102,13 @@ class ExportControls extends Component {
       element,
       {x: 0, y: 0, width:this.props.model.size.width, height: this.props.model.size.height }
     ).then(() => {
-      doc.save('testpdf.pdf')
+      doc.save(`${model.name}.pdf`)
+      setTimeout(function () {
+        this.setState({
+          renderSVG: false,
+          export: false
+        })
+      }.bind(this), 50);
     })
   }
 
