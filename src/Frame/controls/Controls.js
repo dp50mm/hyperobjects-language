@@ -40,6 +40,7 @@ const Controls = React.memo(({
                 svg_id={`${frame.state.svgID}-export`}
                 canvasID={frame.props.canvasID}
                 name={model.name}
+                exportTypes={frame.props.exportTypes}
                 />
             ) : null}
         </div>

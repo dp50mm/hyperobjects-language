@@ -31,7 +31,7 @@ model.addEditableGeometry(
                 y: 50 + Math.random() * 900
             }
         })
-    ).r(4).strokeDasharray(3)
+    ).r(4).strokeDasharray(3).export(true)
 )
 
 // model.addEditableGeometry(
@@ -55,6 +55,7 @@ model.addProcedure(
             .stroke("rgb(0,150,50)")
             .strokeWidth(1)
             .fill('blue')
+            .export(true)
             
     }
 )
@@ -65,7 +66,7 @@ model.addProcedure(
         return new Text(
             "TEST",
             {x: 500, y: 500}
-        )
+        ).export(true)
     }
 )
 
@@ -118,6 +119,7 @@ const ZoomPanFrameTest = ({
                         showPointCoordinates={true}
                         exportControls={true}
                         animationControls={true}
+                        exportTypes={['svg', 'png', 'pdf']}
                         />
                 )}
                 </div>

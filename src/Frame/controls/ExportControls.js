@@ -7,8 +7,8 @@ import {
 } from 'semantic-ui-react'
 import downloadPng from './exportUtils/downloadPng'
 import downloadSVG from './exportUtils/downloadSVG'
-
-
+import { jsPDF } from 'jspdf'
+import 'svg2pdf.js'
 
 
 class ExportControls extends Component {
@@ -20,6 +20,7 @@ class ExportControls extends Component {
     this.downloadJSON = this.downloadJSON.bind(this)
     this.triggerSVGExport = this.triggerSVGExport.bind(this)
     this.triggerPNGExport = this.triggerPNGExport.bind(this)
+    this.triggerPDFExport = this.triggerPDFExport.bind(this)
     this.triggerDownload = this.triggerDownload.bind(this)
     this.state = {
       renderSVG: false,
@@ -30,6 +31,12 @@ class ExportControls extends Component {
     this.setState({
       renderSVG: true,
       export: 'SVG'
+    })
+  }
+  triggerPDFExport() {
+    this.setState({
+      renderSVG: true,
+      export: "PDF"
     })
   }
   triggerPNGExport() {
@@ -47,11 +54,16 @@ class ExportControls extends Component {
     }
 
   }
+  /**
+   * Triggered by the SVG Export component callback when the SVG has been fully rendered.
+   */
   triggerDownload() {
     if(this.state.export === 'SVG') {
       this.downloadSVG()
     } else if(this.state.export === 'PNG') {
       this.downloadPNG()
+    } else if(this.state.export === 'PDF') {
+      this.downloadPDF()
     }
   }
   downloadSVG() {
@@ -70,6 +82,24 @@ class ExportControls extends Component {
       })
     }.bind(this), 50);
   }
+  downloadPDF() {
+    const doc = new jsPDF({
+      unit: 'mm',
+      format: [
+        this.props.model.size.width,
+        this.props.model.size.height
+      ]
+    })
+    var element = document.getElementById(this.props.svg_id)
+    doc.svg(
+      element,
+      {x: 0, y: 0, width:this.props.model.size.width, height: this.props.model.size.height }
+    ).then(() => {
+      doc.save('testpdf.pdf')
+    })
+  }
+
+
   downloadGCode() {
     let model = this.props.model
     let gcode = model.gcode.generate(model)
@@ -84,27 +114,67 @@ class ExportControls extends Component {
   }
   
   render() {
+    var exportTypes = this.props.exportTypes
+
+    var exportSVGButton = true
+    var exportPDFButton = true
+    var exportPNGButton = true
+    var exportGCodeButton = true
+    var exportJSONButton = true
+    if(_.isArray(exportTypes)) {
+      exportTypes = exportTypes.map(p => _.toLower(p))
+      exportSVGButton = exportTypes.includes("svg")
+      exportPDFButton = exportTypes.includes("pdf")
+      exportPNGButton = exportTypes.includes("png")
+      exportGCodeButton = exportTypes.includes("gcode")
+      exportJSONButton = exportTypes.includes("json")
+    }
     return (
       <div className='frame-controls export'>
-        <Button size="tiny" className="control-button" onClick={this.triggerSVGExport}>
-          <i className='pe-7s-vector pe-2x'></i>
-          <p className='tooltip'>Download SVG</p>
-        </Button>
-        <br/>
-        <Button size="tiny" className="control-button" onClick={this.triggerPNGExport}>
-          <i className='pe-7s-photo pe-2x'></i>
-          <p className='tooltip'>Download PNG</p>
-        </Button>
-        <br/>
-        <Button size="tiny" className="control-button" onClick={this.downloadGCode}>
-          <i className='pe-7s-download pe-2x'></i>
-          <p className='tooltip'>Download GCODE</p>
-        </Button>
-        <br/>
-        <Button size="tiny" className="control-button" onClick={this.downloadJSON}>
-          <i className='pe-7s-download pe-2x'></i>
-          <p className='tooltip'>Download JSON</p>
-        </Button>
+        <p style={{marginBottom: 2}}>Exports</p>
+        {exportSVGButton && (
+          <Button size="tiny" className="control-button" onClick={this.triggerSVGExport}>
+            <i className='pe-7s-vector pe-2x'></i>
+            <p className='tooltip'>Download SVG</p>
+          </Button>
+        )}
+        {exportPDFButton && (
+          <React.Fragment>
+          <br/>
+          <Button size="tiny" className="control-button" onClick={this.triggerPDFExport}>
+            PDF
+            <p className='tooltip'>Download PDF</p>
+          </Button>
+          </React.Fragment>
+        )}
+        {exportPNGButton && (
+          <React.Fragment>
+            <br/>
+          <Button size="tiny" className="control-button" onClick={this.triggerPNGExport}>
+            <i className='pe-7s-photo pe-2x'></i>
+            <p className='tooltip'>Download PNG</p>
+          </Button>
+          </React.Fragment>
+        )}
+        {exportGCodeButton && (
+          <React.Fragment>
+            <br/>
+            <Button size="tiny" className="control-button" onClick={this.downloadGCode}>
+              <i className='pe-7s-download pe-2x'></i>
+              <p className='tooltip'>Download GCODE</p>
+            </Button>
+          </React.Fragment>
+        )}
+        {exportJSONButton && (
+          <React.Fragment>
+            <br/>
+            <Button size="tiny" className="control-button" onClick={this.downloadJSON}>
+              <i className='pe-7s-download pe-2x'></i>
+              <p className='tooltip'>Download JSON</p>
+            </Button>
+          </React.Fragment>
+        )}
+        
         {this.state.renderSVG ? (
           <div style={{display: 'none'}}>
             <SVGExport
@@ -124,7 +194,8 @@ class ExportControls extends Component {
 
 ExportControls.defaultProps = {
   svg_id: false,
-  name: 'set name prop'
+  name: 'set name prop',
+  exportTypes: false
 }
 
 export default ExportControls

@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import './frame.scss'
 import reducer from './reducer/index';
 import Geometry from './components/Geometry';
-import { Rectangle } from '../geometry'
 import Inputs from './components/Inputs'
 import {
   MOVE_POINT,
   STOP_DRAGGING,
   START_SELECTION,
-  SELECT_BOX,
-  RESET_SELECTION,
   ANIMATE,
   PLAY,
   PAUSE,
   REWIND,
-  SET_FRAME,
-  MOVE_SELECTION, SET_DRAGGED_POINT
+  SET_FRAME
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import Controls from './controls/Controls'
@@ -36,21 +32,17 @@ import getKeysPressed, {
 } from './utils/keysPressed'
 import Guides from './Guides'
 import SelectBox from './components/SelectBox'
-import {
-  composeMatrices,
-  inverseMatrix,
-  applyMatrixToPoint,
-  applyInverseMatrixToPoint,
-  translateMatrix,
-  identityMatrix,
-  scaleMatrix,
-} from './utils/matrix';
 import Hammer from 'hammerjs'
 import {
   handlePinch,
   touchStartForPinch,
   touchEndForPinch
 } from './utils/touchEvents'
+import {
+  svgWheelZoom,
+  fitFrameToContainer
+} from "./utils/zoomEvents"
+import { handleMouseMove, handleMouseUp } from './utils/mouseEvents';
 
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
@@ -119,7 +111,6 @@ class Frame extends Component {
     this.setStartFrame = this.setStartFrame.bind(this)
     this.setEndFrame = this.setEndFrame.bind(this)
     this.svgOnMouseDown = this.svgOnMouseDown.bind(this)
-    this.svgOnTouchEnd = this.svgOnTouchEnd.bind(this)
     this.svgOnMouseUp = this.svgOnMouseUp.bind(this)
     this.svgOnWheel = this.svgOnWheel.bind(this)
     this.fitToFrame = this.fitToFrame.bind(this)
@@ -251,44 +242,15 @@ class Frame extends Component {
     if(props.modelHasUpdated) {
       frameModelStores[state.frameID] = props.model
       frameModelRenderedGeometriesStores[state.frameID] = props.model.displayGeometries()
-      return {
-        ...state,
-        modelHasUpdated: true
-      }
+      return { ...state, modelHasUpdated: true }
     }
-    return {
-      ...state,
-      modelHasUpdated: false
-    }
+    return { ...state, modelHasUpdated: false }
   }
 
   /**
    * Fit to frame
    */
-  fitToFrame() {
-    const zoom = this.props.height / this.props.model.size.height
-    const frameAspectRatio = this.props.width / this.props.height
-    const modelSize = this.props.model.size
-    const modelAspectRatio = modelSize.width / modelSize.height
-    let pan_x = 0
-    if(frameAspectRatio !== modelAspectRatio) {
-      pan_x = this.props.width / zoom * 0.5 - modelSize.width * 0.5
-    }
-    this.setState({
-      transformMatrix: {
-        ...this.state.transformMatrix,
-        scaleX: zoom,
-        scaleY: zoom,
-        translateX: pan_x * zoom,
-        translateY: 0
-      }
-    })
-    setTimeout(() => {
-      this.setState({
-        windowResizeIncrement: this.state.windowResizeIncrement + 1
-      })
-    })
-  }
+  fitToFrame() { fitFrameToContainer(this) }
 
   /**
    * Move to zero
@@ -342,7 +304,6 @@ class Frame extends Component {
               })
 
             })
-
           }
 
       } else if(this.state.render && frameModelStores[this.state.frameID].animation_frame > this.state.endFrame) {
@@ -445,21 +406,35 @@ class Frame extends Component {
     })
     this.playModel()
   }
+  
+  /**
+   * Set start frame for rendering 
+   */
   setStartFrame(frameNr) {
     this.setState({
       startFrame: frameNr
     })
   }
+  
+  /**
+   * Set end frame for rendering
+   */
   setEndFrame(frameNr) {
     this.setState({
       endFrame: frameNr
     })
   }
+
+  /**
+   * Set render scaling to determine if model exports to the current zoom/pan or model size.
+   */
   setRenderScaling(renderScaling) {
     this.setState({
       renderScaling: renderScaling
     })
   }
+
+
   getMouseCoords = (e) => {
     if(this.svgRef.current !== null) {
       const svgCoords = this.svgRef.current.getBoundingClientRect();
@@ -471,74 +446,19 @@ class Frame extends Component {
     }
 
   }
-  mouseMove(e) {
-    let mouse_coords = this.getMouseCoords(e);
-    let size = this.sizing()
-    let model = frameModelStores[this.state.frameID];
-    const transformMatrix = this.state.transformMatrix
-    if(mouse_coords) {
-      if(this.props.logMouseMove) {
-        console.log(mouse_coords)
-      }
-      const panning = keysPressed.includes(' ')
-      if(panning) {
-        if(this.state.mouseDown) {
-          this.setState({
-            transformMatrix: {
-              ...this.state.transformMatrix,
-              translateX: this.state.panStart.x + mouse_coords.x - this.state.mouseDownPoint.x,
-              translateY: this.state.panStart.y + mouse_coords.y - this.state.mouseDownPoint.y
-            }
-          })
-        }
-      } else if(this.state.mouseDown) {
-        let previousMouseCoords = this.state.mouse_select
 
-        if(this.state.draggingSelection) {
-          const previousPoint = {
-            x: (previousMouseCoords.x - transformMatrix.translateX) / transformMatrix.scaleX,
-            y: (previousMouseCoords.y - transformMatrix.translateY) / transformMatrix.scaleY
-          }
-          const currentPoint = {
-            x: (mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX,
-            y: (mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY
-          }
-          const dx = currentPoint.x - previousPoint.x
-          const dy = currentPoint.y - previousPoint.y
-          if(!isNaN(dx) && !isNaN(dy) && this.props.editable) {
-            this.modelDispatch({
-              type: MOVE_SELECTION,
-              payload: {
-                dx: dx,
-                dy: dy
-              }
-            })
-          }
-        }
-        this.setState({
-          mouse_select: mouse_coords
-        })
-      } else {
-        if(this.props.editable) {
-          this.modelDispatch({
-            type: MOVE_POINT,
-            payload: {
-              x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
-              y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height),
-              model: model,
-              mouseDown: this.state.mouseDown
-            }
-          });
-          this.setState({
-            modelSpaceMouseCoords: {
-              x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
-              y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
-            }
-          })
-        }
-      }
-    }
-  }
+  /**
+   * SVG Mouse move
+   * function dispatches actions for dragging points and selections
+   */
+  mouseMove(e) { handleMouseMove(this, e, frameModelStores, keysPressed) }
+
+  /**
+   * Handle mouse up event
+   */
+  svgOnMouseUp(e) { handleMouseUp(this, e, frameModelStores, keysPressed) }
+
+
   getAlgorithmScaling() {
     return {
       x: this.state.zoom,
@@ -573,82 +493,6 @@ class Frame extends Component {
       e.preventDefault()
     }
   }
-  svgOnTouchEnd() {
-    // this.modelDispatch({
-    //   type: STOP_DRAGGING
-    // })
-  }
-  svgOnMouseUp(e) {
-    let mouse_coords = this.getMouseCoords(e);
-    
-    let startMouseCoords = this.state.mouseDownPoint
-    const panning = keysPressed.includes(' ')
-    if(e.button === 0) {
-      let transformMatrix = this.state.transformMatrix
-      let model = frameModelStores[this.state.frameID];
-      
-      let p2 = {
-        x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
-        y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
-      }
-      
-      if(startMouseCoords) {
-        if(this.state.draggingSelection) {
-          this.callUpdateParameters()
-        }
-        const MIN_DRAG_DISTANCE = 3 
-        if(Math.abs(mouse_coords.x - startMouseCoords.x) < MIN_DRAG_DISTANCE && Math.abs(mouse_coords.y - startMouseCoords.y) < MIN_DRAG_DISTANCE) {
-          
-          if(this.props.onClickCallback && frameModelStores[this.state.frameID].selectedPoints === false) {
-            this.props.onClickCallback(p2)
-          }
-          this.setState({
-            draggingSelection: false
-          })
-          this.modelDispatch({
-            type: RESET_SELECTION
-          })
-        } else if(this.state.draggingSelection === false && !model.draggingAPoint) {
-          
-          let p1 = {
-            x: _.clamp((startMouseCoords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
-            y: _.clamp((startMouseCoords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
-          }
-          let selectRect = new Rectangle(p1,p2)
-          let selectedPoints = model.getEditablePointsInRectangle(selectRect)
-          if(selectedPoints.length > 0 && model.draggingAPoint === false && !panning) {
-            this.modelDispatch({
-              type: SELECT_BOX,
-              payload: selectRect
-            })
-          } else {
-            this.modelDispatch({
-              type: RESET_SELECTION
-            })
-          }
-        }
-      } else {
-        if(this.state.draggingSelection) {
-          this.modelDispatch({
-            type: RESET_SELECTION
-          })
-          this.setState({
-            draggingSelection: false
-          })
-        }
-      }
-      this.setState({
-        mouseDown: false,
-        mouse_select: false
-      })
-      if(model.draggingAPoint) {
-        this.modelDispatch({
-          type: STOP_DRAGGING
-        })
-      }
-      
-    }
-  }
 
   startDraggingSelection(e) {
     let mouse_coords = this.getMouseCoords(e)
@@ -663,49 +507,7 @@ class Frame extends Component {
     this.setState({ editingPoint: point })
   }
   
-  svgOnWheel(e) {
-    const panning = keysPressed.includes(' ')
-    if (!panning) {
-      var deltaScaling = -1/150
-      if(keysPressed.includes('Control')) {
-        deltaScaling = 1/300
-      }
-      const mouseCoords = this.getMouseCoords(e)
-      const { transformMatrix } = this.state;
-      let localPoint = {
-        x: (mouseCoords.x * transformMatrix.scaleX) + transformMatrix.translateX,
-        y: mouseCoords.y
-      }
-
-      localPoint.x = 100
-      localPoint.y = 0
-
-      let scaleX = _.clamp(1 + e.deltaY * deltaScaling, 0.1, 5)
-      let scaleY = scaleX
-      const translate = applyInverseMatrixToPoint(transformMatrix, mouseCoords)
-      const nextMatrix = composeMatrices([
-        transformMatrix,
-        translateMatrix({
-          translateX: translate.x,
-          translateY: translate.y
-        }),
-        scaleMatrix({
-          scaleX: scaleX,
-          scaleY: scaleY
-        }),
-        translateMatrix({
-          translateX: -translate.x,
-          translateY: -translate.y
-        })
-      ]);
-
-      this.setState({
-        transformMatrix: nextMatrix
-      })
-
-
-    }
-  }
+  svgOnWheel(e) { svgWheelZoom(this, e, keysPressed) }
 
   render() {
     if(!frameModelStores[this.state.frameID]) return (<div></div>)
@@ -794,7 +596,9 @@ class Frame extends Component {
         ) : null}
         <FrameContext.Provider value={{startDraggingSelection: this.startDraggingSelection}}>
           <ModelContext.Provider value={model}>
-            <Controls model={model} frame={this}
+            <Controls
+              model={model}
+              frame={this}
               editableGeometries={editableGeometries}
               displayGeometries={displayGeometries}
               />
@@ -1008,6 +812,7 @@ Frame.defaultProps = {
   animationControls: false,
   renderControls: false,
   exportControls: false,
+  exportTypes: false,
   vectorExportMenu: false,
   svgPadding: 0,
   scaleToContainer: false,
