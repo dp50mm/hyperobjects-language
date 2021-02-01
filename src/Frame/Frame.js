@@ -11,7 +11,8 @@ import {
   PLAY,
   PAUSE,
   REWIND,
-  SET_FRAME
+  SET_FRAME,
+  INPUT_SET_VALUE
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import Controls from './controls/Controls'
@@ -329,6 +330,9 @@ class Frame extends Component {
       console.log(action)
     }
     let shouldcallUpdateParameters = action.type === STOP_DRAGGING && frameModelStores[this.state.frameID].draggingAPoint
+    if(action.type === INPUT_SET_VALUE) {
+      shouldcallUpdateParameters = true
+    }
     actionCallbackMiddleware(frameModelStores[this.state.frameID], action, this.props.actionsCallback)
     try {
       if(this.state.frameMouseMoveCounter % this.props.procedureUpdateIntervalOnMouseMove === 0) {
