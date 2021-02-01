@@ -2,14 +2,18 @@ import React, { useContext } from 'react'
 import './inputs.scss'
 import ModelContext from '../../ModelContext';
 import { Slider } from '@material-ui/core'
+import {
+    Card
+} from 'semantic-ui-react'
 import _ from 'lodash'
 import {INPUT_SET_VALUE} from '../../reducer/actionTypes'
 
 const Inputs = ({ modelDispatch }) => {
-    const { inputs, inputsList } = useContext(ModelContext)
+    const { name, inputs, inputsList } = useContext(ModelContext)
     return (
-        <div className='inputs'>
-            <h3>Inputs</h3>
+        <Card className='inputs'>
+            <Card.Content>
+            <h3>{name}</h3>
             {inputsList.map(inputName => {
                 let input = inputs[inputName]
                 let min = _.get(input, 'range[0]', 0)
@@ -39,7 +43,8 @@ const Inputs = ({ modelDispatch }) => {
                     </div>
                 )
             })}
-        </div>
+            </Card.Content>
+        </Card>
     )
 }
 

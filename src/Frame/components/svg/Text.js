@@ -9,7 +9,7 @@ const Text = ({geometry, modelDispatch}) => (
       textAnchor={geometry._textAnchor}
       fill={geometry._fill}
       fillOpacity={geometry._fillOpacity}
-      fontFamily={geometry._fontFamily}
+      fontFamily={`${geometry._fontFamily} Europa Helvetica`}
       >
     {geometry.text}
     </text>

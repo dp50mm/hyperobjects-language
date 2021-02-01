@@ -97,6 +97,8 @@ class ExportControls extends Component {
         this.props.model.size.height
       ]
     })
+    doc.setFont('Helvetica')
+    
     var element = document.getElementById(this.props.svg_id)
     doc.svg(
       element,
