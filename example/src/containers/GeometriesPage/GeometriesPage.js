@@ -16,6 +16,7 @@ import VoronoiTest from 'components/VoronoiTest'
 import PathAngleAtTest from 'components/PathAngleAtTest'
 import PathInterpolateTest from 'components/PathInterpolateTest'
 import SubPathTest from 'components/SubPathTest'
+import TextElementsTest from 'components/TextElementsTest'
 
 
 const panes = [
@@ -63,6 +64,10 @@ const panes = [
     {
         menuItem: "Sub path",
         render: () => <Tab.Pane attached={false}><SubPathTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Text elements",
+        render: () => <Tab.Pane attached={false}><TextElementsTest /></Tab.Pane>
     }
 ]
 
