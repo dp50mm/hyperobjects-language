@@ -34,7 +34,10 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
 
   var ogl = window.HYPEROBJECTS.EXTRA_LIBRARIES.ogl
   var chroma = window.HYPEROBJECTS.EXTRA_LIBRARIES.chroma
+  var d3 = window.HYPEROBJECTS.EXTRA_LIBRARIES.d3
+
   var model = new Model(${wrapString(modelName)},${wrapString(test_name)})
+
   model.setSize({
     width: 1000,
     height: 1000

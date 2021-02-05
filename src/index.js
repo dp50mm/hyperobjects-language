@@ -26,6 +26,7 @@ import chroma from 'chroma-js'
 import _ from 'lodash'
 
 import * as ogl from 'ogl'
+import * as d3 from "d3"
 
 
 export const Frame = _Frame
@@ -67,7 +68,8 @@ export function setupCodeExecution() {
         EasingFunctions: _EasingFunctions,
         EXTRA_LIBRARIES: {
           ogl: ogl,
-          chroma: chroma
+          chroma: chroma,
+          d3: d3
         }
       }
 }
