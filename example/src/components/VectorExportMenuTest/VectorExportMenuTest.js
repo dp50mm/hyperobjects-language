@@ -27,7 +27,7 @@ model.addProcedure(
                     p,
                     10 + val * 40,
                     3 + i * 2
-                ))
+                ).export(true))
             })
         })
         return circles
@@ -44,7 +44,7 @@ const VectorExportMenuTest = () => {
                 editable={true}
                 width={600}
                 height={600}
-                exportControls={false}
+                exportControls={true}
                 showBounds={true}
                 showGridLines={true}
                 vectorExportMenu={true}

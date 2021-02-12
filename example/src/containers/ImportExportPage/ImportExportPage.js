@@ -6,6 +6,7 @@ import ExportImportTest from 'components/ExportImportTest'
 import GcodeTest from 'components/GcodeTest'
 import RenderingTest from 'components/RenderingTest'
 import VectorExportMenuTest from 'components/VectorExportMenuTest'
+import ExportPDFTest from 'components/ExportPDFTest'
 
 const panes = [
     {
@@ -19,6 +20,10 @@ const panes = [
     {
         menuItem: "Rendering to png",
         render: () => <Tab.Pane attached={false}><RenderingTest /></Tab.Pane>
+    },
+    {
+        menuItem: "PDF export",
+        render: () => <Tab.Pane attached={false}><ExportPDFTest /></Tab.Pane>
     },
     {
         menuItem: "Vector export menu",

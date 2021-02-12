@@ -90,19 +90,23 @@ class ExportControls extends Component {
   }
   downloadPDF() {
     let model = this.props.model
+    const format = [
+      _.toNumber(model.size.width),
+      _.toNumber(model.size.height)
+    ]
+    var orientation = format[0] > format[1] ? "landscape" : "portrait"
+    console.log('exporting pdf with format: ', format, orientation)
     const doc = new jsPDF({
       unit: 'mm',
-      format: [
-        this.props.model.size.width,
-        this.props.model.size.height
-      ]
+      format: format,
+      orientation: orientation
     })
     doc.setFont('Helvetica')
     
     var element = document.getElementById(this.props.svg_id)
     doc.svg(
       element,
-      {x: 0, y: 0, width:this.props.model.size.width, height: this.props.model.size.height }
+      {x: 0, y: 0, width: model.size.width, height: model.size.height }
     ).then(() => {
       doc.save(`${model.name}.pdf`)
       setTimeout(function () {
