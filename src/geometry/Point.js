@@ -70,7 +70,7 @@ function Point(point) {
     };
     hasControlPoints = true;
     curve_type = POINT_TYPES.QUADRATIC;
-  } else if(point.c !== undefined) {
+  } else if(point.c !== undefined && point.c) {
     c = point.c;
     hasControlPoints = true;
     curve_type = POINT_TYPES.CUBIC;
