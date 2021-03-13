@@ -7,6 +7,8 @@ function Text(text, point, name) {
   Styling.call(this, [point], name)
   this._fillOpacity = 1
   this._fill = "black"
+  this._strokeOpacity = 0
+  this._stroke = "transparent"
   this.type = TEXT
   this.x = 0
   this.y = 0

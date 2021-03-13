@@ -70,6 +70,7 @@
     "ogl": "0.0.54",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.1",
-    "svg2pdf.js": "^2.1.0"
+    "svg2pdf.js": "^2.1.0",
+    "text-to-svg": "^3.1.5"
   }
 }
