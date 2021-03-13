@@ -5,6 +5,7 @@ import _Group from './geometry/Group'
 import _Path from './geometry/Path'
 import _Segment from './geometry/path/Segment'
 import _Polygon from './geometry/Polygon'
+import _Line from "./geometry/Line"
 import _Text from './geometry/Text'
 import _Input from './geometry/Input'
 import _Rectangle from './geometry/shapes/Rectangle'
@@ -37,6 +38,7 @@ export const Point = _Point
 export const Path = _Path
 export const Segment = _Segment
 export const Polygon = _Polygon
+export const Line = _Line
 export const Text = _Text
 export const Input = _Input
 export const Rectangle = _Rectangle
@@ -54,6 +56,7 @@ export function setupCodeExecution() {
         Group: Group,
         Path: Path,
         Segment: Segment,
+        Line: Line,
         Text: Text,
         Point: Point,
         Input: Input,

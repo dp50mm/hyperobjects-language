@@ -1,61 +1,61 @@
+import Geometry from './Geometry'
+import PathFunctions from './path/PathFunctions'
+import PathBooleans from './path/PathBooleans'
 import Point from './Point'
+import { LINE } from "./types"
 
-var line_id = 0
-
-function Line(p1, p2, name, attributes) {
-    line_id += 1
-    let lineName = `LINE-${line_id}`
-    if (name !== undefined) {
-        lineName = name
+function line_intersect(x1, y1, x2, y2, x3, y3, x4, y4)
+{
+    var ua, ub, denom = (y4 - y3)*(x2 - x1) - (x4 - x3)*(y2 - y1);
+    if (denom == 0) {
+        return null;
     }
-    this.name = lineName
-    this.id = line_id
+    ua = ((x4 - x3)*(y1 - y3) - (y4 - y3)*(x1 - x3))/denom;
+    ub = ((x2 - x1)*(y1 - y3) - (y2 - y1)*(x1 - x3))/denom;
+    return {
+        x: x1 + ua * (x2 - x1),
+        y: y1 + ua * (y2 - y1),
+        seg1: ua >= 0 && ua <= 1,
+        seg2: ub >= 0 && ub <= 1
+    };
+}
 
-    this.unit = 'px'
-    this.displayUnit = 'mm'
-    this._export = false
-    this.export = function(shouldExport) {
-        this._export = shouldExport
+function Line(points, name, attributes) {
+    Geometry.call(this, points, name, attributes)
+    PathFunctions.call(this)
+    PathBooleans.call(this)
+    
+    this.type = LINE
+    if(this.points.length > 2) {
+        this.points = this.points.slice(0, 2)
+    }
+    this._showExtend = true
+    this.showExtend = function(_showExtend) {
+        this._showExtend = _showExtend
         return this
     }
-    this.clone = function() {
-        return _.cloneDeep(this)
-    }
 
-    // Set p1
-    if (p1 instanceof Point) {
-        this.p1 = p1
-    } else {
-        if(_.isArray(p1)) {
-            this.p1 = new Point({
-                x: _.get(p1, 0, 0),
-                y: _.get(p1, 1, 0),
-                z: _.get(p1, 2, 0)
-            })
-        } else {
-            this.p1 = new Point({
-                x: _.get(p1, 'x', 0),
-                y: _.get(p1, 'y', 0),
-                z: _.get(p1, 'z', 0)
-            })
-        }
+    // returns the points for a line within the bounds
+    this.extendToBounds = function(bounds) {
+        const p1 = this.points[0]
+        const p2 = this.points[1]
+        return [
+            new Point({x: p1.x - 10000, y: p1.y}).rotate(-p1.getAngle(p2) + Math.PI * 0.5, p1)
+            ,new Point({x: p1.x + 10000, y: p1.y}).rotate(-p1.getAngle(p2) + Math.PI * 0.5, p1)
+        ]
     }
-    // Set p2
-    if (p1 instanceof Point) {
-        this.p1 = p1
-    } else {
-        if(_.isArray(p1)) {
-            this.p1 = new Point({
-                x: _.get(p1, 0, 0),
-                y: _.get(p1, 1, 0),
-                z: _.get(p1, 2, 0)
-            })
-        } else {
-            this.p1 = new Point({
-                x: _.get(p1, 'x', 0),
-                y: _.get(p1, 'y', 0),
-                z: _.get(p1, 'z', 0)
-            })
-        }
+    this.lineIntersect = function(secondLine) {
+        return line_intersect(
+            this.points[0].x,
+            this.points[0].y,
+            this.points[1].x,
+            this.points[1].y,
+            secondLine.points[0].x,
+            secondLine.points[0].y,
+            secondLine.points[1].x,
+            secondLine.points[1].y,
+        )
     }
 }
+
+export default Line

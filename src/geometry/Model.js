@@ -317,7 +317,7 @@ function Model(name, classes) {
    }
 
    this.getEditablePointsInRectangle = function(rect) {
-     let allPoints = _.flatten(this.editableGeometries().map(g => g.points))
+     let allPoints = _.flatten(this.editableGeometries().map(g => _.isFunction(g.points) ? g.points() : g.points))
      return allPoints.filter(p => rect.containsPoint(p))
    }
 

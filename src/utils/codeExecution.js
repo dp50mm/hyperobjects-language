@@ -23,6 +23,7 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
   var Group = window.HYPEROBJECTS.Group
   var Path = window.HYPEROBJECTS.Path
   var Segment = window.HYPEROBJECTS.Segment
+  var Line = window.HYPEROBJECTS.Line
   var Text = window.HYPEROBJECTS.Text
   var Rectangle = window.HYPEROBJECTS.shapes.Rectangle
   var Circle = window.HYPEROBJECTS.shapes.Circle

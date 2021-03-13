@@ -2,11 +2,13 @@ import React from 'react';
 import Group from './svg/Group';
 import Path from './svg/Path';
 import Polygon from './svg/Polygon';
+import Line from "./svg/Line"
 import Text from './svg/Text'
 import {
   GROUP,
   POLYGON,
   PATH,
+  LINE,
   TEXT
 } from '../../geometry/types';
 import _ from 'lodash'
@@ -59,6 +61,21 @@ const Geometry = React.memo(({
           modelSpaceMouseCoords={modelSpaceMouseCoords}
           />
       );
+    case LINE:
+      return (
+        <Line
+          scaling={scaling}
+          geometry={geometry}
+          modelDispatch={modelDispatch}
+          onPointClickCallback={onPointClickCallback}
+          onPathClickCallback={onGeometryClickCallback}
+          setEditingPoint={setEditingPoint}
+          showCoordinates={showPointCoordinates}
+          selectingPoints={selectingPoints}
+          startDraggingSelection={startDraggingSelection}
+          modelSpaceMouseCoords={modelSpaceMouseCoords}
+          />
+      )
     case TEXT:
       return (
         <Text

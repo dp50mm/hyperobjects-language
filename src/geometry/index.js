@@ -1,6 +1,7 @@
 import _Model from './Model'
 import _Group from './Group'
 import _Path from './Path'
+import _Line from "./Line"
 import _Segment from './path/Segment'
 import _Polygon from './Polygon'
 import _Point from './Point'
@@ -15,6 +16,7 @@ export var Group = _Group
 export var Path = _Path
 export var Segment = _Segment
 export var Polygon = _Polygon
+export var Line = _Line
 export var Point = _Point
 export var Text = _Text
 export var Input = _Input
@@ -31,6 +33,7 @@ const geometry = {
   path: _Path,
   segment: _Segment,
   polygon: _Polygon,
+  line: _Line,
   input: _Input,
   point: _Point,
   text: _Text,

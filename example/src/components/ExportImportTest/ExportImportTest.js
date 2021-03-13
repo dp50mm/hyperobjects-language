@@ -26,7 +26,7 @@ newModel.addEditableGeometry('one-point-path-23o 02f',
 )
 
 // stress testing a lot of geometries
-_.range(10).map(val => {
+_.range(10).forEach(val => {
   newModel.addEditableGeometry(`testing-multiple-paths-${val}`, 
     new Path([{x: 500, y: 500 + val * 5}])
   )
@@ -55,7 +55,7 @@ let extraction = newModel.extractModel()
 
 let extractionJSON = JSON.stringify(extraction)
 let copyModel = new Model('copied-model')
-copyModel.importModel(extraction)
+copyModel.importModel(JSON.parse(extractionJSON))
 console.log(copyModel)
 let i = 0
 

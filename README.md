@@ -1,29 +1,25 @@
 # hyperobjects-language
 
-> Hyperobjects parametric modelling language library
+Hyperobjects parametric modelling language library
 
-[![NPM](https://img.shields.io/npm/v/hyperobjects-language.svg)](https://www.npmjs.com/package/hyperobjects-language) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+---
 
-## Install
+## Introduction
 
-```bash
-npm install --save hyperobjects-language
-```
+The Hyperobjects Language is the foundation library for the Hyperobjects parametric generative tools. It is implemented as a Javascript library providing the core model and geometry classes to build parametric objects & visuals. The library also contains a couple of React components to easily create interactive interfaces to manipulate objects.
 
-## Usage
+---
 
-```jsx
-import React, { Component } from 'react'
+## Examples
 
-import MyComponent from 'hyperobjects-language'
-import 'hyperobjects-language/dist/index.css'
 
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
-```
+---
+
+## Concepts
+
+
+
+---
 
 ## License
 

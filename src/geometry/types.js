@@ -2,6 +2,7 @@ export const POINT = "POINT";
 export const GROUP = "GROUP";
 export const POLYGON = "POLYGON";
 export const PATH = "PATH";
+export const LINE = "LINE"
 export const TEXT = 'TEXT'
 export const RECTANGLE = 'RECTANGLE'
 

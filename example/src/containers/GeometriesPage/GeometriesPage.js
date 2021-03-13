@@ -17,7 +17,7 @@ import PathAngleAtTest from 'components/PathAngleAtTest'
 import PathInterpolateTest from 'components/PathInterpolateTest'
 import SubPathTest from 'components/SubPathTest'
 import TextElementsTest from 'components/TextElementsTest'
-
+import LineTest from "components/LineTest"
 
 const panes = [
     {
@@ -64,6 +64,10 @@ const panes = [
     {
         menuItem: "Sub path",
         render: () => <Tab.Pane attached={false}><SubPathTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Lines",
+        render: () => <Tab.Pane attached={false}><LineTest /></Tab.Pane>
     },
     {
         menuItem: "Text elements",

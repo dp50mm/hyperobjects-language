@@ -9,23 +9,7 @@ function Path(points, name, attributes) {
   Geometry.call(this, points, name, attributes)
   PathFunctions.call(this)
   PathBooleans.call(this)
-  /**
-   * Connect the points within the geometry to the geometry
-   */
-  this.points.forEach((p, i, a) => {
-    p.geometry = this
-    p.geometryIndex = i
-    if(a.length > 1) {
-      if(i === 0) {
-        p.nextPoint = a[i+1]
-      } else if(i < a.length - 1) {
-        p.previousPoint = a[i-1]
-        p.nextPoint = a[i+1]
-      } else {
-        p.previousPoint = a[i-1]
-      }
-    }
-  })
+
   
   this.type = PATH
   this.closedPath = _.get(attributes, 'closedPath', false)

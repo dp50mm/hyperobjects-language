@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
     Model,
     Frame,
-    Group,
     Path
 } from 'hyperobjects-language'
 import { Input, Button, Form } from 'semantic-ui-react'
@@ -11,7 +10,7 @@ import _ from 'lodash'
 var model = false
 function generate(groups, points) {
     model = new Model('editable-points-performance-test')
-    _.range(groups).map(g => {
+    _.range(groups).forEach(g => {
         const val = g / groups
         var group = new Path(
             _.range(points).map(p => {

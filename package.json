@@ -30,7 +30,6 @@
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "cross-env": "^7.0.2",
-    "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-config-standard-react": "^9.2.0",
@@ -45,7 +44,10 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.1.2",
     "sass": "^1.29.0",
-    "save-svg-as-png": "^1.4.17"
+    "save-svg-as-png": "^1.4.17",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-scripts": "^4.0.3"
   },
   "files": [
     "dist"
@@ -66,9 +68,6 @@
     "jspdf": "^2.3.0",
     "node-sass": "^4.14.1",
     "ogl": "0.0.54",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-scripts": "^4.0.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.1",
     "svg2pdf.js": "^2.1.0"
