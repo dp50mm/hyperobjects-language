@@ -23,6 +23,22 @@ model.addEditableGeometry(
     new Line([{x: 300, y: 400}, {x: 600, y: 200}]).r(5)
 )
 
+model.addEditableGeometry(
+    "line-without-points",
+    new Line()
+)
+
+model.addProcedure(
+    "procedure-line-test",
+    (self) => {
+        var line1 = self.geometries['line-1']
+        var line2 = self.geometries['line-2']
+        return [
+            new Line([line1.points[0], line2.points[0]])
+        ]
+    }
+)
+
 model.addProcedure(
     "intersections",
     (self) => {

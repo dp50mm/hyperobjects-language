@@ -3,6 +3,7 @@ import PathFunctions from './path/PathFunctions'
 import PathBooleans from './path/PathBooleans'
 import Point from './Point'
 import { LINE } from "./types"
+import _ from "lodash"
 
 function line_intersect(x1, y1, x2, y2, x3, y3, x4, y4)
 {
@@ -37,8 +38,11 @@ function Line(points, name, attributes) {
 
     // returns the points for a line within the bounds
     this.extendToBounds = function(bounds) {
-        const p1 = this.points[0]
-        const p2 = this.points[1]
+        const p1 = _.get(this, "points[0]", false)
+        const p2 = _.get(this, "points[1]", false)
+        if(!_.every([p1, p2])) {
+            return [new Point({x: 0, y: 0}), new Point({x: 0, y: 0})]
+        }
         return [
             new Point({x: p1.x - 10000, y: p1.y}).rotate(-p1.getAngle(p2) + Math.PI * 0.5, p1)
             ,new Point({x: p1.x + 10000, y: p1.y}).rotate(-p1.getAngle(p2) + Math.PI * 0.5, p1)

@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import Point from "./Point"
 import PreviewPoint from './PreviewPoint';
 import previewCheck from './helpers/previewCheck';
+import _ from "lodash"
 
 const Line = React.memo(({
     geometry,
@@ -15,8 +16,11 @@ const Line = React.memo(({
     startDraggingSelection,
     modelSpaceMouseCoords
 }) => {
-    var p1 = geometry.points[0]
-    var p2 = geometry.points[1]
+    var p1 = _.get(geometry, "points[0]", false)
+    var p2 = _.get(geometry, "points[1]", false)
+    if(!_.every([p1, p2])) {
+      return null
+    }
     const boundsPoints = geometry.extendToBounds()
 
     var editPoints = null
