@@ -60,6 +60,30 @@ function Line(points, name, attributes) {
             secondLine.points[1].y,
         )
     }
+    this.angleToLine = function(secondLine) {
+        if(this.points.length !== 2) {
+            return 0
+        }
+        if(secondLine.points.length !== 2) {
+            return 0
+        }
+        const A1x = this.points[0].x
+        const A1y = this.points[0].y
+        const A2x = this.points[1].x
+        const A2y = this.points[1].y
+        const B1x = secondLine.points[0].x
+        const B1y = secondLine.points[0].y
+        const B2x = secondLine.points[1].x
+        const B2y = secondLine.points[1].y
+
+        const dAx = A2x - A1x;
+        const dAy = A2y - A1y;
+        const dBx = B2x - B1x;
+        const dBy = B2y - B1y;
+        var angle = Math.atan2(dAx * dBy - dAy * dBx, dAx * dBx + dAy * dBy);
+        if(angle < 0) {angle = angle * -1;}
+        return angle
+    }
 }
 
 export default Line

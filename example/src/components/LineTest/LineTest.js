@@ -2,7 +2,8 @@ import {
     Model,
     Line,
     Frame,
-    Circle
+    Circle,
+    Text
 } from 'hyperobjects-language'
 import _ from "lodash"
 
@@ -50,7 +51,12 @@ model.addProcedure(
             line1.lineIntersect(line3),
             line2.lineIntersect(line3)
         ]
-        return intersects.map(intersect => {
+        var angles = [
+            line1.angleToLine(line2),
+            line1.angleToLine(line3),
+            line2.angleToLine(line3)
+        ]
+        return _.flatten(intersects.map((intersect, i) => {
             var circle = new Circle(intersect, 15, 20)
             var bounds = [intersect.seg1, intersect.seg2]
             if(_.every(bounds)) {
@@ -60,8 +66,9 @@ model.addProcedure(
             } else {
                 circle.fillOpacity(0)
             }
-            return circle
-        })
+            return [circle, new Text(`angle: ${_.round(angles[i], 2)}`, intersect)]
+        }))
+
 
     }
 )
