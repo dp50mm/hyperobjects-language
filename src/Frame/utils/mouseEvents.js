@@ -101,6 +101,12 @@ export function handleMouseUp(frame, e, frameModelStores, keysPressed) {
           
           if(frame.props.onClickCallback && frameModelStores[frame.state.frameID].selectedPoints === false) {
             frame.props.onClickCallback(p2)
+            if(_.isFunction(frameModelStores[frame.state.frameID].onPointerDownCallback)) {
+              frameModelStores[frame.state.frameID].onPointerDownCallback(
+                frameModelStores[frame.state.frameID],
+                p2
+              )
+            }
           }
           frame.setState({
             draggingSelection: false

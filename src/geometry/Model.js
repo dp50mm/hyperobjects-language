@@ -85,6 +85,9 @@ function Model(name, classes) {
   this.imageExportScaling = 1
   this.gcode = gCodeGenerator
   this.procedureErrors = []
+
+  this.keysPressed = []
+  this.onPointerDownCallback = () => {}
   this.generators = {
     path: Path,
     group: Group

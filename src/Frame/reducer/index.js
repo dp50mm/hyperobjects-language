@@ -1,4 +1,5 @@
 import {
+  UPDATE_KEYS_PRESSED,
   SET_DRAGGED_POINT,
   SET_DRAGGED_ARC_CONTROL_POINT,
   SET_DRAGGED_CUBIC_CONTROL_POINT,
@@ -27,6 +28,11 @@ import geometryReducer from './geometryReducer';
 
 const reducer = (prevState, action) => {
   switch(action.type) {
+    case UPDATE_KEYS_PRESSED:
+      return {
+        ...prevState,
+        keysPressed: action.payload
+      }
     // Move individual points 
     case MOVE_POINT:
       return {

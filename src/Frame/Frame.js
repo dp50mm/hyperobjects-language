@@ -12,7 +12,8 @@ import {
   PAUSE,
   REWIND,
   SET_FRAME,
-  INPUT_SET_VALUE
+  INPUT_SET_VALUE,
+  UPDATE_KEYS_PRESSED
 } from './reducer/actionTypes';
 import {actionCallbackMiddleware} from './actionsCallbackMiddleware'
 import Controls from './controls/Controls'
@@ -53,7 +54,7 @@ var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
 let svgIDCounter = 0;
 
 let keysPressed = []
-
+getKeysPressed((newKeys) => keysPressed = newKeys)
 
 let frameModelStores = []
 let frameModelRenderedGeometriesStores = []
@@ -76,6 +77,7 @@ class Frame extends Component {
     this.state = {
       modelHasUpdated: false,
       frameSelected: false,
+      frameInFocus: false,
       render: false,
       startFrame: 0,
       endFrame: 5,
@@ -155,10 +157,15 @@ class Frame extends Component {
       this.mouseMove(e);
     });
     document.addEventListener('keydown', () => {
+      
       setTimeout(function() {
         this.setState({
           keysPressedCounter: this.state.keysPressedCounter + 1,
           keysPressed: keysPressed
+        })
+        this.modelDispatch({
+          type: UPDATE_KEYS_PRESSED,
+          payload: keysPressed
         })
       }.bind(this), 1)
     })
@@ -167,6 +174,10 @@ class Frame extends Component {
         this.setState({
           keysPressedCounter: this.state.keysPressedCounter + 1,
           keysPressed: keysPressed
+        })
+        this.modelDispatch({
+          type: UPDATE_KEYS_PRESSED,
+          payload: keysPressed
         })
       }.bind(this), 1)
     })
@@ -517,9 +528,10 @@ class Frame extends Component {
     if(!frameModelStores[this.state.frameID]) return (<div></div>)
     
     let panning = keysPressed.includes(' ')
-
+    
     // if parameters is true the model should
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
+    
     let editPoint = false
     if(this.state.editingPoint) {
       let editPointGeometryKey = _.get(this.state, 'editingPoint.geometry_key', false)
@@ -645,13 +657,19 @@ class Frame extends Component {
               <div className='svg-container'
                 style={{padding: this.props.svgPadding, background: model.background}}
                 onClick={() => {
-                  getKeysPressed((newKeys) => keysPressed = newKeys)
+                  this.setState({
+                    frameInFocus: true
+                  })
                 }}
                 onPointerEnter={() => {
-                  getKeysPressed((newKeys) => keysPressed = newKeys)
+                  this.setState({
+                    frameInFocus: true
+                  })
                 }}
                 onPointerLeave={() => {
-                  removeKeyEventListeners()
+                  this.setState({
+                    frameInFocus: false
+                  })
                 }}
                 >
                   

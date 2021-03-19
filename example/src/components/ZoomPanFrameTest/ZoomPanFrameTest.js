@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import useComponentSize from '@rehooks/component-size'
 import {
+    Circle,
     Frame,
     Model,
     Path,
@@ -17,10 +18,19 @@ let model = new Model("zoom-pan-test")
 
 model.animated = true
 
+model.autoplay = true
+
 model.setSize({
     width: 1000,
     height: 2000
 })
+
+model.params = {}
+
+model.params.player = {
+    x: 500,
+    y: 1000
+}
 
 model.addEditableGeometry(
     'test-path',
@@ -61,6 +71,20 @@ model.addProcedure(
 )
 
 model.addProcedure(
+    "keys-pressed-test",
+    (self) => {
+        var keysPressedText = "Keys pressed: "
+        self.keysPressed.forEach(key => {
+            keysPressedText += ` ${key}`
+        })
+        return new Text(
+            keysPressedText,
+            {x: 100, y: 1800}
+        ).fontSize(100)
+    }
+)
+
+model.addProcedure(
     'text-output',
     (self) => {
         return new Text(
@@ -69,6 +93,53 @@ model.addProcedure(
         ).export(true)
     }
 )
+
+model.addProcedure(
+    'animation-frame',
+    (self) => {
+        return new Text(
+            `animation frame: ${self.animation_frame}`,
+            {x: 10, y: 30}
+        ).export(true).fontSize(40)
+    }
+)
+
+model.addProcedure(
+    "player-object",
+    (self) => {
+        return new Circle(
+            self.params.player,
+            40,
+            40
+        ).fill("rgb(30,70,255)")
+    }
+)
+
+model.addAnimation(
+    "player-movement",
+    (self) => {
+        const keysPressed = self.keysPressed
+        if(keysPressed.includes("ArrowUp")) {
+            self.params.player.y -= 3
+        }
+        if(keysPressed.includes("ArrowDown")) {
+            self.params.player.y += 3
+        }
+        if(keysPressed.includes("ArrowLeft")) {
+            self.params.player.x -= 3
+        }
+        if(keysPressed.includes("ArrowRight")) {
+            self.params.player.x += 3
+        }
+    }
+)
+
+model.onPointerDownCallback = (self, p) => {
+    console.log(self, p)
+    self.params.player.x = p.x
+    self.params.player.y = p.y
+}
+
 
 const ZoomPanFrameTest = ({
 
@@ -108,7 +179,9 @@ const ZoomPanFrameTest = ({
                         logModelState={logging}
                         modelHasUpdated={modelHasUpdated}
                         onClickCallback={(e) => {
+                            // console.log('on click callback: ', e)
                             model.geometries['test-path'].addPoint(e)
+                            model.playing = true
                             setModelHasUpdated(true)
                         }}
                         updateParameters={(params) => {
