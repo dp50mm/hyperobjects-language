@@ -18,6 +18,8 @@ import PathInterpolateTest from 'components/PathInterpolateTest'
 import SubPathTest from 'components/SubPathTest'
 import TextElementsTest from 'components/TextElementsTest'
 import LineTest from "components/LineTest"
+import PathSmoothingTest from 'components/PathSmoothingTest'
+import CurveFittingTest from "components/CurveFittingTest"
 
 const panes = [
     {
@@ -64,6 +66,14 @@ const panes = [
     {
         menuItem: "Sub path",
         render: () => <Tab.Pane attached={false}><SubPathTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Path smoothing",
+        render: () => <Tab.Pane attached={false}><PathSmoothingTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Curve fitting",
+        render: () => <Tab.Pane attached={false}><CurveFittingTest /></Tab.Pane>
     },
     {
         menuItem: "Lines",

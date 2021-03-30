@@ -2,7 +2,8 @@ import Path from '../Path'
 import Point from '../Point'
 import Segment from './Segment'
 import offsetBezierPath from '../operators/offsetBezierPath'
-
+import smoothPath from "./smoothPath"
+import fitCurve from "./curveFitting"
 import _ from 'lodash'
 import {
   POINT
@@ -372,7 +373,9 @@ function PathFunctions() {
     }
 
   }
+  this.smoothPath = smoothPath
 
+  this.fitCurve = fitCurve
 }
 
 function angle(p1, p2) {

@@ -670,6 +670,7 @@ class Frame extends Component {
                   this.setState({
                     frameInFocus: false
                   })
+                  keysPressed = []
                 }}
                 >
                   
