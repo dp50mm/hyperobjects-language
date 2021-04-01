@@ -1,3 +1,5 @@
+import _ from "lodash"
+
 let keysPressed = []
 
 export var keyDownEventListener = false
@@ -5,27 +7,38 @@ export var keyUpEventListener = false
 
 let callback = false
 
+var blockSpace = false
+
 const onKeyDown = (e) => {
     const { key } = e
-    if(key === ' ') {
+    var keyPressed = key
+    if(keyPressed === " ") {
+        keyPressed = "Space"
+    }
+    if(key === ' ' && blockSpace === true) {
         e.preventDefault()
     }
     if(key === "Escape") {
         removeKeyEventListeners()
     }
-    if(!keysPressed.includes(key)) {
-        keysPressed.push(key)
+    if(!keysPressed.includes(keyPressed)) {
+        keysPressed.push(keyPressed)
     }
     callback(keysPressed)
 }
 
 const onKeyUp = ({key}) => {
-    keysPressed = keysPressed.filter(p => p !== key)
+    var keyUp = key
+    if(key === " ") {
+        keyUp = "Space"
+    }
+    keysPressed = keysPressed.filter(p => p !== keyUp)
     callback(keysPressed)
 }
 
-function getKeysPressed(_callback) {
+function getKeysPressed(_callback, options) {
     callback = _callback
+    blockSpace = _.get(options, 'blockSpace', false)
     if(keyDownEventListener === false) {
         keyDownEventListener = window.addEventListener('keydown', onKeyDown)
     }

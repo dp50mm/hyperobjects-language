@@ -632,7 +632,7 @@ class Frame extends Component {
               <Inputs modelDispatch={this.modelDispatch.bind(this)} />
             )}
             {focussedTitle}
-            {keyDownEventListener === undefined && (
+            {this.state.frameInFocus && (
               <div
                 style={{
                   position: 'absolute',
@@ -665,12 +665,18 @@ class Frame extends Component {
                   this.setState({
                     frameInFocus: true
                   })
+                  getKeysPressed((newKeys) => keysPressed = newKeys, {
+                    blockSpace: true
+                  })
                 }}
                 onPointerLeave={() => {
                   this.setState({
                     frameInFocus: false
                   })
                   keysPressed = []
+                  getKeysPressed((newKeys) => keysPressed = newKeys, {
+                    blockSpace: false
+                  })
                 }}
                 >
                   
