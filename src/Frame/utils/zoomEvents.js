@@ -9,7 +9,7 @@ import {
   } from './matrix';
 
 export function svgWheelZoom(frame, e, keysPressed) {
-    const panning = keysPressed.includes(' ')
+    const panning = keysPressed.includes('Space')
     if (!panning) {
         var deltaScaling = -1/150
         if(keysPressed.includes('Control')) {

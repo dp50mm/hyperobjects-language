@@ -18,7 +18,7 @@ export function handleMouseMove(frame, e, frameModelStores, keysPressed) {
         if(frame.props.logMouseMove) {
             console.log(mouse_coords)
         }
-        const panning = keysPressed.includes(' ')
+        const panning = keysPressed.includes('Space')
         if(panning) {
             if(frame.state.mouseDown) {
                 frame.setState({
@@ -82,7 +82,7 @@ export function handleMouseUp(frame, e, frameModelStores, keysPressed) {
     let mouse_coords = frame.getMouseCoords(e);
     
     let startMouseCoords = frame.state.mouseDownPoint
-    const panning = keysPressed.includes(' ')
+    const panning = keysPressed.includes('Space')
     if(e.button === 0) {
       let transformMatrix = frame.state.transformMatrix
       let model = frameModelStores[frame.state.frameID];

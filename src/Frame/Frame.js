@@ -481,7 +481,7 @@ class Frame extends Component {
     }
   }
   svgOnMouseDown(e) {
-    const panning = keysPressed.includes(' ')
+    const panning = keysPressed.includes('Space')
     if(e.target.nodeName === 'svg' && e.button === 0) {
       let mouse_coords = this.getMouseCoords(e);
       if(mouse_coords) {
@@ -527,7 +527,7 @@ class Frame extends Component {
   render() {
     if(!frameModelStores[this.state.frameID]) return (<div></div>)
     
-    let panning = keysPressed.includes(' ')
+    let panning = keysPressed.includes('Space')
     
     // if parameters is true the model should
     var model = this.props.fromParameters ? this.props.model : frameModelStores[this.state.frameID];
