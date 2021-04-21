@@ -21,7 +21,7 @@ model.animated = true
 model.autoplay = true
 
 model.setSize({
-    width: 1000,
+    width: 4000,
     height: 2000
 })
 

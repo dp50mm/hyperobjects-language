@@ -20,6 +20,7 @@ import TextElementsTest from 'components/TextElementsTest'
 import LineTest from "components/LineTest"
 import PathSmoothingTest from 'components/PathSmoothingTest'
 import CurveFittingTest from "components/CurveFittingTest"
+import ConstraintsTest from "components/ConstraintsTest"
 
 const panes = [
     {
@@ -46,6 +47,10 @@ const panes = [
     {
         menuItem: 'Path contains point',
         render: () => <Tab.Pane attached={false}><PathContainsPointTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Constraints",
+        render: () => <Tab.Pane attached={false}><ConstraintsTest /></Tab.Pane>
     },
     {
         menuItem: "Interpolation",

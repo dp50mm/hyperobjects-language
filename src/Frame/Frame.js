@@ -522,7 +522,7 @@ class Frame extends Component {
     this.setState({ editingPoint: point })
   }
   
-  svgOnWheel(e) { svgWheelZoom(this, e, keysPressed) }
+  svgOnWheel(e) { svgWheelZoom(this, e, keysPressed, this.props.zoomDomain) }
 
   render() {
     if(!frameModelStores[this.state.frameID]) return (<div></div>)
@@ -858,7 +858,8 @@ Frame.defaultProps = {
   showPointCoordinates: false,
   procedureUpdateIntervalOnMouseMove: 1,
   animationFps: 1000/60,
-  renderFps: 1000/30
+  renderFps: 1000/30,
+  zoomDomain: [1/10, 10]
 }
 
 export default Frame;
