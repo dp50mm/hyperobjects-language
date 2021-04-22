@@ -105,6 +105,7 @@ class Frame extends Component {
         skewX: 0,
         skewY: 0,
       },
+      svgWheelBlocked: false
     };
     analytics.initialize()
     this.playModel = this.playModel.bind(this)
@@ -125,7 +126,6 @@ class Frame extends Component {
     this.initializeHammerJs = this.initializeHammerJs.bind(this)
     this.onTouchStart = this.onTouchStart.bind(this)
     this.onTouchEnd = this.onTouchEnd.bind(this)
-
   }
   /**
    * Sizing function
@@ -157,7 +157,6 @@ class Frame extends Component {
       this.mouseMove(e);
     });
     document.addEventListener('keydown', () => {
-      
       setTimeout(function() {
         this.setState({
           keysPressedCounter: this.state.keysPressedCounter + 1,
@@ -200,6 +199,7 @@ class Frame extends Component {
         windowResizeIncrement: this.state.windowResizeIncrement + 1
       })
     })
+    
     window.addEventListener('wheel', (e) => {
         if(e.ctrlKey) { e.preventDefault() }
       }, {
@@ -522,7 +522,24 @@ class Frame extends Component {
     this.setState({ editingPoint: point })
   }
   
-  svgOnWheel(e) { svgWheelZoom(this, e, keysPressed, this.props.zoomDomain) }
+  svgOnWheel(e) {
+    if(this.state.svgWheelBlocked === false) {
+      if(this.svgRef.current !== undefined) {
+        this.svgRef.current.addEventListener(
+          "wheel",
+          function(e) {
+            svgWheelZoom(this, e, keysPressed, this.props.zoomDomain)
+            e.preventDefault()
+          }.bind(this)
+        )
+        this.setState({
+          svgWheelBlocked: true
+        })
+      }
+      
+    }
+    svgWheelZoom(this, e, keysPressed, this.props.zoomDomain)
+  }
 
   render() {
     if(!frameModelStores[this.state.frameID]) return (<div></div>)
@@ -859,7 +876,7 @@ Frame.defaultProps = {
   procedureUpdateIntervalOnMouseMove: 1,
   animationFps: 1000/60,
   renderFps: 1000/30,
-  zoomDomain: [1/10, 10]
+  zoomDomain: [1/20, 20]
 }
 
 export default Frame;
