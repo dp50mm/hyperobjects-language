@@ -521,8 +521,7 @@ class Frame extends Component {
   setEditingPoint(point) {
     this.setState({ editingPoint: point })
   }
-  
-  svgOnWheel(e) {
+  blocksvgWheelEvent() {
     if(this.state.svgWheelBlocked === false) {
       if(this.svgRef.current !== undefined) {
         this.svgRef.current.addEventListener(
@@ -536,8 +535,10 @@ class Frame extends Component {
           svgWheelBlocked: true
         })
       }
-      
     }
+  }
+  svgOnWheel(e) {
+    this.blocksvgWheelEvent()
     svgWheelZoom(this, e, keysPressed, this.props.zoomDomain)
   }
 
@@ -679,6 +680,7 @@ class Frame extends Component {
                   })
                 }}
                 onPointerEnter={() => {
+                  this.blocksvgWheelEvent()
                   this.setState({
                     frameInFocus: true
                   })

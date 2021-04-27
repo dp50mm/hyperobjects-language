@@ -12,9 +12,9 @@ import _ from "lodash"
 export function svgWheelZoom(frame, e, keysPressed, zoomDomain) {
   const panning = keysPressed.includes('Space')
   if (!panning) {
-    var deltaScaling = 1/300
+    var deltaScaling = -1/300
     if(keysPressed.includes('Control')) {
-        deltaScaling = 1/300
+        deltaScaling = -1/300
     }
     const mouseCoords = frame.getMouseCoords(e)
     const { transformMatrix } = frame.state;
