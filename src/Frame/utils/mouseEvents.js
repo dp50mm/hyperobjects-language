@@ -14,11 +14,14 @@ export function handleMouseMove(frame, e, frameModelStores, keysPressed) {
     let mouse_coords = frame.getMouseCoords(e);
     let model = frameModelStores[frame.state.frameID];
     const transformMatrix = frame.state.transformMatrix
+
+    // event is over svg element and has coordinates
     if(mouse_coords) {
         if(frame.props.logMouseMove) {
             console.log(mouse_coords)
         }
         const panning = keysPressed.includes('Space')
+        // Handle panning when user has pressed the space bar
         if(panning) {
             if(frame.state.mouseDown) {
                 frame.setState({
@@ -56,23 +59,23 @@ export function handleMouseMove(frame, e, frameModelStores, keysPressed) {
             frame.setState({
             mouse_select: mouse_coords
             })
-        } else {
+        } else { // User has not pressed the space bar
             if(frame.props.editable) {
                 frame.modelDispatch({
-                type: MOVE_POINT,
-                payload: {
-                x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
-                y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height),
-                model: model,
-                mouseDown: frame.state.mouseDown
+                  type: MOVE_POINT,
+                  payload: {
+                  x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
+                  y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height),
+                  model: model,
+                  mouseDown: frame.state.mouseDown
                 }
-            });
-            frame.setState({
+              });
+              frame.setState({
                 modelSpaceMouseCoords: {
-                x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
-                y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
+                  x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
+                  y: _.clamp((mouse_coords.y - transformMatrix.translateY) / transformMatrix.scaleY, 0, model.size.height)
                 }
-            })
+              })
             }
         }
     }

@@ -21,7 +21,7 @@ model.animated = true
 model.autoplay = true
 
 model.setSize({
-    width: 4000,
+    width: 1000,
     height: 2000
 })
 
@@ -90,7 +90,16 @@ model.addProcedure(
         return new Text(
             "TEST",
             {x: 500, y: 500}
-        ).export(true)
+        ).fontSize(80).export(true)
+    }
+)
+model.addProcedure(
+    'monospace-text-output',
+    (self) => {
+        return new Text(
+            "Monospace FONT",
+            {x: 500, y: 600}
+        ).fontSize(80).export(true).fontFamily("monospace")
     }
 )
 

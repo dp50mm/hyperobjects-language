@@ -1,16 +1,20 @@
 import TextToSvg from "text-to-svg"
 import React from 'react'
 import _ from "lodash"
-var textToSvg = false
 
-function setTextToSvg(err, text) {
+var futuraTextToPath = false
+var monospaceTextToPath = false
+
+function setTextToSvg(err, text, target) {
   if(err) {
     console.log("text load error: ", err)
   }
-  textToSvg = text
+  target = text
+  return target
 }
 
-TextToSvg.load("/fonts/Futura-Medium.otf", setTextToSvg)
+TextToSvg.load("/fonts/Futura-Medium.otf", (err, text) => { futuraTextToPath = setTextToSvg(err, text, futuraTextToPath) })
+TextToSvg.load("/fonts/Monoid-Regular.ttf", (err, text) => { monospaceTextToPath = setTextToSvg(err, text, monospaceTextToPath) })
 
 const Text = ({geometry, modelDispatch}) => {
   const attributes = {
@@ -18,10 +22,15 @@ const Text = ({geometry, modelDispatch}) => {
     textAnchor: geometry._textAnchor
   }
   var pathData = ""
-  if(textToSvg) {
-    pathData = textToSvg.getD(geometry.text, attributes)
+  if(geometry._fontFamily === "monospace") {
+    if(monospaceTextToPath) {
+      pathData = monospaceTextToPath.getD(geometry.text, attributes)
+    }
+  } else {
+    if(futuraTextToPath) {
+      pathData = futuraTextToPath.getD(geometry.text, attributes)
+    }
   }
-  console.log(geometry._fontSize)
   return (
     <g>
       {false && (

@@ -39,6 +39,12 @@ function Text(text, point, name) {
     lineHeight ? this._lineHeight = lineHeight : this._lineHeight = size + size * 1/2
     return this
   }
+  this._fontFamily = "Europa"
+  this.fontFamily = (family) => {
+    this._fontFamily = family
+    return this
+  }
+
   this._fontWeight = 'normal'
   this.fontWeight = (weight) => {
     this._fontWeight = weight
