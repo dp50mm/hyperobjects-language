@@ -14,7 +14,7 @@ function setTextToSvg(err, text, target) {
 }
 
 TextToSvg.load("/fonts/Futura-Medium.otf", (err, text) => { futuraTextToPath = setTextToSvg(err, text, futuraTextToPath) })
-TextToSvg.load("/fonts/Monoid-Regular.ttf", (err, text) => { monospaceTextToPath = setTextToSvg(err, text, monospaceTextToPath) })
+TextToSvg.load("/fonts/monospace.ttf", (err, text) => { monospaceTextToPath = setTextToSvg(err, text, monospaceTextToPath) })
 
 const Text = ({geometry, modelDispatch}) => {
   const attributes = {
