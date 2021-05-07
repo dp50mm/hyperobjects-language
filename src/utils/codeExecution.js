@@ -18,6 +18,7 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
     script: `
   var Model = window.HYPEROBJECTS.Model
   var Input = window.HYPEROBJECTS.Input
+  var InputText = window.HYPEROBJECTS.InputText
   
   var Point = window.HYPEROBJECTS.Point
   var Group = window.HYPEROBJECTS.Group

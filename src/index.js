@@ -8,6 +8,7 @@ import _Polygon from './geometry/Polygon'
 import _Line from "./geometry/Line"
 import _Text from './geometry/Text'
 import _Input from './geometry/Input'
+import _InputText from './geometry/InputText'
 import _Rectangle from './geometry/shapes/Rectangle'
 import _Circle from './geometry/shapes/Circle'
 import _HexPattern from './geometry/shapes/HexPattern'
@@ -41,6 +42,7 @@ export const Polygon = _Polygon
 export const Line = _Line
 export const Text = _Text
 export const Input = _Input
+export const InputText = _InputText
 export const Rectangle = _Rectangle
 export const Circle = _Circle
 export const HexPattern = _HexPattern
@@ -60,6 +62,7 @@ export function setupCodeExecution() {
         Text: Text,
         Point: Point,
         Input: Input,
+        InputText: InputText,
         shapes: {
           Rectangle: Rectangle,
           Circle: Circle,

@@ -14,6 +14,8 @@ export const POINT_TYPES = {
 };
 
 export const INPUT = "INPUT"
+export const INPUT_TEXT = "INPUT_TEXT"
+export const INPUT_COLORPICKER = "INPUT_COLORPICKER"
 
 export const EDITABLE = "EDITABLE";
 export const COMPUTED = "COMPUTED";

@@ -2,22 +2,28 @@ import React from 'react'
 import {
     Frame,
     Model,
+    Text,
     Input,
-    Circle
+    InputText,
+    Circle,
 } from 'hyperobjects-language'
 
 let model = new Model("inputs-test-model")
 
 model.addInput(
     'test-input',
-    new Input([0, 1])
+    new Input([0, 1], 0.5)
 )
 
 model.addInput(
     'second-test-input',
-    new Input([100, 500])
+    new Input([100, 500], 150)
 )
 
+model.addInput(
+    "text-input",
+    new InputText("abc")
+)
 
 model.addProcedure(
     'testing-inputs',
@@ -28,8 +34,21 @@ model.addProcedure(
     }
 )
 
-let testModel = new Model('testing')
-testModel.addInput('test', new Input([0, 1]))
+model.addProcedure(
+    'text-input-test',
+    (self) => {
+        // console.log(self.inputs['text-input'].value)
+        var textVal = self.inputs['text-input'].value
+
+        return [...textVal].map((char, i) => {
+
+            return new Text(char, {x: 10 + i * 25, y: 100}).fontSize(50).fill("black")
+        })
+    }
+)
+
+// let testModel = new Model('testing')
+// testModel.addInput('test', new Input([0, 1]))
 
 
 const InputsTest = () => {

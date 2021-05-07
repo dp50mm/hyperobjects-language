@@ -264,6 +264,7 @@ function Model(name, classes) {
     return this.inputs
   }
   this.addInput = function(name, input) {
+    console.log(name, input)
     this.inputs[name] = input
     this.inputsList.push(name)
   }

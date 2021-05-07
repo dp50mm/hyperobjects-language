@@ -7,6 +7,7 @@ import _Polygon from './Polygon'
 import _Point from './Point'
 import _Text from './Text'
 import _Input from './Input'
+import _InputText from "./InputText"
 import _Circle from './shapes/Circle'
 import _Rectangle from './Rectangle'
 import _HexPattern from './shapes/HexPattern'
@@ -20,6 +21,7 @@ export var Line = _Line
 export var Point = _Point
 export var Text = _Text
 export var Input = _Input
+export var InputText = _InputText
 export var Circle = _Circle
 export var Rectangle = _Rectangle
 export var HexPattern = _HexPattern
@@ -35,6 +37,7 @@ const geometry = {
   polygon: _Polygon,
   line: _Line,
   input: _Input,
+  inputText: _InputText,
   point: _Point,
   text: _Text,
   hexPattern: _HexPattern
