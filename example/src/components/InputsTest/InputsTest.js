@@ -42,7 +42,7 @@ model.addProcedure(
 
         return [...textVal].map((char, i) => {
 
-            return new Text(char, {x: 10 + i * 25, y: 100}).fontSize(50).fill("black")
+            return new Text(char, {x: 10 + i * 25, y: 100}).fontSize(50).fill("black").fontFamily("custom-monospace").textAnchor("middle")
         })
     }
 )

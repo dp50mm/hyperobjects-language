@@ -833,6 +833,12 @@ class Frame extends Component {
               model={frameModelStores[this.state.frameID]}
               /> 
         ) : null}
+        <style>
+          {`@font-face {
+            font-family: 'custom-monospace';
+            src: url(fonts/monospace.ttf);
+          }`}
+        </style>
       </div>
     );
   }

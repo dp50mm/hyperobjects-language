@@ -22,7 +22,7 @@ const Text = ({geometry, modelDispatch}) => {
     textAnchor: geometry._textAnchor
   }
   var pathData = ""
-  if(geometry._fontFamily === "monospace") {
+  if(geometry._fontFamily === "custom-monospace") {
     if(monospaceTextToPath) {
       pathData = monospaceTextToPath.getD(geometry.text, attributes)
     }

@@ -14,7 +14,6 @@ const InputText = ({ input, inputName, modelDispatch }) => {
                 size="mini"
                 value={_.get(input, "value", "")}
                 onChange={(e) => {
-                    console.log(e.target.value)
                     modelDispatch({
                         type: INPUT_SET_VALUE,
                         payload: {

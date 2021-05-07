@@ -99,7 +99,7 @@ model.addProcedure(
         return new Text(
             "Monospace FONT",
             {x: 500, y: 600}
-        ).fontSize(80).export(true).fontFamily("monospace")
+        ).fontSize(80).export(true).fontFamily("custom-monospace")
     }
 )
 
@@ -170,6 +170,7 @@ const ZoomPanFrameTest = ({
     return (
         <div className='zoom-pan-frame-test'>
             <h2>Zoom pan frame test</h2>
+            <p style={{fontFamily: "custom-monospace"}}>Font test</p>
             <div><Button toggle active={logging} onClick={() => setLogging(!logging)} >Model log</Button></div>
             <div ref={ref}>
                 <div style={{width: width, height: height, border: '1px solid rgb(220,220,220)'}}>

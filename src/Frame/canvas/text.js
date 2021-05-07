@@ -1,7 +1,8 @@
 import { canvasScaling } from '../CanvasView'
+import _ from "lodash"
 
 function drawText(gl, g, transformMatrix) {
-  gl.font = `${g._fontWeight} ${g._fontSize * transformMatrix.scaleX}px Europa`
+  gl.font = `${g._fontWeight} ${g._fontSize * transformMatrix.scaleX}px ${_.get(g, "_fontFamily", "Europa")}`
   gl.fillStyle = g._fill
   gl.globalAlpha = g._fillOpacity * g._opacity
   gl.textAlign = g._textAnchor

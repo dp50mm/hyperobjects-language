@@ -2,7 +2,9 @@ import _ from 'lodash'
 import {
   GROUP,
   PATH,
-  TEXT
+  TEXT,
+  INPUT,
+  INPUT_TEXT,
 } from './types'
 import Group from './Group'
 import Path from './Path'
@@ -264,9 +266,10 @@ function Model(name, classes) {
     return this.inputs
   }
   this.addInput = function(name, input) {
-    console.log(name, input)
-    this.inputs[name] = input
-    this.inputsList.push(name)
+    if(_.isString(name) && [INPUT, INPUT_TEXT].includes(_.get(input, 'type', false))) {
+      this.inputs[name] = input
+      this.inputsList.push(name)
+    }
   }
   /**
    * Adding a procedure
