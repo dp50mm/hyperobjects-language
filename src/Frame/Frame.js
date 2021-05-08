@@ -45,7 +45,7 @@ import {
   fitFrameToContainer
 } from "./utils/zoomEvents"
 import { handleMouseMove, handleMouseUp } from './utils/mouseEvents';
-
+import { fonts } from "../assets/fonts"
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
 var webkit = !!ua.match(/WebKit/i);
@@ -837,7 +837,14 @@ class Frame extends Component {
           {`@font-face {
             font-family: 'custom-monospace';
             src: url(fonts/monospace.ttf);
-          }`}
+          }
+          ${fonts.map(font => {
+            return `
+            @font-face {
+              font-family: "${font.name}";
+              src: url(${font.file});
+            }
+            `}).join("")}`}
         </style>
       </div>
     );

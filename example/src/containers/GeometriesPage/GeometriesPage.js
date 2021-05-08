@@ -21,6 +21,7 @@ import LineTest from "components/LineTest"
 import PathSmoothingTest from 'components/PathSmoothingTest'
 import CurveFittingTest from "components/CurveFittingTest"
 import ConstraintsTest from "components/ConstraintsTest"
+import FontsTest from "components/FontsTest"
 
 const panes = [
     {
@@ -87,6 +88,10 @@ const panes = [
     {
         menuItem: "Text elements",
         render: () => <Tab.Pane attached={false}><TextElementsTest /></Tab.Pane>
+    },
+    {
+        menuItem: "Fonts",
+        render: () => <Tab.Pane attached={false}><FontsTest /></Tab.Pane>
     }
 ]
 

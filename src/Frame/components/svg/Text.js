@@ -1,20 +1,24 @@
 import TextToSvg from "text-to-svg"
 import React from 'react'
 import _ from "lodash"
+import { fonts } from "../../../assets/fonts"
 
-var futuraTextToPath = false
-var monospaceTextToPath = false
+export var fontPaths = {}
 
-function setTextToSvg(err, text, target) {
-  if(err) {
-    console.log("text load error: ", err)
-  }
-  target = text
-  return target
+export function loadFont(fontfile) {
+  TextToSvg.load(fontfile, (err, text) => {
+    if(err) {
+      console.log("loading font error: ",err)
+    } else {
+      fontPaths[fontfile] = text
+    }
+  })
 }
 
-TextToSvg.load("/fonts/Futura-Medium.otf", (err, text) => { futuraTextToPath = setTextToSvg(err, text, futuraTextToPath) })
-TextToSvg.load("/fonts/monospace.ttf", (err, text) => { monospaceTextToPath = setTextToSvg(err, text, monospaceTextToPath) })
+
+fonts.forEach(font => {
+  loadFont(font.file)
+})
 
 const Text = ({geometry, modelDispatch}) => {
   const attributes = {
@@ -22,13 +26,12 @@ const Text = ({geometry, modelDispatch}) => {
     textAnchor: geometry._textAnchor
   }
   var pathData = ""
-  if(geometry._fontFamily === "custom-monospace") {
-    if(monospaceTextToPath) {
-      pathData = monospaceTextToPath.getD(geometry.text, attributes)
-    }
-  } else {
-    if(futuraTextToPath) {
-      pathData = futuraTextToPath.getD(geometry.text, attributes)
+  if(_.find(fonts, p => p.name === geometry._fontFamily) !== undefined) {
+    var font = _.find(fonts, p => p.name === geometry._fontFamily)
+    if(_.has(fontPaths, font.file)) {
+      pathData = fontPaths[font.file].getD(geometry.text, attributes)
+    } else {
+      loadFont(font.file)
     }
   }
   return (

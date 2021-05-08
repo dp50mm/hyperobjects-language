@@ -39,7 +39,7 @@ function Text(text, point, name) {
     lineHeight ? this._lineHeight = lineHeight : this._lineHeight = size + size * 1/2
     return this
   }
-  this._fontFamily = "Europa"
+  this._fontFamily = "europa"
   this.fontFamily = (family) => {
     this._fontFamily = family
     return this
@@ -60,8 +60,6 @@ function Text(text, point, name) {
     this._alignmentBaseline = alignment
     return this
   }
-
-  this._fontFamily = "Europa"
 
   this._rotation = 0
 
