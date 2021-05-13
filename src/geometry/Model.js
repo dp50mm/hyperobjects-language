@@ -11,6 +11,12 @@ import Path from './Path'
 import Text from './Text'
 import GCode from '../utils/gcode/gcode'
 
+function isColor(strColor){
+  var s = new Option().style;
+  s.color = strColor;
+  return s.color == strColor;
+}
+
 function Model(name, classes) {
   let modelName = "SET MODEL NAME"
   let modelCssClasses = ["default-model-class"]
@@ -108,6 +114,15 @@ function Model(name, classes) {
     };
     return this;
   };
+  this.setBackground = function(newBackground) {
+    if(isColor(newBackground)) {
+      this.background = newBackground
+    } else {
+      this.background = "transparent"
+    }
+    
+  }
+
   this.aspectRatio = () => {
     return this.size.height / this.size.width
   }
