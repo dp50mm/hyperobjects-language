@@ -37,6 +37,7 @@ const reducer = (prevState, action) => {
     case MOVE_POINT:
       return {
         ...prevState,
+        mousePosition: { x: action.payload.x, y: action.payload.y },
         geometries: objectMap(prevState.geometries, (geometry) => geometryReducer(geometry, action))
       };
     case SET_DRAGGED_POINT:

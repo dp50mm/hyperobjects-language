@@ -114,6 +114,13 @@ model.addProcedure(
 )
 
 model.addProcedure(
+    "follow-mouse",
+    (self) => {
+        return new Circle(self.mousePosition, 5, 20)
+    }
+)
+
+model.addProcedure(
     "player-object",
     (self) => {
         return new Circle(
