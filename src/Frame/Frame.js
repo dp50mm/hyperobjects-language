@@ -586,7 +586,8 @@ class Frame extends Component {
     let svgStyle = {
       opacity: 1,
       zIndex: 2,
-      position: 'relative'
+      position: 'relative',
+      cursor: model.cursor
     }
 
     if(this.state.keysPressed.includes('Control')) svgStyle.cursor = 'zoom-in'
@@ -691,6 +692,9 @@ class Frame extends Component {
                 onPointerLeave={() => {
                   this.setState({
                     frameInFocus: false
+                  })
+                  this.modelDispatch({ type: MOVE_POINT,
+                    payload: { x: false, y: false, model: model, mouseDown: this.state.mouseDown }
                   })
                   keysPressed = []
                   getKeysPressed((newKeys) => keysPressed = newKeys, {

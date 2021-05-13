@@ -269,6 +269,9 @@ function PathFunctions() {
    * Checks if point lays inside the path by raycasting.
    */
   this.contains = function(p) {
+    if(!_.isNumber(p.x) || !_.isNumber(p.y)) {
+      return false
+    }
     const bounds = this.getBounds()
     // if the point does not fall in the bounds of the path no need for raycasting
     if(bounds.containsPoint(p) === false) {

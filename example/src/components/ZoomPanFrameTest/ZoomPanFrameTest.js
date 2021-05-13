@@ -6,6 +6,7 @@ import {
     Model,
     Path,
     Point,
+    Rectangle,
     Text
 } from 'hyperobjects-language'
 import {
@@ -117,6 +118,21 @@ model.addProcedure(
     "follow-mouse",
     (self) => {
         return new Circle(self.mousePosition, 5, 20)
+    }
+)
+
+model.addProcedure(
+    "cursor-change",
+    (self) => {
+        var rect = new Rectangle({x: 700, y: 700}, {x: 800, y: 800})
+        if(rect.contains(self.mousePosition)) {
+            rect.fillOpacity(1)
+            self.cursor = "pointer"
+        } else {
+            self.cursor = "initial"
+            rect.fillOpacity(0)
+        }
+        return rect
     }
 )
 

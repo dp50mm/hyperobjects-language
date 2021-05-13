@@ -75,6 +75,7 @@ function Model(name, classes) {
   this.focussed = false
   this.listenToMouseMove = false
   this.mousePosition = {x: 0, y: 0}
+  this.cursor = "initial";
   this.geometries = {}
   this.procedures = {}
   this.editableGeometriesList = []

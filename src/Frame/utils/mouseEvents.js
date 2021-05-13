@@ -14,9 +14,8 @@ export function handleMouseMove(frame, e, frameModelStores, keysPressed) {
     let mouse_coords = frame.getMouseCoords(e);
     let model = frameModelStores[frame.state.frameID];
     const transformMatrix = frame.state.transformMatrix
-
     // event is over svg element and has coordinates
-    if(mouse_coords) {
+    if(mouse_coords && frame.state.frameInFocus) {
         if(frame.props.logMouseMove) {
             console.log(mouse_coords)
         }
@@ -61,7 +60,7 @@ export function handleMouseMove(frame, e, frameModelStores, keysPressed) {
             })
         } else { // User has not pressed the space bar
             if(frame.props.editable) {
-                frame.modelDispatch({
+              frame.modelDispatch({
                   type: MOVE_POINT,
                   payload: {
                   x: _.clamp((mouse_coords.x - transformMatrix.translateX) / transformMatrix.scaleX, 0, model.size.width),
