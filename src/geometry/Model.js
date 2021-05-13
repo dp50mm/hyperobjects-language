@@ -75,6 +75,9 @@ function Model(name, classes) {
   this.focussed = false
   this.listenToMouseMove = false
   this.mousePosition = {x: 0, y: 0}
+  this.unit = "mm"
+  this.showGuides = true
+  this.showGuideTickLabels = true
   this.cursor = "initial";
   this.geometries = {}
   this.procedures = {}

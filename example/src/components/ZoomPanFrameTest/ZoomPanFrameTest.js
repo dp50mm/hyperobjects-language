@@ -16,6 +16,8 @@ import _ from 'lodash'
 
 let model = new Model("zoom-pan-test")
 
+model.background = "rgb(255,220,50)"
+// model.background = "rgb(0,20,50)"
 
 model.animated = true
 
@@ -25,6 +27,11 @@ model.setSize({
     width: 1000,
     height: 2000
 })
+
+// model.unit = "px"
+// model.showGuideTickLabels = false
+// model.showGuides = false
+
 
 model.params = {}
 

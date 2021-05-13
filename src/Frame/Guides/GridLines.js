@@ -3,14 +3,16 @@ import _ from 'lodash'
 import * as d3 from 'd3'
 
 
-var opacityScale = d3.scaleLinear().domain([0.2, 0.1]).range([1, 0]).clamp(true)
+var opacityScale = d3.scaleLinear().domain([0.2, 0.1]).range([0.7, 0]).clamp(true)
 var fontSizeScale = d3.scaleLinear().domain([0.2, 0]).range([12, 0]).clamp(true)
 
 const GridLines = React.memo(({
     width,
     height,
     transformMatrix,
-    gridLinesUnit
+    gridLinesUnit,
+    showTicks,
+    gridColor
 }) => {
     const gridLineCounts = {
         x: Math.ceil(width / 100),
@@ -37,7 +39,7 @@ const GridLines = React.memo(({
     } else {
         xTextShift += 10 / transformMatrix.scaleX
     }
-    const labelColor = "rgb(150,150,150)"
+    const labelColor = gridColor
     
     return (
         <g className='grid-lines'>
@@ -45,15 +47,16 @@ const GridLines = React.memo(({
                 return (
                     <g key={`x-${val}`} transform={`translate(${xScale(val)}, 0)`}>
                     <line
-                        
                         x1={0}
                         x2={0}
                         y1={0}
                         y2={height}
                         className="grid-line"
+                        stroke={gridColor}
+                        opacity={0.5}
                         strokeWidth={0.5 / transformMatrix.scaleX}
                         />
-                    {transformMatrix.scaleX > 0.1 && (
+                    {showTicks && transformMatrix.scaleX > 0.1 && (
                         <g transform={`translate(${5/transformMatrix .scaleX}, ${5 / transformMatrix.scaleX - yTextShift})`}>
                             <text
                             x={0}
@@ -82,10 +85,12 @@ const GridLines = React.memo(({
                         x2={width}
                         y1={0}
                         y2={0}
+                        stroke={gridColor}
+                        opacity={0.5}
                         strokeWidth={0.5 / transformMatrix.scaleX}
                         className="grid-line"
                         />
-                    {transformMatrix.scaleY > 0.1 && (
+                    {showTicks && transformMatrix.scaleY > 0.1 && (
                         <text
                         x={5 / transformMatrix.scaleX - xTextShift}
                         y={5 / transformMatrix.scaleX}

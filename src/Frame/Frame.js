@@ -726,8 +726,10 @@ class Frame extends Component {
                       height={model.size.height}
                       transformMatrix={this.state.transformMatrix}
                       showBounds={this.props.showBounds}
-                      showGridLines={this.props.showGridLines}
-                      gridLinesUnit={this.props.gridLinesUnit}
+                      showGridLines={this.props.showGridLines && model.showGuides}
+                      showTicks={model.showGuideTickLabels}
+                      gridLinesUnit={model.unit}
+                      modelBackground={_.get(model, "background", "rgba(255,255,255,0)")}
                       />
                     <svg
                       id={this.state.svgID}
