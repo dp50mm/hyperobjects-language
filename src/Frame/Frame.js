@@ -598,8 +598,10 @@ class Frame extends Component {
     }
     let group_translate_transform = `translate(${this.state.transformMatrix.translateX}, ${this.state.transformMatrix.translateY})`
 
-    var bgColor = "rgba(255,255,255,0)"
-    if(isColor(model.background)) {
+    var bgColor = "rgba(255,255,255, 0)"
+    if(model.background === "transparent") {
+      bgColor = "rgba(255,255,255, 0)"
+    } else if(isColor(model.background)) {
       bgColor = model.background
     }
     let canvasContainerStyle = {
