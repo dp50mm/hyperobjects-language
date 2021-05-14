@@ -16,6 +16,8 @@ import _ from 'lodash'
 
 let model = new Model("zoom-pan-test")
 
+// model.background = ""
+
 model.background = "rgb(255,220,50)"
 // model.background = "rgb(0,20,50)"
 

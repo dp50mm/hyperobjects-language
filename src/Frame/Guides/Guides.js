@@ -3,12 +3,6 @@ import './guides.scss'
 import GridLines from './GridLines'
 import chroma from "chroma-js"
 
-function isColor(strColor){
-    var s = new Option().style;
-    s.color = strColor;
-    return s.color == strColor;
-}
-
 const Guides = React.memo(({
     modelBackground,
     svgWidth,
@@ -23,11 +17,7 @@ const Guides = React.memo(({
     gridLinesUnit,
     showTicks
 }) => {
-    var colorString = modelBackground == "transparent" ? "rgba(255,255,255,0)" : modelBackground
-    var bgColor = chroma("rgba(255,255,255,0)")
-    if(isColor(colorString)) {
-        bgColor = chroma(colorString)
-    }
+    const bgColor = chroma(modelBackground)
     var gridColor = "rgba(0,0,0,0.6)"
     if(bgColor.luminance() < 0.5) {
         gridColor = "white"

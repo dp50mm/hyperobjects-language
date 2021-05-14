@@ -46,6 +46,8 @@ import {
 } from "./utils/zoomEvents"
 import { handleMouseMove, handleMouseUp } from './utils/mouseEvents';
 import { fonts } from "../assets/fonts"
+import isColor from "../utils/isColor"
+
 var ua = window.navigator.userAgent;
 var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
 var webkit = !!ua.match(/WebKit/i);
@@ -596,10 +598,14 @@ class Frame extends Component {
     }
     let group_translate_transform = `translate(${this.state.transformMatrix.translateX}, ${this.state.transformMatrix.translateY})`
 
+    var bgColor = "rgba(255,255,255,0)"
+    if(isColor(model.background)) {
+      bgColor = model.background
+    }
     let canvasContainerStyle = {
       opacity: 1,
       position: 'absolute',
-      background: model.background,
+      background: bgColor,
       top: this.props.svgPadding,
       zIndex: 1,
       pointerEvents: 'none'
@@ -607,7 +613,7 @@ class Frame extends Component {
 
     let canvas3DContainerStyle = {
       padding: this.props.svgPadding,
-      background: model.background
+      background: bgColor
     }
     if(this.state.containerRendered === false) {
       svgStyle = {
@@ -674,7 +680,7 @@ class Frame extends Component {
             )}
             {model.dimensions === 2 ? (
               <div className='svg-container'
-                style={{padding: this.props.svgPadding, background: model.background}}
+                style={{padding: this.props.svgPadding, background: bgColor}}
                 onClick={() => {
                   this.setState({
                     frameInFocus: true
@@ -729,7 +735,7 @@ class Frame extends Component {
                       showGridLines={this.props.showGridLines && model.showGuides}
                       showTicks={model.showGuideTickLabels}
                       gridLinesUnit={model.unit}
-                      modelBackground={_.get(model, "background", "rgba(255,255,255,0)")}
+                      modelBackground={bgColor}
                       />
                     <svg
                       id={this.state.svgID}
@@ -804,7 +810,7 @@ class Frame extends Component {
                           animated={model.animated}
                           playing={model.playing}
                           canvasID={this.state.canvasID}
-                          background={model.background}
+                          background={bgColor}
                           width={this.props.width}
                           height={size.height}
                           renderScaling={this.state.renderScaling}
@@ -826,7 +832,7 @@ class Frame extends Component {
                   editableGeometries={editableGeometries}
                   displayGeometries={staticGeometries.concat(displayGeometries)}
                   canvasID={this.props.canvasID}
-                  backgroundColor={model.background}
+                  backgroundColor={bgColor}
                   />
               </div>
             ) : null}
