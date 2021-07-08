@@ -7,6 +7,7 @@ import GcodeTest from 'components/GcodeTest'
 import RenderingTest from 'components/RenderingTest'
 import VectorExportMenuTest from 'components/VectorExportMenuTest'
 import ExportPDFTest from 'components/ExportPDFTest'
+import DownloadFileApiTest from "components/DownloadFileApiTest"
 
 const panes = [
     {
@@ -28,6 +29,10 @@ const panes = [
     {
         menuItem: "Vector export menu",
         render: () => <Tab.Pane attached={false}><VectorExportMenuTest /></Tab.Pane>
+    },
+    {
+        menuItem: "File save API",
+        render: () => <Tab.Pane attached={false}><DownloadFileApiTest /></Tab.Pane>
     }
 ]
 

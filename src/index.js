@@ -29,6 +29,7 @@ import _ from 'lodash'
 
 import * as ogl from 'ogl'
 import * as d3 from "d3"
+import { saveAs as _saveAs } from 'file-saver'
 
 
 export const Frame = _Frame
@@ -50,6 +51,8 @@ export const Voronoi = _Voronoi
 
 export const hyperobjectsLanguageWrapper = _hyperobjectsLanguageWrapper
 export const executeCode = _executeCode
+
+export const saveAs = _saveAs
 
 export function setupCodeExecution() {
     // Function to set up necessary variables for code execution
@@ -75,7 +78,8 @@ export function setupCodeExecution() {
         EXTRA_LIBRARIES: {
           ogl: ogl,
           chroma: chroma,
-          d3: d3
+          d3: d3,
+          saveAs: saveAs
         }
       }
 }
