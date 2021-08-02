@@ -30,7 +30,7 @@ import _ from 'lodash'
 import * as ogl from 'ogl'
 import * as d3 from "d3"
 import { saveAs as _saveAs } from 'file-saver'
-
+import dayjs from "dayjs"
 
 export const Frame = _Frame
 
@@ -79,7 +79,8 @@ export function setupCodeExecution() {
           ogl: ogl,
           chroma: chroma,
           d3: d3,
-          saveAs: saveAs
+          saveAs: saveAs,
+          dayjs: dayjs
         }
       }
 }

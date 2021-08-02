@@ -38,6 +38,7 @@ export function hyperobjectsLanguageWrapper(modelCode, modelMeta) {
   var chroma = window.HYPEROBJECTS.EXTRA_LIBRARIES.chroma
   var d3 = window.HYPEROBJECTS.EXTRA_LIBRARIES.d3
   var saveAs = window.HYPEROBJECTS.EXTRA_LIBRARIES.saveAs
+  var dayjs = window.HYPEROBJECTS.EXTRA_LIBRARIES.dayjs
 
   var model = new Model(${wrapString(modelName)},${wrapString(test_name)})
 
