@@ -31,6 +31,9 @@ import * as ogl from 'ogl'
 import * as d3 from "d3"
 import { saveAs as _saveAs } from 'file-saver'
 import dayjs from "dayjs"
+import weekOfYear from "dayjs/plugin/weekOfYear"
+
+dayjs.extend(weekOfYear)
 
 export const Frame = _Frame
 
