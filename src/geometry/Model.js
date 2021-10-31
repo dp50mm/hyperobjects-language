@@ -248,13 +248,18 @@ function Model(name, classes) {
         } else {
           fnString = _.trimStart(fnString, 'self =>')
         }
-        fnString = _.trim(fnString)
-        fnString = _.trimStart(fnString, '{')
-        fnString = _.trimEnd(fnString, '}')
-        
-        fnString = _.replace(fnString, 'lodash__WEBPACK_IMPORTED_MODULE_3___default.a', '_')
-        fnString = _.replace(fnString, 'hyperobjects_language__WEBPACK_IMPORTED_MODULE_2__["Path"]', 'Path')
-        input[key] = new Function('self', fnString)
+        try {
+          fnString = _.trim(fnString)
+          fnString = _.trimStart(fnString, '{')
+          fnString = _.trimEnd(fnString, '}')
+          
+          fnString = _.replace(fnString, 'lodash__WEBPACK_IMPORTED_MODULE_3___default.a', '_')
+          fnString = _.replace(fnString, 'hyperobjects_language__WEBPACK_IMPORTED_MODULE_2__["Path"]', 'Path')
+          input[key] = new Function('self', fnString)
+        } catch(error) {
+          console.warn("error importing fn string: ", fnString)
+          console.log(error)
+        }
       } else {
         input[key] = () => { console.log('Unknown function type provided'); return [] }
       }

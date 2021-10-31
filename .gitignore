@@ -25,4 +25,4 @@ yarn-error.log*
 .code-workspace
 
 # docs
-docs
+example/docs

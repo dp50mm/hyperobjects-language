@@ -1,5 +1,5 @@
 import React from 'react'
-import { ControlledEditor as MonacoEditor } from '@monaco-editor/react'
+import MonacoEditor from '@monaco-editor/react'
 import { Model, Path, Frame } from 'hyperobjects-language'
 
 var quadraticCurveDescription = `const points = [
