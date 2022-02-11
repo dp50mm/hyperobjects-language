@@ -14,7 +14,7 @@
     "@rehooks/component-size": "^1.0.3",
     "esprima": "^4.0.1",
     "hyperobjects-language": "file:..",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
     "react-json-view": "^1.19.1",
